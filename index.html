@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AdsOS — El sistema operativo de AdsProject Media</title>
+<style>
+  :root{
+    --bg:#f4f5fa;
+    --ink:#1f2330;
+    --muted:#6b7280;
+    --line:#e7e8ef;
+    --card:#ffffff;
+    --accent:#5b50e0;
+    --accent-soft:#ece9fc;
+    --todo:#f59e0b;
+    --review:#3b82f6;
+    --done:#10b981;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:820px;margin:0 auto;padding:48px 24px 80px}
+  .hero{
+    background:linear-gradient(135deg,#5b50e0,#7a4ee6);
+    color:#fff;border-radius:20px;padding:44px 40px;margin-bottom:36px;
+    box-shadow:0 18px 40px -18px rgba(91,80,224,.55);
+  }
+  .badge{
+    display:inline-block;font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+    background:rgba(255,255,255,.18);padding:6px 12px;border-radius:999px;margin-bottom:18px;
+  }
+  .hero h1{margin:0 0 10px;font-size:40px;letter-spacing:-.02em}
+  .hero p{margin:0;font-size:18px;opacity:.92;max-width:560px}
+  .cta{
+    display:inline-flex;align-items:center;gap:10px;margin-top:26px;
+    background:#fff;color:var(--accent);text-decoration:none;font-weight:600;
+    padding:13px 22px;border-radius:12px;transition:transform .15s ease, box-shadow .15s ease;
+    box-shadow:0 8px 20px -8px rgba(0,0,0,.35);
+  }
+  .cta:hover{transform:translateY(-2px);box-shadow:0 12px 26px -8px rgba(0,0,0,.4)}
+  .cta svg{width:18px;height:18px}
+  h2{font-size:24px;letter-spacing:-.01em;margin:44px 0 14px}
+  h3{font-size:17px;margin:26px 0 8px}
+  p{margin:0 0 14px}
+  .lead{font-size:18px;color:#3a3f4d}
+  ul{margin:0 0 16px;padding-left:20px}
+  li{margin:4px 0}
+  .quote{
+    border-left:4px solid var(--accent);background:var(--accent-soft);
+    padding:14px 18px;border-radius:0 12px 12px 0;margin:18px 0;font-weight:500;color:#34306b;
+  }
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:18px 0}
+  .panelbox{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 24px}
+  .panelbox h3{margin-top:0}
+  .panelbox.yes h3{color:var(--done)}
+  .panelbox.no h3{color:#ef4444}
+  table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px;background:var(--card);border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+  th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--line)}
+  th{background:#fafafe;font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+  tr:last-child td{border-bottom:none}
+  .num{text-align:right}
+  .pill{display:inline-block;font-size:12px;font-weight:600;padding:3px 10px;border-radius:999px}
+  .pill.todo{background:#fef3da;color:#9a6400}
+  .pill.review{background:#e2ecfd;color:#1d4ed8}
+  .pill.done{background:#dcf5ea;color:#047857}
+  hr{border:none;border-top:1px solid var(--line);margin:40px 0}
+  .divider{display:flex;align-items:center;gap:14px;margin:48px 0 8px}
+  .divider span{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  .divider:before,.divider:after{content:"";flex:1;height:1px;background:var(--line)}
+  .closing{
+    background:var(--ink);color:#fff;border-radius:16px;padding:30px 32px;margin-top:48px;font-size:19px;font-weight:500;
+  }
+  .footer{margin-top:50px;text-align:center}
+  @media(max-width:640px){
+    .hero{padding:32px 24px}.hero h1{font-size:30px}.grid2{grid-template-columns:1fr}
+    table{display:block;overflow-x:auto;white-space:nowrap}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <span class="badge">Propuesta interna</span>
+    <h1>AdsOS</h1>
+    <p>El sistema operativo de AdsProject Media, donde se visualiza la información de cada cliente y los entregables que tiene en curso.</p>
+    <a class="cta" href="panel.html">
+      Ver el panel
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+    </a>
+  </header>
+
+  <h2>Qué es AdsOS</h2>
+  <p class="lead">AdsOS es el lugar donde vive la operación por cliente.</p>
+  <p>En un mismo sistema se puede ver la información de la cuenta, su identidad y lineamientos, los comentarios importantes, el flujo mensual y los entregables en curso, con sus responsables, su estado y su link.</p>
+  <p>La idea no es sumar una plataforma pesada ni procesos extra. Es tener, en un solo lugar, lo que el equipo necesita para trabajar una cuenta: qué hay por cliente, quién lo tiene asignado, cómo va, dónde está el link y qué se debe cuidar antes de entregar al cliente.</p>
+  <p>AdsOS está pensado para cómo trabaja Ads: un equipo flexible y remoto, con personas que pueden estar en distintas ciudades o países.</p>
+
+  <h2>Por qué tiene sentido para Ads</h2>
+  <p>AdsProject Media trabaja con una dinámica flexible y remota. Por eso la cultura no se basa en estar conectados de 9 a 6, sino en entregar con calidad, con el estatus actualizado y con la información correcta del cliente.</p>
+  <ul>
+    <li>No se trata de estar conectados de 9 a 6.</li>
+    <li>Se trata de entregar con calidad, con estatus actualizado y con la información correcta del cliente.</li>
+    <li>Cada persona organiza su tiempo.</li>
+    <li>Lo importante es que lo asignado esté hecho, bien entregado y a tiempo.</li>
+    <li>Si algo se atora, se avisa antes.</li>
+    <li>Si entra algo extra, se registra.</li>
+    <li>Si algo se marca como listo, ya debe venir revisado.</li>
+  </ul>
+  <p>AdsOS acompaña esa forma de trabajar. No es una herramienta para vigilar si alguien está conectado, sino el lugar donde cualquier persona del equipo puede entrar, ubicar una cuenta y entender qué se está trabajando, quién lo tiene asignado, cómo va y qué se debe cuidar antes de entregar al cliente.</p>
+
+  <h2>Qué sí es y qué no es</h2>
+  <div class="grid2">
+    <div class="panelbox yes">
+      <h3>AdsOS sí es</h3>
+      <ul>
+        <li>el sistema operativo de AdsProject Media,</li>
+        <li>una vista de operación por cliente,</li>
+        <li>un lugar para ver información del cliente y entregables en curso,</li>
+        <li>una forma de registrar lo mensual y lo que surge,</li>
+        <li>una herramienta para equipos flexibles y remotos,</li>
+        <li>una manera de cuidar la calidad antes de entregar al cliente,</li>
+        <li>un espacio para conservar la memoria del cliente.</li>
+      </ul>
+    </div>
+    <div class="panelbox no">
+      <h3>AdsOS no es</h3>
+      <ul>
+        <li>una plataforma pesada,</li>
+        <li>un sistema para controlar horarios,</li>
+        <li>una herramienta para vigilar si alguien está conectado,</li>
+        <li>una lista infinita de pendientes sin contexto,</li>
+        <li>un calendario rígido,</li>
+        <li>un sustituto del criterio del equipo,</li>
+        <li>un proceso extra por cumplir.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>Qué contiene AdsOS</h2>
+  <p>AdsOS se organiza en dos grandes bloques.</p>
+
+  <h3>1. Información del cliente</h3>
+  <p>Aquí vive todo lo que ayuda al equipo a trabajar una cuenta sin empezar desde cero cada vez:</p>
+  <ul>
+    <li>qué hace el cliente,</li>
+    <li>redes que atendemos,</li>
+    <li>objetivo principal,</li>
+    <li>tono de comunicación,</li>
+    <li>identidad y lineamientos básicos,</li>
+    <li>links importantes,</li>
+    <li>pauta activa,</li>
+    <li>métricas básicas,</li>
+    <li>comentarios importantes del cliente,</li>
+    <li>memoria de parrillas anteriores.</li>
+  </ul>
+  <p>Este bloque es central porque permite cuidar la identidad del cliente, recordar lo que ya se comentó, evitar repetir errores y dar continuidad entre una parrilla y otra.</p>
+  <p><strong>La memoria del cliente</strong> guarda observaciones como: no usar letras pequeñas, evitar diseños saturados, cuidar cierto tono, respetar la identidad visual, no repetir errores de parrillas anteriores, tomar en cuenta lo que al cliente sí le gustó y registrar comentarios recurrentes.</p>
+
+  <h3>2. Entregables por cliente</h3>
+  <p>Aquí vive todo lo que se está trabajando para cada cuenta: parrillas, artes, copies, briefs, investigaciones, videos, ajustes, pauta, reportes y solicitudes extra.</p>
+  <p>En esta parte se ve qué entregables tiene cada cliente, quién los tiene asignados, para cuándo van, en qué estado están y dónde está el link correspondiente cuando aplique.</p>
+
+  <h2>Flujo mensual y actividades que surgen</h2>
+  <p>AdsOS no solo registra pendientes sueltos. Muestra el flujo mensual por cliente, del cual se desprenden actividades.</p>
+  <p><strong>Actividades del flujo mensual.</strong> Son las que forman parte de la operación regular de cada cliente: parrillas, contenidos programados, revisiones, reportes, pauta y entregables recurrentes.</p>
+  <p><strong>Actividades que surgen.</strong> Son las solicitudes que aparecen durante la semana y también deben quedar registradas: ajustes, solicitudes extra, cambios del cliente, briefs nuevos, investigaciones, copies, videos y pendientes puntuales.</p>
+  <div class="quote">Si forma parte de la operación del cliente, vive en AdsOS. O más directo: si se pidió, se registra.</div>
+
+  <h2>Lógica de registro</h2>
+  <p>La forma de registrar es rápida y siempre la misma:</p>
+  <div class="quote">Me pidieron algo → lo registro rápido → queda cuantificado → aparece en AdsOS → la persona sabe qué entregar.</div>
+  <p>Cada actividad se captura con una estructura mínima: <strong>Cliente + cantidad + qué + especificación breve + quién + para cuándo + estado + link.</strong></p>
+  <table>
+    <thead><tr><th>Cliente</th><th class="num">Cantidad</th><th>Qué</th><th>Especificación</th><th>Quién</th><th>Para cuándo</th><th>Estado</th><th>Link</th></tr></thead>
+    <tbody>
+      <tr><td>Auren</td><td class="num">1</td><td>Brief</td><td>CheckUp Empresarial</td><td>Diego</td><td>Hoy</td><td><span class="pill todo">Por hacer</span></td><td>—</td></tr>
+      <tr><td>UTNG</td><td class="num">5</td><td>Artes</td><td>Parrilla julio</td><td>Sofía</td><td>Viernes</td><td><span class="pill review">Por revisar</span></td><td>Link</td></tr>
+    </tbody>
+  </table>
+  <p>La palabra <strong>cantidad</strong> importa porque permite cuantificar entregables: 1 brief, 5 artes, 3 copies, 2 ajustes, 1 investigación. Por ahora no se pondera la dificultad. Primero debe funcionar con algo simple y claro.</p>
+
+  <h2>Estados de trabajo</h2>
+  <p>Se definieron solo tres estados:</p>
+  <table>
+    <thead><tr><th>Estado</th><th>Significado</th></tr></thead>
+    <tbody>
+      <tr><td><span class="pill todo">Por hacer</span></td><td>Ya está solicitado</td></tr>
+      <tr><td><span class="pill review">Por revisar</span></td><td>Ya tiene link y falta revisión</td></tr>
+      <tr><td><span class="pill done">Listo</span></td><td>Ya fue revisado y cerrado</td></tr>
+    </tbody>
+  </table>
+  <p>No se usa "En proceso" como estado principal. En un equipo flexible no es tan importante saber si alguien ya empezó, sino si está pendiente, si ya tiene entrega para revisar o si ya quedó cerrado.</p>
+
+  <h2>Regla semanal</h2>
+  <p>Cada integrante organiza su carga semanal con flexibilidad. Los entregables asignados para parrilla deben estar cargados en AdsOS con su link <strong>antes del viernes a las 10:00 a.m.</strong>, para revisión interna.</p>
+  <div class="quote">No medimos si alguien está sentado de 9 a 6.<br>Medimos si está hecho, bien entregado y a tiempo.</div>
+  <p>En la práctica: si algo se atora, se avisa antes; si entra algo extra, se registra; si algo se marca como listo, ya debe venir revisado.</p>
+
+  <h2>Cultura de calidad</h2>
+  <p>AdsOS refuerza una cultura de revisión desde quien produce.</p>
+  <div class="quote">No entrego por entregar. Entrego algo que ya revisé.</div>
+  <p>Antes de pasar algo a "Por revisar", cada persona confirma: ortografía revisada, logo correcto, texto legible, elementos no duplicados, solicitud cumplida y link correcto.</p>
+  <p>La revisión final puede hacerla otra persona, pero la calidad debe venir desde quien produce y revisarse antes de entregar al cliente.</p>
+
+  <h2>Vistas sugeridas</h2>
+  <p>AdsOS permite consultar la operación desde distintas entradas: vista general por cliente, entregables por cliente, entregables por persona, entregas por revisar, links e información del cliente, y pauta y métricas básicas.</p>
+  <div class="quote">Primero lo que ayuda a operar. Después, el detalle.</div>
+  <p>No se busca saturar con información, sino que cada persona llegue rápido a lo que necesita.</p>
+
+  <h2>Lo que permite AdsOS</h2>
+  <p>AdsOS busca que AdsProject Media trabaje con más orden, autonomía y calidad. Cualquier persona puede entrar al sistema, ubicar un cliente, ver qué entregables tiene en curso, saber quién tiene asignado cada pendiente, revisar en qué estado va, encontrar el link correspondiente, consultar qué se debe cuidar del cliente y entregar con calidad.</p>
+  <div class="quote">Primero se cumple lo contratado. Después se abre espacio para proponer más.</div>
+
+  <div class="closing">AdsOS es el lugar donde vive la información de cada cliente y todo lo que se está haciendo para esa cuenta.</div>
+
+  <div class="footer">
+    <a class="cta" href="panel.html" style="background:var(--accent);color:#fff">
+      Ver cómo se vería el panel
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+    </a>
+  </div>
+
+</div>
+</body>
+</html>
