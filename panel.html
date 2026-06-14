@@ -55,15 +55,15 @@
 
   /* Main */
   .main{flex:1;min-width:0;display:flex;flex-direction:column;margin-left:76px}
-  .topbar{display:flex;align-items:stretch;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:18px 32px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.82);backdrop-filter:saturate(160%) blur(14px);position:sticky;top:0;z-index:5}
-  .head-left{display:flex;flex-direction:column;justify-content:space-between;min-width:0}
+  .topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:18px 32px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.82);backdrop-filter:saturate(160%) blur(14px);position:sticky;top:0;z-index:5}
+  .head-left{display:flex;flex-direction:column;justify-content:flex-start;min-width:0}
   .topbar-right{display:flex;flex-direction:column;align-items:stretch;gap:12px}
   .crumb{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
   .crumb b{color:var(--ink)}
   .crumb .home{cursor:pointer;color:var(--brand);font-weight:600}
   .topbar h1{margin:2px 0 0;font-size:21px;font-family:var(--font-head);font-weight:700;letter-spacing:-.02em}
   .topbar h1.big{font-size:39px;margin-top:2px;line-height:1.03}
-  .topbar .sub{color:var(--muted);font-size:13.5px;margin-top:5px}
+  .topbar .sub{color:var(--muted);font-size:13.5px;margin-top:2px}
   .todaybig{font-size:15.5px;color:#3f3f49;font-weight:500}
   .toolbar{display:flex;align-items:center;justify-content:flex-end;gap:12px}
   .demo{display:inline-block;background:var(--brand-soft);color:var(--brand);font-size:11px;font-weight:600;padding:5px 11px;border-radius:999px}
@@ -111,7 +111,7 @@
   .ccard .role{font-size:12.5px;color:var(--muted);margin-top:1px}
   .ctotal-badge{flex-shrink:0;text-align:center;padding-left:13px;border-left:1px solid var(--line)}
   .ctotal-badge .n{font-family:var(--font-head);font-size:29px;font-weight:700;line-height:1;color:var(--ink)}
-  .ctotal-badge .t{font-size:8.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin-top:4px;font-weight:600;max-width:58px;line-height:1.25}
+  .ctotal-badge .t{font-size:8.5px;text-transform:uppercase;letter-spacing:.03em;color:var(--muted);margin-top:5px;font-weight:600;white-space:nowrap}
   .cstats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:12px}
   .cstat{border-radius:12px;padding:11px 6px;text-align:center;transition:transform .2s var(--ease)}
   .ccard:hover .cstat{transform:translateY(-1px)}
@@ -270,7 +270,7 @@
 
   <main class="main">
     <div class="topbar">
-      <div style="display:flex;align-items:stretch;gap:12px;min-width:0">
+      <div style="display:flex;align-items:flex-start;gap:12px;min-width:0">
         <button class="menu-btn" id="menuBtn" aria-label="Abrir menú">☰</button>
         <div class="head-left">
           <div>
