@@ -55,14 +55,16 @@
 
   /* Main */
   .main{flex:1;min-width:0;display:flex;flex-direction:column;margin-left:76px}
-  .topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 32px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.82);backdrop-filter:saturate(160%) blur(14px);position:sticky;top:0;z-index:5}
+  .topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:18px 32px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.82);backdrop-filter:saturate(160%) blur(14px);position:sticky;top:0;z-index:5}
+  .topbar-right{display:flex;flex-direction:column;align-items:stretch;gap:12px}
   .crumb{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
   .crumb b{color:var(--ink)}
   .crumb .home{cursor:pointer;color:var(--brand);font-weight:600}
   .topbar h1{margin:2px 0 0;font-size:21px;font-family:var(--font-head);font-weight:700;letter-spacing:-.02em}
   .topbar h1.big{font-size:33px;margin-top:3px;line-height:1.05}
   .topbar .sub{color:var(--muted);font-size:13.5px;margin-top:5px}
-  .toolbar{display:flex;align-items:center;gap:12px}
+  .todaybig{font-size:15.5px;color:#5a5a66;font-weight:500}
+  .toolbar{display:flex;align-items:center;justify-content:flex-end;gap:12px}
   .demo{display:inline-block;background:var(--brand-soft);color:var(--brand);font-size:11px;font-weight:600;padding:5px 11px;border-radius:999px}
   /* Botones del panel — claros, borde suave, se oscurecen en hover */
   .tbtn{display:inline-flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:9px 16px;font-family:var(--font-ui);font-size:13.5px;font-weight:600;color:var(--ink);cursor:pointer;box-shadow:var(--shadow-sm);transition:background .2s var(--ease),border-color .2s var(--ease),box-shadow .2s var(--ease),transform .2s var(--ease)}
@@ -90,7 +92,7 @@
   /* Cards */
   .cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
   /* Buscador minimalista (estilo botón claro, lupa gris + "Buscar") */
-  .searchbar{position:relative;width:100%;margin:0 0 22px 0}
+  .searchbar{position:relative;width:100%;margin:0}
   .searchbar .lupa{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:17px;height:17px;color:#9a9aa4;pointer-events:none}
   .searchbar input{width:100%;border:1px solid var(--line);border-radius:12px;background:#fff;padding:11px 14px 11px 41px;font-family:var(--font-ui);font-size:13.5px;color:var(--ink);box-shadow:var(--shadow-sm);transition:border-color .2s var(--ease),box-shadow .2s var(--ease)}
   .searchbar input::placeholder{color:#9a9aa4}
@@ -114,7 +116,7 @@
   .cstat .n{font-family:var(--font-head);font-size:24px;font-weight:700;line-height:1}
   .cstat .t{font-size:9.5px;text-transform:uppercase;letter-spacing:.03em;margin-top:6px;font-weight:600;line-height:1.15}
   .cstat.todo{background:#e2f4f6;color:#0e7490}
-  .cstat.proc{background:#faf0cf;color:#8a6d0b}
+  .cstat.proc{background:#e8e9fd;color:#4338ca}
   .cstat.review{background:#fce8db;color:#c2410c}
   .ccard .open{font-size:12.5px;color:var(--brand);font-weight:600;margin-top:16px;display:flex;align-items:center;gap:5px;transition:gap .2s var(--ease)}
   .ccard:hover .open{gap:9px}
@@ -274,10 +276,15 @@
           <div class="sub" id="subtitle"></div>
         </div>
       </div>
-      <div class="toolbar">
-        <span class="demo">Vista de ejemplo</span>
-        <button class="tbtn" onclick="openCliModal()"><span class="plus">+</span> Nuevo cliente</button>
-        <button class="tbtn primary" onclick="openActModal()"><span class="plus">+</span> Nueva actividad</button>
+      <div class="topbar-right">
+        <div class="toolbar">
+          <button class="tbtn" onclick="openCliModal()"><span class="plus">+</span> Nuevo cliente</button>
+          <button class="tbtn primary" onclick="openActModal()"><span class="plus">+</span> Nueva actividad</button>
+        </div>
+        <div class="searchbar" id="headerSearch">
+          <svg class="lupa" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+          <input id="client-search" type="text" placeholder="Buscar" autocomplete="off" aria-label="Buscar cliente">
+        </div>
       </div>
     </div>
 
@@ -285,10 +292,6 @@
 
       <!-- INICIO -->
       <section class="view" id="view-inicio">
-        <div class="searchbar">
-          <svg class="lupa" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
-          <input id="client-search" type="text" placeholder="Buscar" autocomplete="off" aria-label="Buscar cliente">
-        </div>
         <div class="cards" id="client-cards"></div>
       </section>
 
@@ -838,8 +841,10 @@
     const navMatch=view==='prospecto'?'prospectos':view;
     document.querySelectorAll('.nav a').forEach(n=>n.classList.toggle('active',n.dataset.view===navMatch));
     el('title').classList.toggle('big', view==='inicio');
+    el('headerSearch').style.display = view==='inicio' ? '' : 'none';
     if(view==='inicio'){
-      el('title').textContent='Welcome!'; el('subtitle').textContent=todayStr;
+      el('title').textContent='Welcome!';
+      el('subtitle').innerHTML=`<span class="todaybig">${todayStr}</span> <span class="demo" style="margin-left:8px;vertical-align:middle">Vista de ejemplo</span>`;
       el('crumb').innerHTML='';
     }else if(view==='cliente'){
       el('title').textContent=name; el('subtitle').textContent='Portal del cliente · brief, entregables y parrilla';
