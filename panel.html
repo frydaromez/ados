@@ -55,8 +55,8 @@
 
   /* Main */
   .main{flex:1;min-width:0;display:flex;flex-direction:column;margin-left:76px}
-  .topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:18px 32px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.82);backdrop-filter:saturate(160%) blur(14px);position:sticky;top:0;z-index:5}
-  .head-left{display:flex;flex-direction:column;justify-content:flex-start;min-width:0}
+  .topbar{display:flex;align-items:stretch;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:18px 32px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.82);backdrop-filter:saturate(160%) blur(14px);position:sticky;top:0;z-index:5}
+  .head-left{display:flex;flex-direction:column;justify-content:space-between;min-width:0}
   .topbar-right{display:flex;flex-direction:column;align-items:stretch;gap:12px}
   .crumb{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
   .crumb b{color:var(--ink)}
@@ -270,7 +270,7 @@
 
   <main class="main">
     <div class="topbar">
-      <div style="display:flex;align-items:flex-start;gap:12px;min-width:0">
+      <div style="display:flex;align-items:stretch;gap:12px;min-width:0">
         <button class="menu-btn" id="menuBtn" aria-label="Abrir menú">☰</button>
         <div class="head-left">
           <div>
