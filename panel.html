@@ -21,6 +21,7 @@
     --todo:#64748b; --proc:#3b82f6; --review:#f59e0b; --chg:#e11d48; --pub:#65a30d; --done:#10b981;
   }
   *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
   body{margin:0;font-family:var(--font-ui);background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;letter-spacing:-.01em}
   @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
   .app{display:flex;min-height:100vh}
@@ -31,7 +32,10 @@
   .side:focus-within .navlabel,.side:focus-within .nav a .lbl,.side:focus-within .nav a .ct{opacity:1}
   .nav a:focus-visible{outline:2px solid #fff;outline-offset:-2px}
   .logo{display:flex;align-items:center;gap:12px;color:#fff;font-family:var(--font-head);font-weight:700;font-size:19px;padding:6px 7px 18px}
-  .logo .mark{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--brand),var(--brand-2));display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;box-shadow:0 6px 16px -6px rgba(129,85,255,.7)}
+  .logo .mark{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#211b3a,#15121f);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 6px 16px -7px rgba(129,85,255,.6);border:1px solid #2c2640}
+  .logo .mark svg{width:26px;height:26px;display:block}
+  .logo .lbl{opacity:0;transition:opacity .22s var(--ease)}
+  .side:hover .logo .lbl,.side:focus-within .logo .lbl{opacity:1}
   .navlabel{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#5a5a66;margin:16px 12px 6px;opacity:0;transition:opacity .2s var(--ease)}
   .side:hover .navlabel{opacity:1}
   .nav a{display:flex;align-items:center;gap:13px;color:#aeaeba;text-decoration:none;padding:11px 11px;border-radius:11px;font-size:14px;font-weight:500;cursor:pointer;transition:background .2s var(--ease),color .2s var(--ease);position:relative}
@@ -92,8 +96,11 @@
   .searchbar input::placeholder{color:#9a9aa4}
   .searchbar input:hover{border-color:#dcdbe4}
   .searchbar input:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
-  .ccard{background:#fff;border:1px solid var(--line);border-radius:20px;padding:22px;cursor:pointer;box-shadow:var(--shadow-sm);transition:transform .3s var(--ease-out),box-shadow .3s var(--ease-out),border-color .3s var(--ease)}
+  .ccard{background:#fff;border:1px solid var(--line);border-radius:20px;padding:22px;cursor:pointer;box-shadow:var(--shadow-sm);transition:transform .45s var(--ease-out),box-shadow .3s var(--ease-out),border-color .3s var(--ease),opacity .5s var(--ease-out)}
   .ccard:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);border-color:#e1e0ea}
+  body.anim .ccard{opacity:0;transform:translateY(22px) scale(.98)}
+  body.anim .ccard.in{opacity:1;transform:none}
+  body.anim .ccard.in:hover{transform:translateY(-4px)}
   .ccard .head{display:flex;align-items:center;gap:13px;margin-bottom:16px}
   .avatar{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--font-head);font-weight:700;font-size:17px;flex-shrink:0;box-shadow:var(--shadow-sm)}
   .ccard .name{font-family:var(--font-head);font-weight:700;font-size:17px;letter-spacing:-.01em}
@@ -106,9 +113,9 @@
   .ccard:hover .cstat{transform:translateY(-1px)}
   .cstat .n{font-family:var(--font-head);font-size:24px;font-weight:700;line-height:1}
   .cstat .t{font-size:9.5px;text-transform:uppercase;letter-spacing:.03em;margin-top:6px;font-weight:600;line-height:1.15}
-  .cstat.todo{background:#f1f3f7;color:#475569}
-  .cstat.proc{background:#e7eefe;color:#1d4ed8}
-  .cstat.review{background:#fef4e0;color:#9a6400}
+  .cstat.todo{background:#e2f4f6;color:#0e7490}
+  .cstat.proc{background:#faf0cf;color:#8a6d0b}
+  .cstat.review{background:#fce8db;color:#c2410c}
   .ccard .open{font-size:12.5px;color:var(--brand);font-weight:600;margin-top:16px;display:flex;align-items:center;gap:5px;transition:gap .2s var(--ease)}
   .ccard:hover .open{gap:9px}
   .ccard.prospect{border-style:dashed}
@@ -228,7 +235,17 @@
 <div class="app">
 
   <aside class="side">
-    <div class="logo"><span class="mark">A</span> <span class="lbl">AdsOS</span></div>
+    <div class="logo">
+      <span class="mark" title="ADS Project Media">
+        <svg viewBox="0 0 32 32" fill="none" aria-label="AdsOS">
+          <defs><linearGradient id="adsg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="#6a3cf0"/><stop offset="1" stop-color="#b9a3ff"/></linearGradient></defs>
+          <g stroke="url(#adsg)" stroke-width="1.5" opacity=".85"><line x1="6" y1="8" x2="13" y2="14"/><line x1="13" y1="14" x2="9" y2="23"/><line x1="13" y1="14" x2="20" y2="21"/><line x1="9" y1="23" x2="20" y2="21"/><line x1="20" y1="21" x2="25" y2="12"/><line x1="25" y1="12" x2="22" y2="6"/></g>
+          <g fill="url(#adsg)"><circle cx="6" cy="8" r="3"/><circle cx="13" cy="14" r="3.4"/><circle cx="20" cy="21" r="3"/><circle cx="22" cy="6" r="2.4"/></g>
+          <g fill="#15121f" stroke="url(#adsg)" stroke-width="1.7"><circle cx="9" cy="23" r="2.7"/><circle cx="25" cy="12" r="2.5"/></g>
+        </svg>
+      </span>
+      <span class="lbl">AdsOS</span>
+    </div>
     <div class="navlabel">Operación</div>
     <nav class="nav" id="nav">
       <a data-view="inicio" class="active" title="Inicio"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/></svg> <span class="lbl">Inicio</span></a>
@@ -253,7 +270,7 @@
         <button class="menu-btn" id="menuBtn" aria-label="Abrir menú">☰</button>
         <div style="min-width:0">
           <div class="crumb" id="crumb"><span class="home">Inicio</span></div>
-          <h1 id="title">Inicio</h1>
+          <h1 id="title">Welcome!</h1>
           <div class="sub" id="subtitle">Todos los clientes y su operación activa</div>
         </div>
       </div>
@@ -630,6 +647,18 @@
           <div class="cstat review"><div class="n">${r}</div><div class="t">Por revisar</div></div>
         </div>
         <div class="open">Abrir portal →</div></div>`).join('');
+    revealCards();
+  }
+  // Revelado interactivo al hacer scroll (fundido + elevación escalonada)
+  let cardObserver=null;
+  function revealCards(){
+    if(!document.body.classList.contains('anim')) return;
+    if(cardObserver) cardObserver.disconnect();
+    cardObserver=new IntersectionObserver(entries=>{
+      entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); cardObserver.unobserve(e.target); } });
+    },{threshold:.12});
+    const cards=document.querySelectorAll('#client-cards .ccard');
+    cards.forEach((c,i)=>{ c.style.transitionDelay=(Math.min(i,8)*55)+'ms'; cardObserver.observe(c); });
   }
 
   // ===== PANEL MADRE =====
@@ -793,7 +822,7 @@
 
   // ===== Navegación =====
   const titles={
-    inicio:["Inicio","Todos los clientes y su operación activa"],
+    inicio:["Welcome!","Todos los clientes y su operación activa"],
     actividades:["Actividades","Base madre · todo lo que se registra"],
     prospectos:["Prospectos","Oportunidades que todavía no son cliente"],
     equipo:["Equipo","Lo que cada quien tiene asignado"],
@@ -886,6 +915,7 @@
   document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeSide();document.querySelectorAll('.overlay.open').forEach(o=>o.classList.remove('open'));}});
 
   // ===== Init =====
+  if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches) document.body.classList.add('anim');
   el('today').textContent=new Date(2026,5,14).toLocaleDateString('es-MX',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).replace(/^\w/,c=>c.toUpperCase());
   fillAccFilter(); fillParrillaCli(); renderAll();
 </script>
