@@ -5,123 +5,170 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>AdsOS — Panel</title>
 <style>
-  /* === Paleta de marca (cambiar aquí cuando lleguen los hex de Ads) === */
   :root{
-    --brand:#8155ff;        /* principal */
-    --brand-2:#9a6cff;      /* acento / degradado */
-    --brand-soft:#efe9ff;   /* fondo suave del principal */
-    --sidebar:#000000;      /* fondo barra lateral */
-    --ink:#16151c;          /* texto */
-    --muted:#737888;
-    --bg:#f5f4fa;
-    --card:#fff;
-    --line:#e7e8ef;
-    --todo:#f59e0b; --review:#3b82f6; --done:#10b981;
+    --brand:#8155ff; --brand-2:#9a6cff; --brand-soft:#efe9ff;
+    --sidebar:#000000; --ink:#16151c; --muted:#737888;
+    --bg:#f5f4fa; --card:#fff; --line:#e7e8ef;
+    --todo:#f59e0b; --proc:#8155ff; --review:#3b82f6; --chg:#e11d48; --pub:#65a30d; --done:#10b981;
   }
   *{box-sizing:border-box}
   body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
   .app{display:flex;min-height:100vh}
 
   /* Sidebar */
-  .side{width:248px;background:var(--sidebar);color:#cbccd6;padding:22px 16px;flex-shrink:0;display:flex;flex-direction:column}
-  .logo{display:flex;align-items:center;gap:10px;color:#fff;font-weight:700;font-size:18px;padding:6px 8px 22px}
+  .side{width:250px;background:var(--sidebar);color:#cbccd6;padding:20px 14px;flex-shrink:0;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+  .logo{display:flex;align-items:center;gap:10px;color:#fff;font-weight:700;font-size:18px;padding:6px 8px 14px}
   .logo .mark{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--brand),var(--brand-2));display:flex;align-items:center;justify-content:center;font-size:14px}
-  .navlabel{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#6b6c7e;margin:18px 8px 8px}
+  .addbtns{display:flex;flex-direction:column;gap:8px;margin:6px 4px 14px}
+  .addbtn{display:flex;align-items:center;gap:8px;border:none;border-radius:10px;padding:10px 12px;font-size:13.5px;font-weight:600;cursor:pointer}
+  .addbtn.primary{background:var(--brand);color:#fff}
+  .addbtn.ghost{background:#1c1b22;color:#dcdce4}
+  .addbtn:hover{filter:brightness(1.08)}
+  .navlabel{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:#62636f;margin:14px 8px 6px}
   .nav a{display:flex;align-items:center;gap:11px;color:#b9bac7;text-decoration:none;padding:9px 11px;border-radius:9px;font-size:14px;cursor:pointer;transition:background .12s,color .12s}
-  .nav a:hover{background:#241f33;color:#fff}
+  .nav a:hover{background:#19181f;color:#fff}
   .nav a.active{background:var(--brand);color:#fff}
   .nav a .ico{width:17px;height:17px;flex-shrink:0;opacity:.9}
-  .back{margin-top:auto;font-size:13px;color:#8a8b9c;text-decoration:none;padding:10px;border-top:1px solid #2a2738}
+  .nav a .ct{margin-left:auto;font-size:11px;background:rgba(255,255,255,.12);padding:1px 7px;border-radius:999px}
+  .back{margin-top:auto;font-size:13px;color:#8a8b9c;text-decoration:none;padding:10px;border-top:1px solid #232228}
   .back:hover{color:#fff}
 
   /* Main */
   .main{flex:1;min-width:0;display:flex;flex-direction:column}
-  .topbar{display:flex;align-items:center;justify-content:space-between;padding:18px 32px;border-bottom:1px solid var(--line);background:#fff}
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 30px;border-bottom:1px solid var(--line);background:#fff;position:sticky;top:0;z-index:5}
   .crumb{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
   .crumb b{color:var(--ink)}
   .crumb .home{cursor:pointer;color:var(--brand);font-weight:600}
   .topbar h1{margin:2px 0 0;font-size:20px}
   .topbar .sub{color:var(--muted);font-size:13px;margin-top:2px}
-  .demo{background:var(--brand-soft);color:var(--brand);font-size:12px;font-weight:600;padding:5px 12px;border-radius:999px}
-  .content{padding:26px 32px;overflow:auto}
+  .date{font-size:13px;color:var(--muted);text-align:right}
+  .date .demo{display:inline-block;margin-top:4px;background:var(--brand-soft);color:var(--brand);font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:999px}
+  .content{padding:24px 30px 60px;overflow:auto}
 
-  /* KPI strip */
-  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
-  .kpi{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px}
-  .kpi .v{font-size:26px;font-weight:700}
-  .kpi .l{font-size:12.5px;color:var(--muted);margin-top:2px}
-  .kpi .v.todo{color:#b8771a}.kpi .v.review{color:#1d4ed8}.kpi .v.done{color:#047857}
+  /* KPIs */
+  .kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:13px;margin-bottom:22px}
+  .kpi{background:#fff;border:1px solid var(--line);border-radius:14px;padding:15px 17px}
+  .kpi .v{font-size:25px;font-weight:700}
+  .kpi .l{font-size:12px;color:var(--muted);margin-top:2px}
+  .kpi .v.todo{color:#b8771a}.kpi .v.proc{color:#6a2bd6}.kpi .v.review{color:#1d4ed8}.kpi .v.done{color:#047857}
 
-  /* Section */
-  .section-title{font-size:15px;font-weight:700;margin:26px 0 12px;display:flex;align-items:center;gap:9px}
+  .section-title{font-size:15px;font-weight:700;margin:24px 0 12px;display:flex;align-items:center;gap:9px}
   .section-title .dot{width:7px;height:7px;border-radius:50%;background:var(--brand)}
   .hint{font-size:12.5px;color:var(--muted);font-weight:500;margin-left:auto}
 
-  /* Client cards */
-  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:16px}
-  .ccard{background:#fff;border:1px solid var(--line);border-radius:15px;padding:18px;cursor:pointer;transition:transform .14s,box-shadow .14s}
+  /* Cards */
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(236px,1fr));gap:15px}
+  .ccard{background:#fff;border:1px solid var(--line);border-radius:15px;padding:17px;cursor:pointer;transition:transform .14s,box-shadow .14s}
   .ccard:hover{transform:translateY(-3px);box-shadow:0 16px 30px -18px rgba(40,40,80,.35)}
-  .ccard .head{display:flex;align-items:center;gap:11px;margin-bottom:13px}
+  .ccard .head{display:flex;align-items:center;gap:11px;margin-bottom:12px}
   .avatar{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:15px;flex-shrink:0}
   .ccard .name{font-weight:600;font-size:15px}
   .ccard .role{font-size:12px;color:var(--muted)}
   .ccard .meta{font-size:12.5px;color:var(--muted)}
-  .countpills{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap}
+  .countpills{display:flex;gap:6px;margin-top:11px;flex-wrap:wrap}
   .mini{font-size:11.5px;font-weight:600;padding:3px 9px;border-radius:999px}
-  .mini.todo{background:#fef3da;color:#9a6400}
-  .mini.review{background:#e2ecfd;color:#1d4ed8}
-  .mini.done{background:#dcf5ea;color:#047857}
-  .ccard .open{font-size:12.5px;color:var(--brand);font-weight:600;margin-top:12px;display:flex;align-items:center;gap:5px}
+  .mini.todo{background:#fef3da;color:#9a6400}.mini.proc{background:#efe9ff;color:#6a2bd6}.mini.review{background:#e2ecfd;color:#1d4ed8}
+  .ccard .open{font-size:12.5px;color:var(--brand);font-weight:600;margin-top:11px}
+  .ccard.prospect{border-style:dashed}
 
-  /* Table */
+  /* Tables */
   .tablecard{background:#fff;border:1px solid var(--line);border-radius:15px;overflow:hidden}
+  .tablewrap{overflow-x:auto}
   table{width:100%;border-collapse:collapse;font-size:13.5px}
-  th,td{text-align:left;padding:12px 16px;border-bottom:1px solid var(--line)}
+  th,td{text-align:left;padding:11px 15px;border-bottom:1px solid var(--line);white-space:nowrap}
   th{background:#fafafe;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600}
   tr:last-child td{border-bottom:none}
   tbody tr:hover{background:#fafaff}
   .num{text-align:right;font-variant-numeric:tabular-nums}
-  .clilink{color:var(--ink);font-weight:600;cursor:pointer;text-decoration:none;border-bottom:1px dashed var(--line)}
+  .clilink{color:var(--ink);font-weight:600;cursor:pointer;border-bottom:1px dashed var(--line)}
   .clilink:hover{color:var(--brand);border-color:var(--brand)}
   .who{display:flex;align-items:center;gap:8px}
-  .who .a{width:24px;height:24px;border-radius:7px;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
+  .who .a{width:24px;height:24px;border-radius:7px;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
   .pill{display:inline-block;font-size:12px;font-weight:600;padding:3px 11px;border-radius:999px;white-space:nowrap}
-  .pill.todo{background:#fef3da;color:#9a6400}
-  .pill.review{background:#e2ecfd;color:#1d4ed8}
-  .pill.done{background:#dcf5ea;color:#047857}
-  .lk{color:var(--brand);text-decoration:none;font-weight:600}
-  .lk:hover{text-decoration:underline}
+  .pill.todo{background:#fef3da;color:#9a6400}.pill.proc{background:#efe9ff;color:#6a2bd6}.pill.review{background:#e2ecfd;color:#1d4ed8}
+  .pill.chg{background:#fde2e7;color:#be123c}.pill.pub{background:#e8f0e2;color:#3f6212}.pill.published{background:#16151c;color:#fff}.pill.done{background:#dcf5ea;color:#047857}
+  .tipo{font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:6px}
+  .tipo.parrilla{background:#ede9fe;color:#6d28d9}.tipo.extra{background:#fff0e6;color:#c2410c}.tipo.prospecto{background:#e7f0ff;color:#1e40af}
+  .lk{color:var(--brand);text-decoration:none;font-weight:600}.lk:hover{text-decoration:underline}
   .dash{color:#c2c4ce}
 
   /* Filters */
-  .filters{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}
-  .fbtn{background:#fff;border:1px solid var(--line);color:#4a4f5e;padding:7px 14px;border-radius:9px;font-size:13px;cursor:pointer;font-weight:500}
+  .filters{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:13px;align-items:center}
+  .fbtn{background:#fff;border:1px solid var(--line);color:#4a4f5e;padding:7px 13px;border-radius:9px;font-size:13px;cursor:pointer;font-weight:500}
   .fbtn.active{background:var(--brand);border-color:var(--brand);color:#fff}
+  select.fsel{border:1px solid var(--line);background:#fff;border-radius:9px;padding:7px 11px;font-size:13px;color:#3a3f4d}
+  .fspacer{flex:1}
 
-  /* Client detail */
-  .detail-head{display:flex;align-items:center;gap:16px;background:#fff;border:1px solid var(--line);border-radius:15px;padding:20px 24px;margin-bottom:22px}
-  .detail-head .avatar{width:54px;height:54px;border-radius:14px;font-size:20px}
-  .detail-head h2{margin:0;font-size:22px}
-  .detail-head .role{color:var(--muted);font-size:13.5px}
-  .detail-head .right{margin-left:auto;display:flex;gap:18px;text-align:center}
-  .detail-head .right .v{font-size:20px;font-weight:700}
-  .detail-head .right .l{font-size:11.5px;color:var(--muted)}
-  .split{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start;margin-top:8px}
-  .infocard{background:#fff;border:1px solid var(--line);border-radius:15px;padding:20px 22px}
-  .infocard h3{margin:0 0 13px;font-size:15.5px}
+  /* Detail / portal */
+  .detail-head{display:flex;align-items:center;gap:16px;background:#fff;border:1px solid var(--line);border-radius:15px;padding:18px 22px;margin-bottom:8px}
+  .detail-head .avatar{width:52px;height:52px;border-radius:14px;font-size:19px}
+  .detail-head h2{margin:0;font-size:21px}
+  .detail-head .role{color:var(--muted);font-size:13px}
+  .detail-head .right{margin-left:auto;display:flex;gap:16px;text-align:center}
+  .detail-head .right .v{font-size:19px;font-weight:700}.detail-head .right .l{font-size:11px;color:var(--muted)}
+  .tabs{display:flex;gap:5px;margin:16px 0 14px;flex-wrap:wrap;border-bottom:1px solid var(--line)}
+  .tab{background:none;border:none;border-bottom:2px solid transparent;color:#5a5f6e;padding:9px 13px;font-size:13.5px;cursor:pointer;font-weight:600;margin-bottom:-1px}
+  .tab.active{color:var(--brand);border-color:var(--brand)}
+  .ptab{display:none}.ptab.active{display:block}
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+  .infocard{background:#fff;border:1px solid var(--line);border-radius:15px;padding:19px 21px}
+  .infocard h3{margin:0 0 12px;font-size:15px}
   .field{display:flex;gap:10px;padding:8px 0;border-bottom:1px dashed var(--line);font-size:13.5px}
-  .field:last-child{border-bottom:none}
-  .field .k{color:var(--muted);width:120px;flex-shrink:0}
+  .field:last-child{border-bottom:none}.field .k{color:var(--muted);width:118px;flex-shrink:0}
   .tag{display:inline-block;background:var(--brand-soft);color:var(--brand);font-size:12px;padding:3px 9px;border-radius:7px;margin:2px 4px 2px 0}
   .memo li{margin:7px 0;font-size:13.5px;color:#3a3f4d}
   .metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-  .metric{background:#fafafe;border:1px solid var(--line);border-radius:12px;padding:14px}
-  .metric .val{font-size:21px;font-weight:700}
-  .metric .lbl{font-size:12px;color:var(--muted)}
+  .metric{background:#fafafe;border:1px solid var(--line);border-radius:12px;padding:13px}
+  .metric .val{font-size:20px;font-weight:700}.metric .lbl{font-size:12px;color:var(--muted)}
+
+  /* Kanban */
+  .kanban{display:flex;gap:13px;overflow-x:auto;padding-bottom:8px}
+  .kcol{flex:0 0 230px;background:#f7f7fc;border:1px solid var(--line);border-radius:14px;padding:11px}
+  .kcol h4{margin:2px 4px 10px;font-size:12.5px;display:flex;align-items:center;justify-content:space-between}
+  .kcol h4 .c{font-size:11px;color:var(--muted);background:#fff;border:1px solid var(--line);border-radius:999px;padding:1px 7px}
+  .kcard{background:#fff;border:1px solid var(--line);border-radius:11px;padding:11px 12px;margin-bottom:9px;box-shadow:0 2px 5px -3px rgba(0,0,0,.15)}
+  .kcard .cli{font-size:11.5px;color:var(--muted);font-weight:600}
+  .kcard .ttl{font-size:13.5px;font-weight:600;margin:3px 0 7px}
+  .kcard .ft{display:flex;align-items:center;justify-content:space-between;font-size:11.5px;color:var(--muted)}
+
+  /* Gantt */
+  .ganttwrap{background:#fff;border:1px solid var(--line);border-radius:15px;overflow:auto}
+  .gantt{min-width:760px}
+  .grow{display:grid;grid-template-columns:170px 1fr;border-bottom:1px solid var(--line)}
+  .grow:last-child{border-bottom:none}
+  .glabel{padding:9px 13px;font-size:12.5px;font-weight:600;border-right:1px solid var(--line);position:sticky;left:0;background:#fff;z-index:1}
+  .glabel small{display:block;color:var(--muted);font-weight:500;font-size:11px}
+  .gdays{display:grid;grid-template-columns:repeat(31,1fr);position:relative}
+  .gdays.head .gd{font-size:10px;color:var(--muted);text-align:center;padding:6px 0;border-right:1px solid #f0f0f5}
+  .gcell{border-right:1px solid #f5f5f9;min-height:34px}
+  .gbar{margin:7px 2px;height:20px;border-radius:6px;font-size:10.5px;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;overflow:hidden}
+  .gbar.todo{background:#f59e0b}.gbar.proc{background:#8155ff}.gbar.review{background:#3b82f6}.gbar.chg{background:#e11d48}.gbar.pub{background:#65a30d}.gbar.published{background:#16151c}
+  .ghead{display:grid;grid-template-columns:170px 1fr;border-bottom:1px solid var(--line);background:#fafafe}
+  .ghead .glabel{background:#fafafe;font-size:11px;text-transform:uppercase;color:var(--muted)}
+
+  .empty{padding:30px;text-align:center;color:var(--muted);font-size:14px}
   .hidden{display:none}
 
-  @media(max-width:900px){.split{grid-template-columns:1fr}.side{display:none}.kpis{grid-template-columns:repeat(2,1fr)}.metrics{grid-template-columns:repeat(2,1fr)}}
-  @media(max-width:700px){.tablecard{overflow-x:auto}table{min-width:720px}}
+  /* Modal */
+  .overlay{position:fixed;inset:0;background:rgba(15,14,20,.55);display:none;align-items:flex-start;justify-content:center;z-index:50;padding:40px 16px;overflow:auto}
+  .overlay.open{display:flex}
+  .modal{background:#fff;border-radius:18px;width:560px;max-width:100%;padding:24px 26px;box-shadow:0 30px 60px -20px rgba(0,0,0,.5)}
+  .modal h3{margin:0 0 4px;font-size:19px}
+  .modal .msub{color:var(--muted);font-size:13px;margin:0 0 18px}
+  .frow{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+  .f{display:flex;flex-direction:column;gap:5px}
+  .f.full{grid-column:1 / -1}
+  .f label{font-size:12px;font-weight:600;color:#4a4f5e}
+  .f input,.f select,.f textarea{border:1px solid var(--line);border-radius:9px;padding:9px 11px;font-size:13.5px;font-family:inherit}
+  .f textarea{resize:vertical;min-height:54px}
+  .modactions{display:flex;justify-content:flex-end;gap:10px;margin-top:8px}
+  .mbtn{border:none;border-radius:10px;padding:10px 18px;font-size:13.5px;font-weight:600;cursor:pointer}
+  .mbtn.cancel{background:#f0f0f5;color:#4a4f5e}
+  .mbtn.save{background:var(--brand);color:#fff}
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:#16151c;color:#fff;padding:12px 20px;border-radius:12px;font-size:13.5px;opacity:0;transition:.25s;z-index:60}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  @media(max-width:920px){.side{display:none}.split{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}.metrics{grid-template-columns:repeat(2,1fr)}.frow{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -129,11 +176,23 @@
 
   <aside class="side">
     <div class="logo"><span class="mark">A</span> AdsOS</div>
-    <div class="navlabel">Vistas</div>
+    <div class="addbtns">
+      <button class="addbtn primary" onclick="openActModal()">+ Nueva actividad</button>
+      <button class="addbtn ghost" onclick="openCliModal()">+ Nuevo cliente</button>
+    </div>
+    <div class="navlabel">Operación</div>
     <nav class="nav" id="nav">
-      <a data-view="general" class="active"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg> Panel general</a>
-      <a data-view="persona"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg> Por persona</a>
-      <a data-view="revisar"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 12 2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg> Por revisar</a>
+      <a data-view="inicio" class="active"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/></svg> Inicio</a>
+      <a data-view="actividades"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h12"/></svg> Actividades <span class="ct" id="ct-act">0</span></a>
+      <a data-view="prospectos"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 7v10l8 5 8-5V7z"/></svg> Prospectos <span class="ct" id="ct-pros">0</span></a>
+      <a data-view="equipo"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3.2"/><circle cx="17" cy="9" r="2.6"/><path d="M3 20c0-3.3 2.7-5 6-5s6 1.7 6 5M15.5 20c0-2.3 1.5-3.6 3.5-3.6"/></svg> Equipo</a>
+      <a data-view="revision"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 12 2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg> Revisión <span class="ct" id="ct-rev">0</span></a>
+    </nav>
+    <div class="navlabel">Planeación</div>
+    <nav class="nav" id="nav2">
+      <a data-view="parrilla"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 4v16M15 4v16"/></svg> Parrilla</a>
+      <a data-view="gantt"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h9M4 12h13M4 18h7"/></svg> Gantt general</a>
+      <a data-view="finalizados"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8M3 8l2-4h14l2 4M3 8h18M10 12h4"/></svg> Finalizados <span class="ct" id="ct-fin">0</span></a>
     </nav>
     <a class="back" href="index.html">← Volver a la propuesta</a>
   </aside>
@@ -141,266 +200,593 @@
   <main class="main">
     <div class="topbar">
       <div>
-        <div class="crumb" id="crumb"><span class="home">Panel general</span></div>
-        <h1 id="title">Panel general</h1>
-        <div class="sub" id="subtitle">Todos los clientes y todo lo que está pendiente</div>
+        <div class="crumb" id="crumb"><span class="home">Inicio</span></div>
+        <h1 id="title">Inicio</h1>
+        <div class="sub" id="subtitle">Todos los clientes y su operación activa</div>
       </div>
-      <span class="demo">Vista de ejemplo</span>
+      <div class="date"><div id="today">—</div><div class="demo">Vista de ejemplo</div></div>
     </div>
 
-    <div class="content">
+    <div class="content" id="content">
 
-      <!-- ===== PANEL GENERAL ===== -->
-      <section class="view" id="view-general">
+      <!-- INICIO -->
+      <section class="view" id="view-inicio">
         <div class="kpis">
-          <div class="kpi"><div class="v" id="k-clientes">0</div><div class="l">Clientes activos</div></div>
+          <div class="kpi"><div class="v" id="k-cli">0</div><div class="l">Clientes activos</div></div>
           <div class="kpi"><div class="v todo" id="k-todo">0</div><div class="l">Por hacer</div></div>
-          <div class="kpi"><div class="v review" id="k-review">0</div><div class="l">Por revisar</div></div>
-          <div class="kpi"><div class="v done" id="k-done">0</div><div class="l">Listo esta semana</div></div>
+          <div class="kpi"><div class="v proc" id="k-proc">0</div><div class="l">En proceso</div></div>
+          <div class="kpi"><div class="v review" id="k-rev">0</div><div class="l">Por revisar</div></div>
+          <div class="kpi"><div class="v done" id="k-fin">0</div><div class="l">Finalizadas</div></div>
         </div>
-
-        <div class="section-title"><span class="dot"></span> Clientes <span class="hint">Da clic en un cliente para verlo a detalle</span></div>
+        <div class="section-title"><span class="dot"></span> Clientes <span class="hint">Da clic en un cliente para abrir su portal</span></div>
         <div class="cards" id="client-cards"></div>
-
-        <div class="section-title"><span class="dot"></span> Pendientes de todos los clientes</div>
-        <div class="filters" id="status-filters">
-          <button class="fbtn active" data-f="all">Todos</button>
-          <button class="fbtn" data-f="todo">Por hacer</button>
-          <button class="fbtn" data-f="review">Por revisar</button>
-          <button class="fbtn" data-f="done">Listo</button>
-        </div>
-        <div class="tablecard">
-          <table>
-            <thead><tr><th>Cliente</th><th class="num">Cant.</th><th>Qué</th><th>Especificación</th><th>Quién</th><th>Para cuándo</th><th>Estado</th><th>Link</th></tr></thead>
-            <tbody id="all-rows"></tbody>
-          </table>
-        </div>
       </section>
 
-      <!-- ===== POR PERSONA ===== -->
-      <section class="view hidden" id="view-persona">
+      <!-- ACTIVIDADES (panel madre) -->
+      <section class="view hidden" id="view-actividades">
+        <div class="filters">
+          <select class="fsel" id="f-cuenta"><option value="">Toda cuenta</option><option value="cliente">Cliente</option><option value="prospecto">Prospecto</option></select>
+          <select class="fsel" id="f-acc"></select>
+          <select class="fsel" id="f-tipo"><option value="">Todo tipo</option><option value="parrilla">Parrilla mensual</option><option value="extra">Extra</option><option value="prospecto">Prospecto</option></select>
+          <select class="fsel" id="f-quien"></select>
+          <select class="fsel" id="f-estado"><option value="">Todo estado</option><option value="todo">Por hacer</option><option value="proc">En proceso</option><option value="review">Por revisar</option><option value="cambios">Cambios</option><option value="publicar">Por publicar</option><option value="publicado">Publicado</option></select>
+          <div class="fspacer"></div>
+          <button class="fbtn" id="f-fin" data-on="0">Incluir finalizadas</button>
+        </div>
+        <div class="tablecard"><div class="tablewrap"><table>
+          <thead><tr><th>Cuenta</th><th>Tipo</th><th class="num">Cant.</th><th>Qué</th><th>Responsable</th><th>Para cuándo</th><th>Estado</th><th>Link</th></tr></thead>
+          <tbody id="madre-rows"></tbody>
+        </table></div></div>
+      </section>
+
+      <!-- PROSPECTOS -->
+      <section class="view hidden" id="view-prospectos">
+        <div class="section-title"><span class="dot"></span> Prospectos <span class="hint">Oportunidades que todavía no son cliente</span></div>
+        <div class="cards" id="prospect-cards"></div>
+        <div class="section-title"><span class="dot"></span> Actividades de prospectos</div>
+        <div class="tablecard"><div class="tablewrap"><table>
+          <thead><tr><th>Prospecto</th><th class="num">Cant.</th><th>Qué</th><th>Responsable</th><th>Para cuándo</th><th>Estado</th><th>Link</th></tr></thead>
+          <tbody id="pros-rows"></tbody>
+        </table></div></div>
+      </section>
+
+      <!-- EQUIPO -->
+      <section class="view hidden" id="view-equipo">
         <div class="section-title"><span class="dot"></span> Lo que cada quien tiene asignado</div>
-        <div id="persona-blocks"></div>
+        <div id="equipo-blocks"></div>
       </section>
 
-      <!-- ===== POR REVISAR ===== -->
-      <section class="view hidden" id="view-revisar">
-        <div class="section-title"><span class="dot"></span> Entregas con link, listas para revisión interna</div>
-        <div class="tablecard">
-          <table>
-            <thead><tr><th>Cliente</th><th class="num">Cant.</th><th>Qué</th><th>Especificación</th><th>Quién</th><th>Para cuándo</th><th>Link</th></tr></thead>
-            <tbody id="revisar-rows"></tbody>
-          </table>
+      <!-- REVISIÓN -->
+      <section class="view hidden" id="view-revision">
+        <div class="section-title"><span class="dot"></span> Por revisar antes de enviar al cliente</div>
+        <div class="tablecard"><div class="tablewrap"><table>
+          <thead><tr><th>Cuenta</th><th>Tipo</th><th class="num">Cant.</th><th>Qué</th><th>Responsable</th><th>Para cuándo</th><th>Link</th></tr></thead>
+          <tbody id="rev-rows"></tbody>
+        </table></div></div>
+      </section>
+
+      <!-- PARRILLA -->
+      <section class="view hidden" id="view-parrilla">
+        <div class="filters">
+          <span style="font-size:13px;color:var(--muted);font-weight:600">Cliente:</span>
+          <select class="fsel" id="p-cli"></select>
+          <div class="fspacer"></div>
+          <span style="font-size:12.5px;color:var(--muted)">Vista de la estratega · Julio 2026</span>
+        </div>
+        <div class="kanban" id="kanban"></div>
+      </section>
+
+      <!-- GANTT GENERAL -->
+      <section class="view hidden" id="view-gantt">
+        <div class="filters">
+          <select class="fsel" id="g-cli"><option value="">Todos los clientes</option></select>
+          <div class="fspacer"></div>
+          <span style="font-size:12.5px;color:var(--muted)">Parrilla mensual · Julio 2026</span>
+        </div>
+        <div class="ganttwrap"><div class="gantt" id="gantt"></div></div>
+        <div style="margin-top:12px;font-size:12.5px;color:var(--muted)">
+          Leyenda:
+          <span class="pill todo">Por hacer</span>
+          <span class="pill proc">En proceso</span>
+          <span class="pill review">Por revisar</span>
+          <span class="pill chg">Cambios</span>
+          <span class="pill pub">Por publicar</span>
+          <span class="pill published">Publicado</span>
         </div>
       </section>
 
-      <!-- ===== DETALLE DE CLIENTE ===== -->
+      <!-- FINALIZADOS -->
+      <section class="view hidden" id="view-finalizados">
+        <div class="section-title"><span class="dot"></span> Histórico · nada se pierde</div>
+        <div class="tablecard"><div class="tablewrap"><table>
+          <thead><tr><th>Cuenta</th><th>Tipo</th><th class="num">Cant.</th><th>Qué</th><th>Responsable</th><th>Finalizó</th><th>Link</th></tr></thead>
+          <tbody id="fin-rows"></tbody>
+        </table></div></div>
+      </section>
+
+      <!-- PORTAL DEL CLIENTE -->
       <section class="view hidden" id="view-cliente">
         <div class="detail-head" id="detail-head"></div>
-        <div class="section-title"><span class="dot"></span> Entregables en curso</div>
-        <div class="tablecard">
-          <table>
-            <thead><tr><th class="num">Cant.</th><th>Qué</th><th>Especificación</th><th>Quién</th><th>Para cuándo</th><th>Estado</th><th>Link</th></tr></thead>
-            <tbody id="cliente-rows"></tbody>
-          </table>
+        <div class="tabs" id="ptabs">
+          <button class="tab active" data-pt="entregables">Entregables</button>
+          <button class="tab" data-pt="brief">Brief</button>
+          <button class="tab" data-pt="parrilla">Parrilla</button>
+          <button class="tab" data-pt="extras">Extras</button>
+          <button class="tab" data-pt="gantt">Gantt</button>
+          <button class="tab" data-pt="finalizados">Finalizados</button>
         </div>
-        <div class="split">
-          <div class="infocard" id="cliente-info"></div>
-          <div>
-            <div class="infocard" id="cliente-memo"></div>
-            <div class="infocard" id="cliente-pauta" style="margin-top:20px"></div>
+
+        <div class="ptab active" id="pt-entregables">
+          <div class="filters" id="cli-filters">
+            <button class="fbtn active" data-cf="all">Todo</button>
+            <button class="fbtn" data-cf="parrilla">Parrilla</button>
+            <button class="fbtn" data-cf="extra">Extras</button>
+            <button class="fbtn" data-cf="todo">Por hacer</button>
+            <button class="fbtn" data-cf="proc">En proceso</button>
+            <button class="fbtn" data-cf="review">Por revisar</button>
           </div>
+          <div class="tablecard"><div class="tablewrap"><table>
+            <thead><tr><th>Tipo</th><th class="num">Cant.</th><th>Qué</th><th>Responsable</th><th>Para cuándo</th><th>Estado</th><th>Link</th></tr></thead>
+            <tbody id="cli-rows"></tbody>
+          </table></div></div>
         </div>
-        <div class="section-title"><span class="dot"></span> Métricas básicas del mes</div>
-        <div class="metrics" id="cliente-metrics"></div>
+
+        <div class="ptab" id="pt-brief">
+          <div class="split">
+            <div class="infocard" id="cli-info"></div>
+            <div>
+              <div class="infocard" id="cli-memo"></div>
+              <div class="infocard" id="cli-pauta" style="margin-top:18px"></div>
+            </div>
+          </div>
+          <div class="section-title"><span class="dot"></span> Métricas básicas del mes</div>
+          <div class="metrics" id="cli-metrics"></div>
+        </div>
+
+        <div class="ptab" id="pt-parrilla">
+          <div class="tablecard"><div class="tablewrap"><table>
+            <thead><tr><th class="num">Cant.</th><th>Qué</th><th>Formato</th><th>Plataforma</th><th>Publica</th><th>Responsable</th><th>Estado</th><th>Link</th></tr></thead>
+            <tbody id="cli-parrilla-rows"></tbody>
+          </table></div></div>
+        </div>
+
+        <div class="ptab" id="pt-extras">
+          <div class="tablecard"><div class="tablewrap"><table>
+            <thead><tr><th class="num">Cant.</th><th>Qué</th><th>Responsable</th><th>Para cuándo</th><th>Estado</th><th>Link</th></tr></thead>
+            <tbody id="cli-extras-rows"></tbody>
+          </table></div></div>
+        </div>
+
+        <div class="ptab" id="pt-gantt">
+          <div class="ganttwrap"><div class="gantt" id="cli-gantt"></div></div>
+        </div>
+
+        <div class="ptab" id="pt-finalizados">
+          <div class="tablecard"><div class="tablewrap"><table>
+            <thead><tr><th>Tipo</th><th class="num">Cant.</th><th>Qué</th><th>Responsable</th><th>Finalizó</th><th>Link</th></tr></thead>
+            <tbody id="cli-fin-rows"></tbody>
+          </table></div></div>
+        </div>
       </section>
 
     </div>
   </main>
 </div>
 
+<!-- Modal Nueva actividad -->
+<div class="overlay" id="ov-act">
+  <div class="modal">
+    <h3>+ Nueva actividad</h3>
+    <p class="msub">Si se pidió, se registra. Cae directo en la base madre.</p>
+    <div class="frow">
+      <div class="f"><label>Cuenta</label><select id="m-cuenta" onchange="syncAccSelect()"><option value="cliente">Cliente</option><option value="prospecto">Prospecto</option></select></div>
+      <div class="f"><label>Nombre</label><select id="m-acc"></select></div>
+    </div>
+    <div class="frow">
+      <div class="f"><label>Tipo de actividad</label><select id="m-tipo"><option value="parrilla">Parrilla mensual</option><option value="extra">Extra</option><option value="prospecto">Prospecto</option></select></div>
+      <div class="f"><label>Cantidad</label><input id="m-cant" type="number" value="1" min="1"></div>
+    </div>
+    <div class="frow">
+      <div class="f full"><label>Qué</label><input id="m-que" placeholder="Ej. Artes parrilla julio"></div>
+    </div>
+    <div class="frow">
+      <div class="f"><label>Quién</label><select id="m-quien"></select></div>
+      <div class="f"><label>Para cuándo</label><input id="m-due" placeholder="Ej. Viernes"></div>
+    </div>
+    <div class="frow">
+      <div class="f"><label>Estado</label><select id="m-estado"><option value="todo">Por hacer</option><option value="proc">En proceso</option><option value="review">Por revisar</option></select></div>
+      <div class="f"><label>Link</label><input id="m-link" placeholder="(opcional)"></div>
+    </div>
+    <div class="frow"><div class="f full"><label>Detalles</label><textarea id="m-det" placeholder="Carpeta, material base, indicación del cliente, notas internas…"></textarea></div></div>
+    <div class="modactions">
+      <button class="mbtn cancel" onclick="closeModal('ov-act')">Cancelar</button>
+      <button class="mbtn save" onclick="saveActivity()">Registrar actividad</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Nuevo cliente -->
+<div class="overlay" id="ov-cli">
+  <div class="modal">
+    <h3>+ Nuevo cliente</h3>
+    <p class="msub">Al crearlo se genera su portal. Una sola forma oficial del nombre, sin duplicados.</p>
+    <div class="frow">
+      <div class="f"><label>Nombre oficial</label><input id="c-name" placeholder="Ej. Auren"></div>
+      <div class="f"><label>Giro / rol</label><input id="c-role" placeholder="Ej. Salud empresarial"></div>
+    </div>
+    <div class="frow">
+      <div class="f full"><label>Qué hace</label><input id="c-que" placeholder="A qué se dedica el cliente"></div>
+    </div>
+    <div class="frow">
+      <div class="f"><label>Redes</label><input id="c-redes" placeholder="Instagram · LinkedIn…"></div>
+      <div class="f"><label>Tono</label><input id="c-tono" placeholder="Cercano, claro…"></div>
+    </div>
+    <div class="modactions">
+      <button class="mbtn cancel" onclick="closeModal('ov-cli')">Cancelar</button>
+      <button class="mbtn save" onclick="saveClient()">Crear cliente</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
 <script>
-  // ===== Datos de ejemplo =====
+  // ===== Personas =====
   const people = {
-    DG:{n:"Diego",c:"#8155ff"}, SF:{n:"Sofía",c:"#e0457a"},
+    AN:{n:"Ana",c:"#16151c"}, DG:{n:"Diego",c:"#8155ff"}, SF:{n:"Sofía",c:"#e0457a"},
     MR:{n:"Mariana",c:"#10b981"}, LP:{n:"Luis",c:"#f59e0b"}
   };
-  const clients = [
-    {id:"auren", name:"Auren", role:"Salud empresarial", color:"#8155ff", ini:"AU",
-      info:{ "Qué hace":"Servicios de salud y bienestar para empresas.",
-             "Redes":"Instagram · LinkedIn · Facebook",
-             "Objetivo":"Generar agendas para CheckUp Empresarial.",
-             "Tono":"Cercano, claro, profesional. Nada alarmista.",
-             "Identidad":["Azul Auren","Tipografía Poppins","Logo sobre fondo claro"],
-             "Links":"Drive · Identidad · Parrilla" },
-      memo:["No usar letras pequeñas; el texto debe quedar legible.","Evitar diseños saturados.","Respetar la identidad visual y el azul de marca.","Cuidar el tono: cercano, sin sonar alarmista.","Les gustó la parrilla de mayo con fotos reales del equipo.","Revisar siempre el logo en fondos oscuros."],
-      pauta:{ "Campaña":"CheckUp Empresarial","Periodo":"Jun 1 – Jun 30","Objetivo":"Leads / mensajes" },
-      metrics:[["128","Leads / mensajes"],["$18.4k","Inversión en pauta"],["4.2%","Interacción"],["+12%","vs. mes anterior"]] },
-    {id:"utng", name:"UTNG", role:"Educación", color:"#e0457a", ini:"UT",
-      info:{ "Qué hace":"Universidad tecnológica del norte.",
-             "Redes":"Instagram · TikTok · Facebook",
-             "Objetivo":"Inscripciones para el ciclo de julio.",
-             "Tono":"Juvenil, motivador, claro.",
-             "Identidad":["Magenta UTNG","Tipografía Montserrat","Uso de fotos de campus"],
-             "Links":"Drive · Identidad · Parrilla" },
-      memo:["Evitar textos largos en artes.","Usar fotos reales del campus.","Mantener el magenta de marca.","Les funcionó bien el formato reel testimonial."],
-      pauta:{ "Campaña":"Inscripciones julio","Periodo":"Jun 5 – Jul 15","Objetivo":"Tráfico al sitio" },
-      metrics:[["340","Clics al sitio"],["$22.0k","Inversión en pauta"],["5.1%","Interacción"],["+8%","vs. mes anterior"]] },
-    {id:"verde", name:"Verde Raíz", role:"Alimentos", color:"#10b981", ini:"VR",
-      info:{ "Qué hace":"Marca de alimentos orgánicos.",
-             "Redes":"Instagram · Facebook",
-             "Objetivo":"Posicionar la nueva línea orgánica.",
-             "Tono":"Natural, cálido, honesto.",
-             "Identidad":["Verde y crema","Tipografía serif suave","Fotografía de producto real"],
-             "Links":"Drive · Identidad · Parrilla" },
-      memo:["Cuidar que los colores se vean naturales, no saturados.","No usar stock genérico de comida.","Mantener el tono honesto, sin promesas exageradas."],
-      pauta:{ "Campaña":"Lanzamiento línea orgánica","Periodo":"Jun 10 – Jul 10","Objetivo":"Reconocimiento" },
-      metrics:[["96","Mensajes","" ],["$9.8k","Inversión en pauta"],["3.7%","Interacción"],["+5%","vs. mes anterior"]] },
-    {id:"nexa", name:"Nexa", role:"Inmobiliaria", color:"#f59e0b", ini:"NX",
-      info:{ "Qué hace":"Desarrolladora inmobiliaria.",
-             "Redes":"Instagram · Facebook · LinkedIn",
-             "Objetivo":"Preventa de torre norte.",
-             "Tono":"Aspiracional, sobrio, confiable.",
-             "Identidad":["Dorado y gris","Tipografía elegante","Renders de alta calidad"],
-             "Links":"Drive · Identidad · Parrilla" },
-      memo:["Usar solo renders aprobados.","Cuidar la legibilidad de precios.","Mantener el tono sobrio, sin saturar de texto."],
-      pauta:{ "Campaña":"Preventa torre norte","Periodo":"May 20 – Jun 20","Objetivo":"Mensajes" },
-      metrics:[["54","Mensajes"],["$15.2k","Inversión en pauta"],["2.9%","Interacción"],["−3%","vs. mes anterior"]] }
+  // ===== Cuentas =====
+  let clients = [
+    {id:"auren",name:"Auren",role:"Salud empresarial",color:"#8155ff",ini:"AU",
+      info:{"Qué hace":"Salud y bienestar para empresas.","Redes":"Instagram · LinkedIn · Facebook","Objetivo":"Agendas para CheckUp Empresarial.","Tono":"Cercano, claro, profesional. Nada alarmista.","Identidad":["Azul Auren","Poppins","Logo en fondo claro"],"Links":"Drive · Identidad · Parrilla"},
+      memo:["No usar letras pequeñas.","Evitar diseños saturados.","Respetar el azul de marca.","Tono cercano, sin alarmar.","Les gustó la parrilla de mayo con fotos reales.","Revisar el logo en fondos oscuros."],
+      pauta:{"Campaña":"CheckUp Empresarial","Periodo":"Jun 1 – Jun 30","Objetivo":"Leads / mensajes"},
+      metrics:[["128","Leads / mensajes"],["$18.4k","Inversión"],["4.2%","Interacción"],["+12%","vs. mes anterior"]]},
+    {id:"utng",name:"UTNG",role:"Educación",color:"#e0457a",ini:"UT",
+      info:{"Qué hace":"Universidad tecnológica del norte.","Redes":"Instagram · TikTok · Facebook","Objetivo":"Inscripciones ciclo julio.","Tono":"Juvenil, motivador, claro.","Identidad":["Magenta UTNG","Montserrat","Fotos de campus"],"Links":"Drive · Identidad · Parrilla"},
+      memo:["Evitar textos largos en artes.","Usar fotos reales del campus.","Mantener el magenta de marca.","Funcionó el reel testimonial."],
+      pauta:{"Campaña":"Inscripciones julio","Periodo":"Jun 5 – Jul 15","Objetivo":"Tráfico al sitio"},
+      metrics:[["340","Clics al sitio"],["$22.0k","Inversión"],["5.1%","Interacción"],["+8%","vs. mes anterior"]]},
+    {id:"verde",name:"Verde Raíz",role:"Alimentos",color:"#10b981",ini:"VR",
+      info:{"Qué hace":"Alimentos orgánicos.","Redes":"Instagram · Facebook","Objetivo":"Posicionar la línea orgánica.","Tono":"Natural, cálido, honesto.","Identidad":["Verde y crema","Serif suave","Producto real"],"Links":"Drive · Identidad · Parrilla"},
+      memo:["Colores naturales, no saturados.","No usar stock genérico de comida.","Tono honesto, sin exagerar."],
+      pauta:{"Campaña":"Lanzamiento orgánico","Periodo":"Jun 10 – Jul 10","Objetivo":"Reconocimiento"},
+      metrics:[["96","Mensajes"],["$9.8k","Inversión"],["3.7%","Interacción"],["+5%","vs. mes anterior"]]},
+    {id:"nexa",name:"Nexa",role:"Inmobiliaria",color:"#f59e0b",ini:"NX",
+      info:{"Qué hace":"Desarrolladora inmobiliaria.","Redes":"Instagram · Facebook · LinkedIn","Objetivo":"Preventa torre norte.","Tono":"Aspiracional, sobrio, confiable.","Identidad":["Dorado y gris","Tipografía elegante","Renders de calidad"],"Links":"Drive · Identidad · Parrilla"},
+      memo:["Usar solo renders aprobados.","Cuidar legibilidad de precios.","Tono sobrio, sin saturar."],
+      pauta:{"Campaña":"Preventa torre norte","Periodo":"May 20 – Jun 20","Objetivo":"Mensajes"},
+      metrics:[["54","Mensajes"],["$15.2k","Inversión"],["2.9%","Interacción"],["−3%","vs. mes anterior"]]}
   ];
-  // Actividades: cli, qty, que, espec, who, due, status(todo|review|done), link
-  const acts = [
-    ["auren",1,"Brief","CheckUp Empresarial","DG","Hoy","todo",false],
-    ["auren",4,"Artes","Parrilla julio","DG","Viernes","todo",false],
-    ["auren",3,"Copies","Parrilla julio","SF","Viernes","review",true],
-    ["auren",1,"Investigación","Tendencias salud laboral","MR","Martes","review",true],
-    ["auren",2,"Ajustes","Banner campaña","DG","Lunes","done",true],
-    ["utng",5,"Artes","Parrilla julio","SF","Viernes","review",true],
-    ["utng",1,"Video","Reel testimonial","SF","Miércoles","todo",false],
-    ["utng",2,"Copies","Parrilla julio","SF","Viernes","todo",false],
-    ["utng",1,"Reporte","Cierre quincenal","LP","Lunes","done",true],
-    ["verde",3,"Copies","Lanzamiento línea orgánica","MR","Jueves","review",true],
-    ["verde",2,"Artes","Lanzamiento línea orgánica","MR","Viernes","todo",false],
-    ["verde",1,"Brief","Sesión de producto","MR","Miércoles","done",true],
-    ["nexa",2,"Ajustes","Fichas de propiedades","DG","Miércoles","review",true],
-    ["nexa",1,"Reporte","Cierre mensual junio","LP","Lunes","done",true],
-    ["nexa",3,"Artes","Preventa torre norte","LP","Viernes","todo",false]
+  let prospects = [
+    {id:"lumo",name:"Lumo",role:"App de bienestar",color:"#0ea5e9",ini:"LU"},
+    {id:"sierra",name:"Café Sierra",role:"Cafetería de especialidad",color:"#a16207",ini:"CS"}
   ];
-  const STAT = {todo:["Por hacer","todo"],review:["Por revisar","review"],done:["Listo","done"]};
 
-  const el = id => document.getElementById(id);
-  const whoCell = code => `<div class="who"><span class="a" style="background:${people[code].c}">${code}</span>${people[code].n}</div>`;
-  const pill = s => `<span class="pill ${STAT[s][1]}">${STAT[s][0]}</span>`;
-  const linkCell = has => has ? '<a class="lk" href="#">Link</a>' : '<span class="dash">—</span>';
-  const cliName = id => clients.find(c=>c.id===id).name;
-
-  // KPIs
-  function renderKpis(){
-    el('k-clientes').textContent = clients.length;
-    el('k-todo').textContent = acts.filter(a=>a[6]==='todo').length;
-    el('k-review').textContent = acts.filter(a=>a[6]==='review').length;
-    el('k-done').textContent = acts.filter(a=>a[6]==='done').length;
+  // ===== Actividades =====
+  // {id,cuenta,acc,tipo,cant,que,formato,plat,pub,quien,due,estado,det,link,fin,reg,regPor,finPor,finFecha}
+  let _uid=0; function uid(){return 'a'+(++_uid);}
+  let acts = [
+    // Auren parrilla
+    a("cliente","auren","parrilla",1,"Arte aniversario","Post","Instagram",3,"DG","Mar 2","review","Carpeta julio","y"),
+    a("cliente","auren","parrilla",1,"Reel tip de salud","Reel","Instagram",7,"SF","Jue 4","proc","Guion listo","n"),
+    a("cliente","auren","parrilla",3,"Carrusel beneficios","Carrusel","Instagram",11,"DG","Vie 5","todo","",""),
+    a("cliente","auren","parrilla",1,"Post testimonio","Post","Facebook",16,"SF","Mar 9","cambios","Cambiar foto","y"),
+    a("cliente","auren","parrilla",1,"Arte cierre de mes","Post","Instagram",29,"DG","Lun 22","todo","",""),
+    // Auren extra
+    a("cliente","auren","extra",1,"Brief CheckUp Empresarial","","",0,"DG","Hoy","todo","Insumos del cliente",""),
+    a("cliente","auren","extra",1,"Investigación salud laboral","","",0,"MR","Mar","review","Fuentes recabadas","y"),
+    // UTNG parrilla
+    a("cliente","utng","parrilla",5,"Artes inscripciones","Post","Instagram",4,"SF","Vie 5","review","Parrilla julio","y"),
+    a("cliente","utng","parrilla",1,"Reel testimonial","Reel","TikTok",9,"SF","Mié 8","proc","Grabado, falta edición","n"),
+    a("cliente","utng","parrilla",2,"Stories campus","Story","Instagram",14,"MR","Lun 11","todo","",""),
+    a("cliente","utng","parrilla",1,"Post fechas clave","Post","Facebook",21,"SF","Lun 18","publicar","Aprobado por cliente","y"),
+    // UTNG extra
+    a("cliente","utng","extra",1,"Reporte quincenal","","",0,"LP","Lun","review","Datos de pauta","y"),
+    // Verde parrilla
+    a("cliente","verde","parrilla",3,"Copies lanzamiento","Copy","Instagram",6,"MR","Jue 4","review","Tono honesto","y"),
+    a("cliente","verde","parrilla",2,"Artes producto","Post","Instagram",12,"MR","Vie 5","todo","Sesión pendiente",""),
+    a("cliente","verde","parrilla",1,"Post receta","Post","Facebook",24,"MR","Mié 20","proc","Foto lista","n"),
+    // Nexa parrilla
+    a("cliente","nexa","parrilla",1,"Render torre norte","Post","Instagram",8,"LP","Mar 7","publicado","Publicado","y"),
+    a("cliente","nexa","parrilla",3,"Artes preventa","Post","Facebook",15,"LP","Vie 12","todo","",""),
+    a("cliente","nexa","extra",2,"Ajustes fichas","","",0,"DG","Mié","review","Precios actualizados","y"),
+    a("cliente","nexa","extra",1,"Reporte mensual junio","","",0,"LP","Lun","done","Cerrado","y"),
+    // Prospectos
+    a("prospecto","lumo","prospecto",1,"Propuesta comercial","","",0,"AN","Jue","proc","Borrador v2","n"),
+    a("prospecto","lumo","prospecto",1,"Investigación de mercado","","",0,"MR","Lun","review","Benchmark listo","y"),
+    a("prospecto","sierra","prospecto",1,"Presentación de servicios","","",0,"AN","Vie","todo","",""),
+    // una finalizada de cliente
+    af("cliente","verde","extra",1,"Brief sesión de producto","MR","y","SF")
+  ];
+  function a(cuenta,acc,tipo,cant,que,formato,plat,pub,quien,due,estado,det,link){
+    return {id:uid(),cuenta,acc,tipo,cant,que,formato,plat,pub,quien,due,estado,det,link:link==='y',fin:false,reg:"2026-06-02",regPor:"AN"};
   }
-  // Tarjetas de clientes
+  function af(cuenta,acc,tipo,cant,que,quien,link,finPor){
+    return {id:uid(),cuenta,acc,tipo,cant,que,formato:"",plat:"",pub:0,quien,due:"—",estado:"done",det:"",link:link==='y',fin:true,reg:"2026-05-20",regPor:"AN",finPor,finFecha:"2026-05-29"};
+  }
+
+  // ===== Estados =====
+  const EST={todo:["Por hacer","todo"],proc:["En proceso","proc"],review:["Por revisar","review"],cambios:["Cambios","chg"],publicar:["Por publicar","pub"],publicado:["Publicado","published"],done:["Finalizado","done"]};
+  const TIPO={parrilla:"Parrilla mensual",extra:"Extra",prospecto:"Prospecto"};
+  // estados que cuentan como "activo" en tarjetas (no finalizado ni publicado)
+  const ACTIVE=["todo","proc","review","cambios","publicar"];
+
+  const el=id=>document.getElementById(id);
+  const accName=id=>{const c=clients.find(x=>x.id===id);if(c)return c.name;const p=prospects.find(x=>x.id===id);return p?p.name:id;};
+  const accObj=id=>clients.find(x=>x.id===id)||prospects.find(x=>x.id===id);
+  const who=code=>`<div class="who"><span class="a" style="background:${people[code].c}">${code}</span>${people[code].n}</div>`;
+  const pill=s=>`<span class="pill ${EST[s][1]}">${EST[s][0]}</span>`;
+  const tipoTag=t=>`<span class="tipo ${t}">${TIPO[t]}</span>`;
+  const linkCell=h=>h?'<a class="lk" href="#">Link</a>':'<span class="dash">—</span>';
+  const bucket=s=>s==='todo'?'todo':s==='proc'?'proc':(s==='review'||s==='cambios'||s==='publicar')?'review':null;
+
+  // ===== KPIs + counters =====
+  function counts(){
+    const active=acts.filter(a=>!a.fin && a.estado!=='publicado');
+    return {
+      cli:clients.length,
+      todo:active.filter(a=>bucket(a.estado)==='todo').length,
+      proc:active.filter(a=>bucket(a.estado)==='proc').length,
+      rev:active.filter(a=>bucket(a.estado)==='review').length,
+      fin:acts.filter(a=>a.fin).length,
+      act:acts.filter(a=>!a.fin).length,
+      pros:prospects.length,
+      review:acts.filter(a=>!a.fin && a.estado==='review').length
+    };
+  }
+  function renderCounters(){
+    const c=counts();
+    el('k-cli').textContent=c.cli; el('k-todo').textContent=c.todo; el('k-proc').textContent=c.proc; el('k-rev').textContent=c.rev; el('k-fin').textContent=c.fin;
+    el('ct-act').textContent=c.act; el('ct-pros').textContent=c.pros; el('ct-rev').textContent=c.review; el('ct-fin').textContent=c.fin;
+  }
+
+  // ===== INICIO: tarjetas =====
   function renderCards(){
-    el('client-cards').innerHTML = clients.map(c=>{
-      const mine = acts.filter(a=>a[0]===c.id);
-      const t=mine.filter(a=>a[6]==='todo').length, r=mine.filter(a=>a[6]==='review').length, d=mine.filter(a=>a[6]==='done').length;
+    el('client-cards').innerHTML=clients.map(c=>{
+      const mine=acts.filter(a=>a.acc===c.id && !a.fin && a.estado!=='publicado');
+      const t=mine.filter(a=>bucket(a.estado)==='todo').length, p=mine.filter(a=>bucket(a.estado)==='proc').length, r=mine.filter(a=>bucket(a.estado)==='review').length;
       return `<div class="ccard" onclick="openClient('${c.id}')">
         <div class="head"><div class="avatar" style="background:${c.color}">${c.ini}</div>
           <div><div class="name">${c.name}</div><div class="role">${c.role}</div></div></div>
-        <div class="meta">${mine.length} entregables en curso</div>
-        <div class="countpills"><span class="mini todo">${t} por hacer</span><span class="mini review">${r} por revisar</span><span class="mini done">${d} listo</span></div>
-        <div class="open">Ver a detalle →</div>
-      </div>`;
+        <div class="meta">${mine.length} actividades activas</div>
+        <div class="countpills"><span class="mini todo">${t} por hacer</span><span class="mini proc">${p} en proceso</span><span class="mini review">${r} por revisar</span></div>
+        <div class="open">Abrir portal →</div></div>`;
     }).join('');
   }
-  // Tabla general (con filtro)
-  let curFilter='all';
-  function renderAll(){
-    const rows = acts.filter(a=>curFilter==='all'||a[6]===curFilter).map(a=>`
-      <tr><td><a class="clilink" onclick="openClient('${a[0]}')">${cliName(a[0])}</a></td>
-      <td class="num">${a[1]}</td><td>${a[2]}</td><td>${a[3]}</td><td>${whoCell(a[4])}</td>
-      <td>${a[5]}</td><td>${pill(a[6])}</td><td>${linkCell(a[7])}</td></tr>`).join('');
-    el('all-rows').innerHTML = rows;
+
+  // ===== PANEL MADRE =====
+  let madreFin=false;
+  function renderMadre(){
+    const fc=el('f-cuenta').value, fa=el('f-acc').value, ft=el('f-tipo').value, fq=el('f-quien').value, fe=el('f-estado').value;
+    let rows=acts.filter(a=>(madreFin||!a.fin)
+      && (!fc||a.cuenta===fc) && (!fa||a.acc===fa) && (!ft||a.tipo===ft) && (!fq||a.quien===fq) && (!fe||a.estado===fe));
+    el('madre-rows').innerHTML = rows.length? rows.map(a=>`<tr>
+      <td><span class="clilink" onclick="openAcc('${a.acc}','${a.cuenta}')">${accName(a.acc)}</span></td>
+      <td>${tipoTag(a.tipo)}</td><td class="num">${a.cant}</td><td>${a.que}</td>
+      <td>${who(a.quien)}</td><td>${a.due}</td><td>${pill(a.estado)}</td><td>${linkCell(a.link)}</td></tr>`).join('')
+      : '<tr><td colspan="8"><div class="empty">Sin actividades con esos filtros.</div></td></tr>';
   }
-  // Por persona
-  function renderPersona(){
-    el('persona-blocks').innerHTML = Object.keys(people).map(code=>{
-      const mine = acts.filter(a=>a[4]===code);
-      if(!mine.length) return '';
-      const rows = mine.map(a=>`<tr><td><a class="clilink" onclick="openClient('${a[0]}')">${cliName(a[0])}</a></td><td class="num">${a[1]}</td><td>${a[2]}</td><td>${a[3]}</td><td>${a[5]}</td><td>${pill(a[6])}</td></tr>`).join('');
-      return `<div style="margin-bottom:8px"><div class="section-title" style="font-size:14px"><span class="a" style="background:${people[code].c};width:22px;height:22px;border-radius:6px;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center">${code}</span> ${people[code].n}</div>
-        <div class="tablecard" style="margin-bottom:18px"><table><thead><tr><th>Cliente</th><th class="num">Cant.</th><th>Qué</th><th>Especificación</th><th>Para cuándo</th><th>Estado</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+  function fillAccFilter(){
+    el('f-acc').innerHTML='<option value="">Toda cuenta/nombre</option>'+
+      clients.map(c=>`<option value="${c.id}">${c.name}</option>`).join('')+
+      prospects.map(p=>`<option value="${p.id}">${p.name} (prospecto)</option>`).join('');
+    el('f-quien').innerHTML='<option value="">Todos</option>'+Object.keys(people).map(k=>`<option value="${k}">${people[k].n}</option>`).join('');
+  }
+
+  // ===== PROSPECTOS =====
+  function renderProspectos(){
+    el('prospect-cards').innerHTML=prospects.map(p=>{
+      const mine=acts.filter(a=>a.acc===p.id && !a.fin);
+      return `<div class="ccard prospect" onclick="openAcc('${p.id}','prospecto')">
+        <div class="head"><div class="avatar" style="background:${p.color}">${p.ini}</div>
+          <div><div class="name">${p.name}</div><div class="role">${p.role}</div></div></div>
+        <div class="meta">${mine.length} actividades · oportunidad</div>
+        <div class="open">Ver actividades →</div></div>`;
+    }).join('');
+    const rows=acts.filter(a=>a.cuenta==='prospecto'&&!a.fin);
+    el('pros-rows').innerHTML=rows.map(a=>`<tr><td>${accName(a.acc)}</td><td class="num">${a.cant}</td><td>${a.que}</td><td>${who(a.quien)}</td><td>${a.due}</td><td>${pill(a.estado)}</td><td>${linkCell(a.link)}</td></tr>`).join('');
+  }
+
+  // ===== EQUIPO =====
+  function renderEquipo(){
+    el('equipo-blocks').innerHTML=Object.keys(people).map(code=>{
+      const mine=acts.filter(a=>a.quien===code&&!a.fin);
+      if(!mine.length)return '';
+      const rows=mine.map(a=>`<tr><td>${accName(a.acc)}</td><td>${tipoTag(a.tipo)}</td><td class="num">${a.cant}</td><td>${a.que}</td><td>${a.due}</td><td>${pill(a.estado)}</td><td>${linkCell(a.link)}</td></tr>`).join('');
+      return `<div style="margin-bottom:6px"><div class="section-title" style="font-size:14px"><span class="a" style="background:${people[code].c};width:22px;height:22px;border-radius:6px;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center">${code}</span> ${people[code].n} <span class="hint">${mine.length} activas</span></div>
+        <div class="tablecard" style="margin-bottom:18px"><div class="tablewrap"><table><thead><tr><th>Cuenta</th><th>Tipo</th><th class="num">Cant.</th><th>Qué</th><th>Para cuándo</th><th>Estado</th><th>Link</th></tr></thead><tbody>${rows}</tbody></table></div></div></div>`;
     }).join('');
   }
-  // Por revisar
-  function renderRevisar(){
-    const rows = acts.filter(a=>a[6]==='review').map(a=>`<tr><td>${cliName(a[0])}</td><td class="num">${a[1]}</td><td>${a[2]}</td><td>${a[3]}</td><td>${whoCell(a[4])}</td><td>${a[5]}</td><td>${linkCell(true)}</td></tr>`).join('');
-    el('revisar-rows').innerHTML = rows;
+
+  // ===== REVISIÓN =====
+  function renderRevision(){
+    const rows=acts.filter(a=>a.estado==='review'&&!a.fin);
+    el('rev-rows').innerHTML=rows.length?rows.map(a=>`<tr><td><span class="clilink" onclick="openAcc('${a.acc}','${a.cuenta}')">${accName(a.acc)}</span></td><td>${tipoTag(a.tipo)}</td><td class="num">${a.cant}</td><td>${a.que}</td><td>${who(a.quien)}</td><td>${a.due}</td><td>${linkCell(a.link)}</td></tr>`).join('')
+      :'<tr><td colspan="7"><div class="empty">Nada por revisar ahora mismo.</div></td></tr>';
   }
-  // Detalle de cliente
-  function openClient(id){
-    const c = clients.find(x=>x.id===id);
-    const mine = acts.filter(a=>a[0]===id);
-    const t=mine.filter(a=>a[6]==='todo').length, r=mine.filter(a=>a[6]==='review').length, d=mine.filter(a=>a[6]==='done').length;
-    el('detail-head').innerHTML = `<div class="avatar" style="background:${c.color}">${c.ini}</div>
+
+  // ===== PARRILLA (kanban) =====
+  const KCOLS=["todo","proc","review","cambios","publicar","publicado"];
+  function fillParrillaCli(){
+    el('p-cli').innerHTML='<option value="">Todos los clientes</option>'+clients.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+    el('g-cli').innerHTML='<option value="">Todos los clientes</option>'+clients.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+  }
+  function renderKanban(){
+    const cli=el('p-cli').value;
+    const items=acts.filter(a=>a.tipo==='parrilla'&&!a.fin&&(!cli||a.acc===cli));
+    el('kanban').innerHTML=KCOLS.map(s=>{
+      const col=items.filter(a=>a.estado===s);
+      const cards=col.map(a=>`<div class="kcard"><div class="cli">${accName(a.acc)}</div><div class="ttl">${a.cant>1?a.cant+' ':''}${a.que}</div><div class="ft"><span>${a.formato} · ${a.plat}</span><span class="who"><span class="a" style="background:${people[a.quien].c}">${a.quien}</span></span></div></div>`).join('')||'<div style="font-size:12px;color:#b8bac6;padding:6px 4px">—</div>';
+      return `<div class="kcol"><h4>${EST[s][0]} <span class="c">${col.length}</span></h4>${cards}</div>`;
+    }).join('');
+  }
+
+  // ===== GANTT =====
+  const DAYS=31;
+  function ganttRows(items){
+    const head=`<div class="ghead"><div class="glabel">Pieza</div><div class="gdays head">${Array.from({length:DAYS},(_,i)=>`<div class="gd">${i+1}</div>`).join('')}</div></div>`;
+    const rows=items.map(a=>{
+      const cells=Array.from({length:DAYS},(_,i)=>{
+        const d=i+1;
+        if(d===a.pub) return `<div class="gcell"><div class="gbar ${EST[a.estado][1]}">${a.cant>1?a.cant:''}</div></div>`;
+        return '<div class="gcell"></div>';
+      }).join('');
+      return `<div class="grow"><div class="glabel">${a.que}<small>${accName(a.acc)} · ${people[a.quien].n}</small></div><div class="gdays">${cells}</div></div>`;
+    }).join('');
+    return head+(items.length?rows:'<div class="empty">Sin piezas de parrilla este mes.</div>');
+  }
+  function renderGantt(){
+    const cli=el('g-cli').value;
+    const items=acts.filter(a=>a.tipo==='parrilla'&&!a.fin&&a.pub>0&&(!cli||a.acc===cli)).sort((x,y)=>x.pub-y.pub);
+    el('gantt').innerHTML=ganttRows(items);
+  }
+
+  // ===== FINALIZADOS =====
+  function renderFinalizados(){
+    const rows=acts.filter(a=>a.fin);
+    el('fin-rows').innerHTML=rows.length?rows.map(a=>`<tr><td>${accName(a.acc)}</td><td>${tipoTag(a.tipo)}</td><td class="num">${a.cant}</td><td>${a.que}</td><td>${who(a.quien)}</td><td>${a.finPor?people[a.finPor].n:'—'} · ${a.finFecha||''}</td><td>${linkCell(a.link)}</td></tr>`).join('')
+      :'<tr><td colspan="7"><div class="empty">Todavía no hay finalizadas.</div></td></tr>';
+  }
+
+  // ===== PORTAL DEL CLIENTE =====
+  let curClient=null, cliFilter='all';
+  function openClient(id){ openAcc(id,'cliente'); }
+  function openAcc(id,cuenta){
+    if(cuenta==='prospecto'){ // prospecto: lleva a su vista de prospectos enfocada (simple)
+      showView('prospectos'); toast('Prospecto: '+accName(id)); return;
+    }
+    const c=clients.find(x=>x.id===id); if(!c)return;
+    curClient=c; cliFilter='all';
+    const mine=acts.filter(a=>a.acc===id&&!a.fin&&a.estado!=='publicado');
+    const t=mine.filter(a=>bucket(a.estado)==='todo').length,p=mine.filter(a=>bucket(a.estado)==='proc').length,r=mine.filter(a=>bucket(a.estado)==='review').length;
+    el('detail-head').innerHTML=`<div class="avatar" style="background:${c.color}">${c.ini}</div>
       <div><h2>${c.name}</h2><div class="role">${c.role}</div></div>
       <div class="right">
         <div><div class="v" style="color:#b8771a">${t}</div><div class="l">Por hacer</div></div>
+        <div><div class="v" style="color:#6a2bd6">${p}</div><div class="l">En proceso</div></div>
         <div><div class="v" style="color:#1d4ed8">${r}</div><div class="l">Por revisar</div></div>
-        <div><div class="v" style="color:#047857">${d}</div><div class="l">Listo</div></div>
       </div>`;
-    el('cliente-rows').innerHTML = mine.map(a=>`<tr><td class="num">${a[1]}</td><td>${a[2]}</td><td>${a[3]}</td><td>${whoCell(a[4])}</td><td>${a[5]}</td><td>${pill(a[6])}</td><td>${linkCell(a[7])}</td></tr>`).join('');
-    // info
-    el('cliente-info').innerHTML = '<h3>Información del cliente</h3>' + Object.entries(c.info).map(([k,v])=>{
-      const val = Array.isArray(v) ? v.map(x=>`<span class="tag">${x}</span>`).join('') : v;
-      return `<div class="field"><span class="k">${k}</span><span class="v">${val}</span></div>`;
-    }).join('');
-    el('cliente-memo').innerHTML = '<h3>Memoria del cliente</h3><ul class="memo">'+c.memo.map(m=>`<li>${m}</li>`).join('')+'</ul>';
-    el('cliente-pauta').innerHTML = '<h3>Pauta activa</h3>'+Object.entries(c.pauta).map(([k,v])=>`<div class="field"><span class="k">${k}</span><span class="v">${v}</span></div>`).join('');
-    el('cliente-metrics').innerHTML = c.metrics.map(m=>`<div class="metric"><div class="val">${m[0]}</div><div class="lbl">${m[1]}</div></div>`).join('');
-    // mostrar vista
-    showView('cliente', c.name);
+    // brief
+    el('cli-info').innerHTML='<h3>Brief del cliente</h3>'+Object.entries(c.info).map(([k,v])=>{
+      const val=Array.isArray(v)?v.map(x=>`<span class="tag">${x}</span>`).join(''):v;
+      return `<div class="field"><span class="k">${k}</span><span class="v">${val}</span></div>`;}).join('');
+    el('cli-memo').innerHTML='<h3>Memoria del cliente</h3><ul class="memo">'+c.memo.map(m=>`<li>${m}</li>`).join('')+'</ul>';
+    el('cli-pauta').innerHTML='<h3>Pauta activa</h3>'+Object.entries(c.pauta).map(([k,v])=>`<div class="field"><span class="k">${k}</span><span class="v">${v}</span></div>`).join('');
+    el('cli-metrics').innerHTML=c.metrics.map(m=>`<div class="metric"><div class="val">${m[0]}</div><div class="lbl">${m[1]}</div></div>`).join('');
+    renderCliEntregables();
+    // parrilla del cliente
+    const par=acts.filter(a=>a.acc===id&&a.tipo==='parrilla'&&!a.fin);
+    el('cli-parrilla-rows').innerHTML=par.length?par.map(a=>`<tr><td class="num">${a.cant}</td><td>${a.que}</td><td>${a.formato}</td><td>${a.plat}</td><td>Jul ${a.pub}</td><td>${who(a.quien)}</td><td>${pill(a.estado)}</td><td>${linkCell(a.link)}</td></tr>`).join(''):'<tr><td colspan="8"><div class="empty">Sin parrilla cargada.</div></td></tr>';
+    // extras
+    const ex=acts.filter(a=>a.acc===id&&a.tipo==='extra'&&!a.fin);
+    el('cli-extras-rows').innerHTML=ex.length?ex.map(a=>`<tr><td class="num">${a.cant}</td><td>${a.que}</td><td>${who(a.quien)}</td><td>${a.due}</td><td>${pill(a.estado)}</td><td>${linkCell(a.link)}</td></tr>`).join(''):'<tr><td colspan="6"><div class="empty">Sin extras.</div></td></tr>';
+    // gantt cliente
+    el('cli-gantt').innerHTML=ganttRows(par.filter(a=>a.pub>0).sort((x,y)=>x.pub-y.pub));
+    // finalizados cliente
+    const fin=acts.filter(a=>a.acc===id&&a.fin);
+    el('cli-fin-rows').innerHTML=fin.length?fin.map(a=>`<tr><td>${tipoTag(a.tipo)}</td><td class="num">${a.cant}</td><td>${a.que}</td><td>${who(a.quien)}</td><td>${a.finPor?people[a.finPor].n:'—'} · ${a.finFecha||''}</td><td>${linkCell(a.link)}</td></tr>`).join(''):'<tr><td colspan="6"><div class="empty">Sin histórico todavía.</div></td></tr>';
+    setPtab('entregables');
+    showView('cliente',c.name);
+  }
+  function renderCliEntregables(){
+    if(!curClient)return;
+    let mine=acts.filter(a=>a.acc===curClient.id&&!a.fin&&a.estado!=='publicado');
+    if(cliFilter==='parrilla')mine=mine.filter(a=>a.tipo==='parrilla');
+    else if(cliFilter==='extra')mine=mine.filter(a=>a.tipo==='extra');
+    else if(['todo','proc','review'].includes(cliFilter))mine=mine.filter(a=>bucket(a.estado)===cliFilter);
+    el('cli-rows').innerHTML=mine.length?mine.map(a=>`<tr><td>${tipoTag(a.tipo)}</td><td class="num">${a.cant}</td><td>${a.que}</td><td>${who(a.quien)}</td><td>${a.due}</td><td>${pill(a.estado)}</td><td>${linkCell(a.link)}</td></tr>`).join(''):'<tr><td colspan="7"><div class="empty">Sin actividades con ese filtro.</div></td></tr>';
+  }
+  function setPtab(name){
+    document.querySelectorAll('#ptabs .tab').forEach(t=>t.classList.toggle('active',t.dataset.pt===name));
+    document.querySelectorAll('.ptab').forEach(p=>p.classList.toggle('active',p.id==='pt-'+name));
   }
 
-  // Navegación
-  const titles = {
-    general:["Panel general","Todos los clientes y todo lo que está pendiente"],
-    persona:["Por persona","Lo que cada quien tiene asignado"],
-    revisar:["Por revisar","Entregas con link, listas para revisión interna"],
+  // ===== Navegación =====
+  const titles={
+    inicio:["Inicio","Todos los clientes y su operación activa"],
+    actividades:["Actividades","Base madre · todo lo que se registra"],
+    prospectos:["Prospectos","Oportunidades que todavía no son cliente"],
+    equipo:["Equipo","Lo que cada quien tiene asignado"],
+    revision:["Revisión","Todo lo que está por revisar"],
+    parrilla:["Parrilla","Vista de la estratega · mes completo"],
+    gantt:["Gantt general","Carga del mes de todos los clientes"],
+    finalizados:["Finalizados","Histórico · nada se pierde"],
     cliente:["",""]
   };
-  function showView(view, clientName){
+  function showView(view,name){
     document.querySelectorAll('.view').forEach(v=>v.classList.add('hidden'));
     el('view-'+view).classList.remove('hidden');
-    const navItems = document.querySelectorAll('#nav a');
-    navItems.forEach(n=>n.classList.toggle('active', n.dataset.view===view));
+    document.querySelectorAll('.nav a').forEach(n=>n.classList.toggle('active',n.dataset.view===view));
     if(view==='cliente'){
-      el('title').textContent = clientName;
-      el('subtitle').textContent = 'Lo que se está trabajando y lo que se debe cuidar';
-      el('crumb').innerHTML = `<span class="home" onclick="goHome()">Panel general</span> › <b>${clientName}</b>`;
+      el('title').textContent=name; el('subtitle').textContent='Portal del cliente · brief, entregables y parrilla';
+      el('crumb').innerHTML=`<span class="home" onclick="goHome()">Inicio</span> › <b>${name}</b>`;
     }else{
-      el('title').textContent = titles[view][0];
-      el('subtitle').textContent = titles[view][1];
-      el('crumb').innerHTML = `<span class="home" onclick="goHome()">Panel general</span>` + (view!=='general'?` › <b>${titles[view][0]}</b>`:'');
+      el('title').textContent=titles[view][0]; el('subtitle').textContent=titles[view][1];
+      el('crumb').innerHTML=`<span class="home" onclick="goHome()">Inicio</span>`+(view!=='inicio'?` › <b>${titles[view][0]}</b>`:'');
     }
-    el('content')?.scrollTo?.(0,0);
     window.scrollTo(0,0);
   }
-  function goHome(){ showView('general'); }
+  function goHome(){ showView('inicio'); }
 
-  document.getElementById('nav').addEventListener('click', e=>{
-    const a = e.target.closest('a[data-view]'); if(!a) return;
-    e.preventDefault(); showView(a.dataset.view);
-  });
-  document.getElementById('status-filters').addEventListener('click', e=>{
-    const b = e.target.closest('.fbtn'); if(!b) return;
-    document.querySelectorAll('#status-filters .fbtn').forEach(x=>x.classList.remove('active'));
-    b.classList.add('active'); curFilter=b.dataset.f; renderAll();
-  });
+  // ===== Modales =====
+  function openModal(id){el(id).classList.add('open');}
+  function closeModal(id){el(id).classList.remove('open');}
+  function syncAccSelect(){
+    const cuenta=el('m-cuenta').value;
+    const list=cuenta==='cliente'?clients:prospects;
+    el('m-acc').innerHTML=list.map(x=>`<option value="${x.id}">${x.name}</option>`).join('');
+  }
+  function openActModal(){
+    el('m-quien').innerHTML=Object.keys(people).map(k=>`<option value="${k}">${people[k].n}</option>`).join('');
+    syncAccSelect(); openModal('ov-act');
+  }
+  function openCliModal(){ openModal('ov-cli'); }
+  function saveActivity(){
+    const que=el('m-que').value.trim()||'Actividad sin título';
+    const na={id:uid(),cuenta:el('m-cuenta').value,acc:el('m-acc').value,tipo:el('m-tipo').value,
+      cant:parseInt(el('m-cant').value)||1,que,formato:'',plat:'',pub:0,quien:el('m-quien').value,
+      due:el('m-due').value.trim()||'Por definir',estado:el('m-estado').value,det:el('m-det').value.trim(),
+      link:!!el('m-link').value.trim(),fin:false,reg:'2026-06-13',regPor:'AN'};
+    acts.unshift(na);
+    closeModal('ov-act'); el('m-que').value='';el('m-due').value='';el('m-det').value='';el('m-link').value='';
+    renderAll(); toast('Registrada: '+que);
+  }
+  function saveClient(){
+    const name=el('c-name').value.trim(); if(!name){toast('Falta el nombre');return;}
+    if(clients.some(c=>c.name.toLowerCase()===name.toLowerCase())){toast('Ese cliente ya existe (sin duplicados)');return;}
+    const colors=["#8155ff","#e0457a","#10b981","#f59e0b","#0ea5e9","#a855f7","#ef4444"];
+    const c={id:'c'+Date.now(),name,role:el('c-role').value.trim()||'Cliente',color:colors[clients.length%colors.length],
+      ini:name.slice(0,2).toUpperCase(),
+      info:{"Qué hace":el('c-que').value.trim()||'—',"Redes":el('c-redes').value.trim()||'—',"Objetivo":"—","Tono":el('c-tono').value.trim()||'—',"Identidad":["Por definir"],"Links":"—"},
+      memo:["Sin comentarios todavía."],pauta:{"Campaña":"—","Periodo":"—","Objetivo":"—"},
+      metrics:[["—","Leads"],["—","Inversión"],["—","Interacción"],["—","vs. mes ant."]]};
+    clients.push(c);
+    closeModal('ov-cli'); el('c-name').value='';el('c-role').value='';el('c-que').value='';el('c-redes').value='';el('c-tono').value='';
+    renderAll(); fillAccFilter(); fillParrillaCli(); toast('Cliente creado: '+name+' · portal generado');
+  }
+  function toast(msg){const t=el('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),2200);}
 
-  // init
-  renderKpis(); renderCards(); renderAll(); renderPersona(); renderRevisar();
+  // ===== Render maestro =====
+  function renderAll(){
+    renderCounters(); renderCards(); renderMadre(); renderProspectos(); renderEquipo(); renderRevision(); renderKanban(); renderGantt(); renderFinalizados();
+    if(curClient && !el('view-cliente').classList.contains('hidden')) openAcc(curClient.id,'cliente');
+  }
+
+  // ===== Listeners =====
+  document.querySelectorAll('#nav a, #nav2 a').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();showView(a.dataset.view);}));
+  ['f-cuenta','f-acc','f-tipo','f-quien','f-estado'].forEach(id=>el(id).addEventListener('change',renderMadre));
+  el('f-fin').addEventListener('click',function(){madreFin=!madreFin;this.classList.toggle('active',madreFin);this.textContent=madreFin?'Ocultar finalizadas':'Incluir finalizadas';renderMadre();});
+  el('cli-filters').addEventListener('click',e=>{const b=e.target.closest('.fbtn');if(!b)return;document.querySelectorAll('#cli-filters .fbtn').forEach(x=>x.classList.remove('active'));b.classList.add('active');cliFilter=b.dataset.cf;renderCliEntregables();});
+  el('ptabs').addEventListener('click',e=>{const t=e.target.closest('.tab');if(t)setPtab(t.dataset.pt);});
+  el('p-cli').addEventListener('change',renderKanban);
+  el('g-cli').addEventListener('change',renderGantt);
+  document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
+
+  // ===== Init =====
+  el('today').textContent=new Date(2026,5,13).toLocaleDateString('es-MX',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).replace(/^\w/,c=>c.toUpperCase());
+  fillAccFilter(); fillParrillaCli(); renderAll();
 </script>
 </body>
 </html>
