@@ -61,7 +61,7 @@
   .crumb b{color:var(--ink)}
   .crumb .home{cursor:pointer;color:var(--brand);font-weight:600}
   .topbar h1{margin:2px 0 0;font-size:21px;font-family:var(--font-head);font-weight:700;letter-spacing:-.02em}
-  .topbar h1.big{font-size:33px;margin-top:3px;line-height:1.05}
+  .topbar h1.big{font-size:39px;margin-top:2px;line-height:1.03}
   .topbar .sub{color:var(--muted);font-size:13.5px;margin-top:5px}
   .todaybig{font-size:15.5px;color:#5a5a66;font-weight:500}
   .toolbar{display:flex;align-items:center;justify-content:flex-end;gap:12px}
@@ -93,8 +93,8 @@
   .cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
   /* Buscador minimalista (estilo botón claro, lupa gris + "Buscar") */
   .searchbar{position:relative;width:100%;margin:0}
-  .searchbar .lupa{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:17px;height:17px;color:#9a9aa4;pointer-events:none}
-  .searchbar input{width:100%;border:1px solid var(--line);border-radius:12px;background:#fff;padding:11px 14px 11px 41px;font-family:var(--font-ui);font-size:13.5px;color:var(--ink);box-shadow:var(--shadow-sm);transition:border-color .2s var(--ease),box-shadow .2s var(--ease)}
+  .searchbar .lupa{position:absolute;left:15px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:#9a9aa4;pointer-events:none}
+  .searchbar input{width:100%;border:1px solid var(--line);border-radius:13px;background:#fff;padding:14px 16px 14px 45px;font-family:var(--font-ui);font-size:14.5px;color:var(--ink);box-shadow:var(--shadow-sm);transition:border-color .2s var(--ease),box-shadow .2s var(--ease)}
   .searchbar input::placeholder{color:#9a9aa4}
   .searchbar input:hover{border-color:#dcdbe4}
   .searchbar input:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
@@ -103,13 +103,14 @@
   body.anim .ccard{opacity:0;transform:translateY(22px) scale(.98)}
   body.anim .ccard.in{opacity:1;transform:none}
   body.anim .ccard.in:hover{transform:translateY(-4px)}
-  .ccard .head{display:flex;align-items:center;gap:13px;margin-bottom:16px}
+  .ccard .head{display:flex;align-items:center;gap:13px;margin-bottom:18px}
   .avatar{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--font-head);font-weight:700;font-size:17px;flex-shrink:0;box-shadow:var(--shadow-sm)}
+  .ccard .hmeta{flex:1;min-width:0}
   .ccard .name{font-family:var(--font-head);font-weight:700;font-size:17px;letter-spacing:-.01em}
   .ccard .role{font-size:12.5px;color:var(--muted);margin-top:1px}
-  .ccard .meta{font-size:12.5px;color:var(--muted)}
-  .ctotal{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-top:2px}
-  .ctotal b{color:var(--ink);font-family:var(--font-head);font-size:16px;margin-left:2px}
+  .ctotal-badge{flex-shrink:0;text-align:center;padding-left:14px;border-left:1px solid var(--line)}
+  .ctotal-badge .n{font-family:var(--font-head);font-size:30px;font-weight:700;line-height:1;color:var(--ink)}
+  .ctotal-badge .t{font-size:9px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-top:4px;font-weight:600}
   .cstats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:14px}
   .cstat{border-radius:13px;padding:13px 6px;text-align:center;transition:transform .2s var(--ease)}
   .ccard:hover .cstat{transform:translateY(-1px)}
@@ -640,9 +641,11 @@
     data.sort((a,b)=> b.r-a.r || b.t-a.t || b.total-a.total);
     if(!data.length){ el('client-cards').innerHTML=`<div class="empty" style="grid-column:1/-1">Sin clientes que coincidan con “${cardSearch}”.</div>`; return; }
     el('client-cards').innerHTML=data.map(({c,total,t,p,r})=>`<div class="ccard" onclick="openClient('${c.id}')">
-        <div class="head"><div class="avatar" style="background:${c.color}">${c.ini}</div>
-          <div><div class="name">${c.name}</div><div class="role">${c.role}</div></div></div>
-        <div class="ctotal">Total actividades: <b>${total}</b></div>
+        <div class="head">
+          <div class="avatar" style="background:${c.color}">${c.ini}</div>
+          <div class="hmeta"><div class="name">${c.name}</div><div class="role">${c.role}</div></div>
+          <div class="ctotal-badge"><div class="n">${total}</div><div class="t">Activas</div></div>
+        </div>
         <div class="cstats">
           <div class="cstat todo"><div class="n">${t}</div><div class="t">Por hacer</div></div>
           <div class="cstat proc"><div class="n">${p}</div><div class="t">En proceso</div></div>
