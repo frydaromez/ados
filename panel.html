@@ -55,7 +55,8 @@
 
   /* Main */
   .main{flex:1;min-width:0;display:flex;flex-direction:column;margin-left:76px}
-  .topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:18px 32px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.82);backdrop-filter:saturate(160%) blur(14px);position:sticky;top:0;z-index:5}
+  .topbar{display:flex;align-items:stretch;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:18px 32px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.82);backdrop-filter:saturate(160%) blur(14px);position:sticky;top:0;z-index:5}
+  .head-left{display:flex;flex-direction:column;justify-content:space-between;min-width:0}
   .topbar-right{display:flex;flex-direction:column;align-items:stretch;gap:12px}
   .crumb{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
   .crumb b{color:var(--ink)}
@@ -63,7 +64,7 @@
   .topbar h1{margin:2px 0 0;font-size:21px;font-family:var(--font-head);font-weight:700;letter-spacing:-.02em}
   .topbar h1.big{font-size:39px;margin-top:2px;line-height:1.03}
   .topbar .sub{color:var(--muted);font-size:13.5px;margin-top:5px}
-  .todaybig{font-size:15.5px;color:#5a5a66;font-weight:500}
+  .todaybig{font-size:15.5px;color:#3f3f49;font-weight:500}
   .toolbar{display:flex;align-items:center;justify-content:flex-end;gap:12px}
   .demo{display:inline-block;background:var(--brand-soft);color:var(--brand);font-size:11px;font-weight:600;padding:5px 11px;border-radius:999px}
   /* Botones del panel — claros, borde suave, se oscurecen en hover */
@@ -93,33 +94,33 @@
   .cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
   /* Buscador minimalista (estilo botón claro, lupa gris + "Buscar") */
   .searchbar{position:relative;width:100%;margin:0}
-  .searchbar .lupa{position:absolute;left:15px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:#9a9aa4;pointer-events:none}
-  .searchbar input{width:100%;border:1px solid var(--line);border-radius:13px;background:#fff;padding:14px 16px 14px 45px;font-family:var(--font-ui);font-size:14.5px;color:var(--ink);box-shadow:var(--shadow-sm);transition:border-color .2s var(--ease),box-shadow .2s var(--ease)}
+  .searchbar .lupa{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:17px;height:17px;color:#9a9aa4;pointer-events:none}
+  .searchbar input{width:100%;border:1px solid var(--line);border-radius:12px;background:#fff;padding:9px 14px 9px 41px;font-family:var(--font-ui);font-size:13.5px;color:var(--ink);box-shadow:var(--shadow-sm);transition:border-color .2s var(--ease),box-shadow .2s var(--ease)}
   .searchbar input::placeholder{color:#9a9aa4}
   .searchbar input:hover{border-color:#dcdbe4}
   .searchbar input:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
-  .ccard{background:#fff;border:1px solid var(--line);border-radius:20px;padding:22px;cursor:pointer;box-shadow:var(--shadow-sm);transition:transform .45s var(--ease-out),box-shadow .3s var(--ease-out),border-color .3s var(--ease),opacity .5s var(--ease-out)}
+  .ccard{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px 18px 16px;cursor:pointer;box-shadow:var(--shadow-sm);transition:transform .45s var(--ease-out),box-shadow .3s var(--ease-out),border-color .3s var(--ease),opacity .5s var(--ease-out)}
   .ccard:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);border-color:#e1e0ea}
   body.anim .ccard{opacity:0;transform:translateY(22px) scale(.98)}
   body.anim .ccard.in{opacity:1;transform:none}
   body.anim .ccard.in:hover{transform:translateY(-4px)}
-  .ccard .head{display:flex;align-items:center;gap:13px;margin-bottom:18px}
+  .ccard .head{display:flex;align-items:center;gap:13px;margin-bottom:14px}
   .avatar{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--font-head);font-weight:700;font-size:17px;flex-shrink:0;box-shadow:var(--shadow-sm)}
   .ccard .hmeta{flex:1;min-width:0}
   .ccard .name{font-family:var(--font-head);font-weight:700;font-size:17px;letter-spacing:-.01em}
   .ccard .role{font-size:12.5px;color:var(--muted);margin-top:1px}
-  .ctotal-badge{flex-shrink:0;text-align:center;padding-left:14px;border-left:1px solid var(--line)}
-  .ctotal-badge .n{font-family:var(--font-head);font-size:30px;font-weight:700;line-height:1;color:var(--ink)}
-  .ctotal-badge .t{font-size:9px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-top:4px;font-weight:600}
-  .cstats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:14px}
-  .cstat{border-radius:13px;padding:13px 6px;text-align:center;transition:transform .2s var(--ease)}
+  .ctotal-badge{flex-shrink:0;text-align:center;padding-left:13px;border-left:1px solid var(--line)}
+  .ctotal-badge .n{font-family:var(--font-head);font-size:29px;font-weight:700;line-height:1;color:var(--ink)}
+  .ctotal-badge .t{font-size:8.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin-top:4px;font-weight:600;max-width:58px;line-height:1.25}
+  .cstats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:12px}
+  .cstat{border-radius:12px;padding:11px 6px;text-align:center;transition:transform .2s var(--ease)}
   .ccard:hover .cstat{transform:translateY(-1px)}
   .cstat .n{font-family:var(--font-head);font-size:24px;font-weight:700;line-height:1}
   .cstat .t{font-size:9.5px;text-transform:uppercase;letter-spacing:.03em;margin-top:6px;font-weight:600;line-height:1.15}
   .cstat.todo{background:#e2f4f6;color:#0e7490}
   .cstat.proc{background:#e8e9fd;color:#4338ca}
   .cstat.review{background:#fce8db;color:#c2410c}
-  .ccard .open{font-size:12.5px;color:var(--brand);font-weight:600;margin-top:16px;display:flex;align-items:center;gap:5px;transition:gap .2s var(--ease)}
+  .ccard .open{font-size:12.5px;color:var(--brand);font-weight:600;margin-top:13px;display:flex;align-items:center;justify-content:flex-end;gap:5px;transition:gap .2s var(--ease)}
   .ccard:hover .open{gap:9px}
   .ccard.prospect{border-style:dashed}
 
@@ -269,11 +270,13 @@
 
   <main class="main">
     <div class="topbar">
-      <div style="display:flex;align-items:center;gap:12px;min-width:0">
+      <div style="display:flex;align-items:stretch;gap:12px;min-width:0">
         <button class="menu-btn" id="menuBtn" aria-label="Abrir menú">☰</button>
-        <div style="min-width:0">
-          <div class="crumb" id="crumb"></div>
-          <h1 id="title" class="big">Welcome!</h1>
+        <div class="head-left">
+          <div>
+            <div class="crumb" id="crumb"></div>
+            <h1 id="title" class="big">Welcome!</h1>
+          </div>
           <div class="sub" id="subtitle"></div>
         </div>
       </div>
@@ -644,14 +647,14 @@
         <div class="head">
           <div class="avatar" style="background:${c.color}">${c.ini}</div>
           <div class="hmeta"><div class="name">${c.name}</div><div class="role">${c.role}</div></div>
-          <div class="ctotal-badge"><div class="n">${total}</div><div class="t">Activas</div></div>
+          <div class="ctotal-badge"><div class="n">${total}</div><div class="t">Total actividades</div></div>
         </div>
         <div class="cstats">
           <div class="cstat todo"><div class="n">${t}</div><div class="t">Por hacer</div></div>
           <div class="cstat proc"><div class="n">${p}</div><div class="t">En proceso</div></div>
           <div class="cstat review"><div class="n">${r}</div><div class="t">Por revisar</div></div>
         </div>
-        <div class="open">Abrir portal →</div></div>`).join('');
+        <div class="open">Ver cliente →</div></div>`).join('');
     revealCards();
   }
   // Revelado interactivo al hacer scroll (fundido + elevación escalonada)
