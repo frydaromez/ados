@@ -4,49 +4,73 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>AdsOS — Panel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --brand:#8155ff; --brand-2:#9a6cff; --brand-soft:#efe9ff;
-    --sidebar:#000000; --ink:#16151c; --muted:#737888;
-    --bg:#f5f4fa; --card:#fff; --line:#e7e8ef;
-    --todo:#94a3b8; --proc:#3b82f6; --review:#f59e0b; --chg:#e11d48; --pub:#65a30d; --done:#10b981;
+    --brand:#8155ff; --brand-2:#9a6cff; --brand-deep:#6a3cf0; --brand-soft:#efe9ff;
+    --sidebar:#0e0e12; --ink:#1a1a22; --muted:#86868f;
+    --bg:#f6f6fa; --card:#fff; --line:#ececf1;
+    --font-ui:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --font-head:'Montserrat',var(--font-ui);
+    --shadow-sm:0 1px 2px rgba(24,20,50,.04),0 1px 3px rgba(24,20,50,.03);
+    --shadow-md:0 8px 28px -10px rgba(35,25,80,.14);
+    --shadow-lg:0 22px 56px -22px rgba(35,25,80,.26);
+    --ease:cubic-bezier(.4,0,.2,1); --ease-out:cubic-bezier(.22,1,.36,1);
+    --todo:#64748b; --proc:#3b82f6; --review:#f59e0b; --chg:#e11d48; --pub:#65a30d; --done:#10b981;
   }
   *{box-sizing:border-box}
-  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+  body{margin:0;font-family:var(--font-ui);background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;letter-spacing:-.01em}
+  @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
   .app{display:flex;min-height:100vh}
 
-  /* Sidebar */
-  .side{width:250px;background:var(--sidebar);color:#cbccd6;padding:20px 14px;flex-shrink:0;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
-  .logo{display:flex;align-items:center;gap:10px;color:#fff;font-weight:700;font-size:18px;padding:6px 8px 14px}
-  .logo .mark{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--brand),var(--brand-2));display:flex;align-items:center;justify-content:center;font-size:14px}
-  .addbtns{display:flex;flex-direction:column;gap:8px;margin:6px 4px 14px}
-  .addbtn{display:flex;align-items:center;gap:8px;border:none;border-radius:10px;padding:10px 12px;font-size:13.5px;font-weight:600;cursor:pointer}
-  .addbtn.primary{background:var(--brand);color:#fff}
-  .addbtn.ghost{background:#1c1b22;color:#dcdce4}
-  .addbtn:hover{filter:brightness(1.08)}
-  .navlabel{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:#62636f;margin:14px 8px 6px}
-  .nav a{display:flex;align-items:center;gap:11px;color:#b9bac7;text-decoration:none;padding:9px 11px;border-radius:9px;font-size:14px;cursor:pointer;transition:background .12s,color .12s}
-  .nav a:hover{background:#19181f;color:#fff}
-  .nav a.active{background:var(--brand);color:#fff}
-  .nav a .ico{width:17px;height:17px;flex-shrink:0;opacity:.9}
-  .nav a .ct{margin-left:auto;font-size:11px;background:rgba(255,255,255,.12);padding:1px 7px;border-radius:999px}
-  .back{margin-top:auto;font-size:13px;color:#8a8b9c;text-decoration:none;padding:10px;border-top:1px solid #232228}
+  /* Sidebar — rail colapsable que se expande al pasar el cursor */
+  .side{width:76px;background:var(--sidebar);color:#b7b7c2;padding:18px 14px;display:flex;flex-direction:column;position:fixed;left:0;top:0;height:100vh;overflow:hidden;z-index:30;transition:width .32s var(--ease-out),box-shadow .32s var(--ease-out);white-space:nowrap}
+  .side:hover,.side:focus-within{width:248px;box-shadow:var(--shadow-lg)}
+  .side:focus-within .navlabel,.side:focus-within .nav a .lbl,.side:focus-within .nav a .ct{opacity:1}
+  .nav a:focus-visible{outline:2px solid #fff;outline-offset:-2px}
+  .logo{display:flex;align-items:center;gap:12px;color:#fff;font-family:var(--font-head);font-weight:700;font-size:19px;padding:6px 7px 18px}
+  .logo .mark{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--brand),var(--brand-2));display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;box-shadow:0 6px 16px -6px rgba(129,85,255,.7)}
+  .navlabel{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#5a5a66;margin:16px 12px 6px;opacity:0;transition:opacity .2s var(--ease)}
+  .side:hover .navlabel{opacity:1}
+  .nav a{display:flex;align-items:center;gap:13px;color:#aeaeba;text-decoration:none;padding:11px 11px;border-radius:11px;font-size:14px;font-weight:500;cursor:pointer;transition:background .2s var(--ease),color .2s var(--ease);position:relative}
+  .nav a:hover{background:#1b1b22;color:#fff}
+  .nav a.active{background:var(--brand);color:#fff;box-shadow:0 8px 20px -8px rgba(129,85,255,.6)}
+  .nav a .ico{width:20px;height:20px;flex-shrink:0;margin:0 1px}
+  .nav a .lbl{opacity:0;transition:opacity .22s var(--ease)}
+  .side:hover .nav a .lbl{opacity:1}
+  .nav a .ct{margin-left:auto;font-size:11px;font-weight:600;background:rgba(255,255,255,.14);padding:1px 8px;border-radius:999px;opacity:0;transition:opacity .22s var(--ease)}
+  .side:hover .nav a .ct{opacity:1}
+  .nav a.active .ct{background:rgba(255,255,255,.25)}
+  .back{margin-top:auto;font-size:13px;color:#7a7a86;text-decoration:none;padding:11px;border-top:1px solid #232229;overflow:hidden;text-overflow:ellipsis}
   .back:hover{color:#fff}
-  .menu-btn{display:none;background:#fff;border:1px solid var(--line);border-radius:10px;width:42px;height:42px;font-size:18px;cursor:pointer;flex-shrink:0;align-items:center;justify-content:center}
-  .side-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:35;display:none}
+  .menu-btn{display:none;background:#fff;border:1px solid var(--line);border-radius:11px;width:42px;height:42px;font-size:18px;cursor:pointer;flex-shrink:0;align-items:center;justify-content:center}
+  .side-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:25;display:none}
   .side-overlay.show{display:block}
 
   /* Main */
-  .main{flex:1;min-width:0;display:flex;flex-direction:column}
-  .topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 30px;border-bottom:1px solid var(--line);background:#fff;position:sticky;top:0;z-index:5}
+  .main{flex:1;min-width:0;display:flex;flex-direction:column;margin-left:76px}
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 32px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.82);backdrop-filter:saturate(160%) blur(14px);position:sticky;top:0;z-index:5}
   .crumb{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
   .crumb b{color:var(--ink)}
   .crumb .home{cursor:pointer;color:var(--brand);font-weight:600}
-  .topbar h1{margin:2px 0 0;font-size:20px}
+  .topbar h1{margin:2px 0 0;font-size:21px;font-family:var(--font-head);font-weight:700;letter-spacing:-.02em}
   .topbar .sub{color:var(--muted);font-size:13px;margin-top:2px}
-  .date{font-size:13px;color:var(--muted);text-align:right}
-  .date .demo{display:inline-block;margin-top:4px;background:var(--brand-soft);color:var(--brand);font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:999px}
-  .content{padding:24px 30px 60px;overflow:auto}
+  .toolbar{display:flex;align-items:center;gap:14px}
+  .date{font-size:12.5px;color:var(--muted);text-align:right;line-height:1.3}
+  .date .demo{display:inline-block;margin-top:4px;background:var(--brand-soft);color:var(--brand);font-size:11px;font-weight:600;padding:3px 10px;border-radius:999px}
+  /* Botones del panel — claros, borde suave, se oscurecen en hover */
+  .tbtn{display:inline-flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:9px 16px;font-family:var(--font-ui);font-size:13.5px;font-weight:600;color:var(--ink);cursor:pointer;box-shadow:var(--shadow-sm);transition:background .2s var(--ease),border-color .2s var(--ease),box-shadow .2s var(--ease),transform .2s var(--ease)}
+  .tbtn:hover{background:#f3f2f8;border-color:#dcdbe4;box-shadow:var(--shadow-md);transform:translateY(-1px)}
+  .tbtn:active{transform:translateY(0)}
+  .tbtn .plus{font-size:16px;line-height:1;color:var(--muted);transition:color .2s var(--ease)}
+  .tbtn:hover .plus{color:var(--ink)}
+  .tbtn.primary{background:var(--brand);border-color:var(--brand);color:#fff;box-shadow:0 8px 20px -8px rgba(129,85,255,.55)}
+  .tbtn.primary .plus{color:rgba(255,255,255,.85)}
+  .tbtn.primary:hover{background:var(--brand-deep);border-color:var(--brand-deep);box-shadow:0 12px 26px -8px rgba(106,60,240,.6)}
+  .tbtn.primary:hover .plus{color:#fff}
+  .content{padding:28px 34px 64px;overflow:auto}
 
   /* KPIs */
   .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:22px}
@@ -60,24 +84,26 @@
   .hint{font-size:12.5px;color:var(--muted);font-weight:500;margin-left:auto}
 
   /* Cards */
-  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(236px,1fr));gap:15px}
-  .ccard{background:#fff;border:1px solid var(--line);border-radius:15px;padding:17px;cursor:pointer;transition:transform .14s,box-shadow .14s}
-  .ccard:hover{transform:translateY(-3px);box-shadow:0 16px 30px -18px rgba(40,40,80,.35)}
-  .ccard .head{display:flex;align-items:center;gap:11px;margin-bottom:12px}
-  .avatar{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:15px;flex-shrink:0}
-  .ccard .name{font-weight:600;font-size:15px}
-  .ccard .role{font-size:12px;color:var(--muted)}
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:20px}
+  .ccard{background:#fff;border:1px solid var(--line);border-radius:20px;padding:22px;cursor:pointer;box-shadow:var(--shadow-sm);transition:transform .3s var(--ease-out),box-shadow .3s var(--ease-out),border-color .3s var(--ease)}
+  .ccard:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);border-color:#e1e0ea}
+  .ccard .head{display:flex;align-items:center;gap:13px;margin-bottom:16px}
+  .avatar{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--font-head);font-weight:700;font-size:17px;flex-shrink:0;box-shadow:var(--shadow-sm)}
+  .ccard .name{font-family:var(--font-head);font-weight:700;font-size:17px;letter-spacing:-.01em}
+  .ccard .role{font-size:12.5px;color:var(--muted);margin-top:1px}
   .ccard .meta{font-size:12.5px;color:var(--muted)}
-  .ctotal{font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.03em;margin-top:4px}
-  .ctotal b{color:var(--ink);font-size:15px}
-  .cstats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:11px}
-  .cstat{border-radius:10px;padding:9px 6px;text-align:center}
-  .cstat .n{font-size:19px;font-weight:700;line-height:1}
-  .cstat .t{font-size:9.5px;text-transform:uppercase;letter-spacing:.02em;margin-top:4px;font-weight:600;line-height:1.15}
-  .cstat.todo{background:#eef1f6;color:#475569}
-  .cstat.proc{background:#e2ecfd;color:#1d4ed8}
-  .cstat.review{background:#fef3da;color:#9a6400}
-  .ccard .open{font-size:12.5px;color:var(--brand);font-weight:600;margin-top:12px}
+  .ctotal{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-top:2px}
+  .ctotal b{color:var(--ink);font-family:var(--font-head);font-size:16px;margin-left:2px}
+  .cstats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:14px}
+  .cstat{border-radius:13px;padding:13px 6px;text-align:center;transition:transform .2s var(--ease)}
+  .ccard:hover .cstat{transform:translateY(-1px)}
+  .cstat .n{font-family:var(--font-head);font-size:24px;font-weight:700;line-height:1}
+  .cstat .t{font-size:9.5px;text-transform:uppercase;letter-spacing:.03em;margin-top:6px;font-weight:600;line-height:1.15}
+  .cstat.todo{background:#f1f3f7;color:#475569}
+  .cstat.proc{background:#e7eefe;color:#1d4ed8}
+  .cstat.review{background:#fef4e0;color:#9a6400}
+  .ccard .open{font-size:12.5px;color:var(--brand);font-weight:600;margin-top:16px;display:flex;align-items:center;gap:5px;transition:gap .2s var(--ease)}
+  .ccard:hover .open{gap:9px}
   .ccard.prospect{border-style:dashed}
 
   /* Tables */
@@ -179,8 +205,12 @@
 
   @media(max-width:920px){
     .menu-btn{display:flex}
-    .side{position:fixed;left:0;top:0;height:100vh;transform:translateX(-100%);transition:transform .22s ease;z-index:40;box-shadow:0 0 40px rgba(0,0,0,.3)}
+    .main{margin-left:0}
+    .side{width:248px;transform:translateX(-100%);transition:transform .3s var(--ease-out);z-index:40;box-shadow:var(--shadow-lg)}
+    .side:hover{width:248px;box-shadow:var(--shadow-lg)}
     .side.open{transform:translateX(0)}
+    .side .lbl,.side .navlabel,.side .nav a .ct{opacity:1}
+    .toolbar .date{display:none}
     .split{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}.metrics{grid-template-columns:repeat(2,1fr)}.frow{grid-template-columns:1fr}
   }
 </style>
@@ -189,26 +219,22 @@
 <div class="app">
 
   <aside class="side">
-    <div class="logo"><span class="mark">A</span> AdsOS</div>
-    <div class="addbtns">
-      <button class="addbtn primary" onclick="openActModal()">+ Nueva actividad</button>
-      <button class="addbtn ghost" onclick="openCliModal()">+ Nuevo cliente</button>
-    </div>
+    <div class="logo"><span class="mark">A</span> <span class="lbl">AdsOS</span></div>
     <div class="navlabel">Operación</div>
     <nav class="nav" id="nav">
-      <a data-view="inicio" class="active"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/></svg> Inicio</a>
-      <a data-view="actividades"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h12"/></svg> Actividades <span class="ct" id="ct-act">0</span></a>
-      <a data-view="prospectos"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 7v10l8 5 8-5V7z"/></svg> Prospectos <span class="ct" id="ct-pros">0</span></a>
-      <a data-view="equipo"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3.2"/><circle cx="17" cy="9" r="2.6"/><path d="M3 20c0-3.3 2.7-5 6-5s6 1.7 6 5M15.5 20c0-2.3 1.5-3.6 3.5-3.6"/></svg> Equipo</a>
-      <a data-view="revision"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 12 2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg> Revisión <span class="ct" id="ct-rev">0</span></a>
+      <a data-view="inicio" class="active" title="Inicio"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/></svg> <span class="lbl">Inicio</span></a>
+      <a data-view="actividades" title="Actividades"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h12"/></svg> <span class="lbl">Actividades</span> <span class="ct" id="ct-act">0</span></a>
+      <a data-view="prospectos" title="Prospectos"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 7v10l8 5 8-5V7z"/></svg> <span class="lbl">Prospectos</span> <span class="ct" id="ct-pros">0</span></a>
+      <a data-view="equipo" title="Equipo"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3.2"/><circle cx="17" cy="9" r="2.6"/><path d="M3 20c0-3.3 2.7-5 6-5s6 1.7 6 5M15.5 20c0-2.3 1.5-3.6 3.5-3.6"/></svg> <span class="lbl">Equipo</span></a>
+      <a data-view="revision" title="Revisión"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 12 2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg> <span class="lbl">Revisión</span> <span class="ct" id="ct-rev">0</span></a>
     </nav>
     <div class="navlabel">Planeación</div>
     <nav class="nav" id="nav2">
-      <a data-view="parrilla"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 4v16M15 4v16"/></svg> Parrilla</a>
-      <a data-view="gantt"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h9M4 12h13M4 18h7"/></svg> Gantt general</a>
-      <a data-view="finalizados"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8M3 8l2-4h14l2 4M3 8h18M10 12h4"/></svg> Finalizados <span class="ct" id="ct-fin">0</span></a>
+      <a data-view="parrilla" title="Parrilla"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 4v16M15 4v16"/></svg> <span class="lbl">Parrilla</span></a>
+      <a data-view="gantt" title="Gantt general"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h9M4 12h13M4 18h7"/></svg> <span class="lbl">Gantt general</span></a>
+      <a data-view="finalizados" title="Finalizados"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8M3 8l2-4h14l2 4M3 8h18M10 12h4"/></svg> <span class="lbl">Finalizados</span> <span class="ct" id="ct-fin">0</span></a>
     </nav>
-    <a class="back" href="index.html">← Volver a la propuesta</a>
+    <a class="back" href="index.html"><span class="lbl">← Volver a la propuesta</span></a>
   </aside>
   <div class="side-overlay" id="sideOverlay"></div>
 
@@ -222,7 +248,11 @@
           <div class="sub" id="subtitle">Todos los clientes y su operación activa</div>
         </div>
       </div>
-      <div class="date"><div id="today">—</div><div class="demo">Vista de ejemplo</div></div>
+      <div class="toolbar">
+        <div class="date"><div id="today">—</div><div class="demo">Vista de ejemplo</div></div>
+        <button class="tbtn" onclick="openCliModal()"><span class="plus">+</span> Nuevo cliente</button>
+        <button class="tbtn primary" onclick="openActModal()"><span class="plus">+</span> Nueva actividad</button>
+      </div>
     </div>
 
     <div class="content" id="content">
