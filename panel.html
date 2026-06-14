@@ -46,7 +46,7 @@
   .content{padding:24px 30px 60px;overflow:auto}
 
   /* KPIs */
-  .kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:13px;margin-bottom:22px}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:22px}
   .kpi{background:#fff;border:1px solid var(--line);border-radius:14px;padding:15px 17px}
   .kpi .v{font-size:25px;font-weight:700}
   .kpi .l{font-size:12px;color:var(--muted);margin-top:2px}
@@ -216,7 +216,6 @@
           <div class="kpi"><div class="v todo" id="k-todo">0</div><div class="l">Por hacer</div></div>
           <div class="kpi"><div class="v proc" id="k-proc">0</div><div class="l">En proceso</div></div>
           <div class="kpi"><div class="v review" id="k-rev">0</div><div class="l">Por revisar</div></div>
-          <div class="kpi"><div class="v done" id="k-fin">0</div><div class="l">Finalizadas</div></div>
         </div>
         <div class="section-title"><span class="dot"></span> Clientes <span class="hint">Da clic en un cliente para abrir su portal</span></div>
         <div class="cards" id="client-cards"></div>
@@ -538,7 +537,7 @@
   }
   function renderCounters(){
     const c=counts();
-    el('k-cli').textContent=c.cli; el('k-todo').textContent=c.todo; el('k-proc').textContent=c.proc; el('k-rev').textContent=c.rev; el('k-fin').textContent=c.fin;
+    el('k-cli').textContent=c.cli; el('k-todo').textContent=c.todo; el('k-proc').textContent=c.proc; el('k-rev').textContent=c.rev;
     el('ct-act').textContent=c.act; el('ct-pros').textContent=c.pros; el('ct-rev').textContent=c.review; el('ct-fin').textContent=c.fin;
   }
 
