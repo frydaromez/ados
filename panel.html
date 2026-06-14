@@ -9,7 +9,7 @@
     --brand:#8155ff; --brand-2:#9a6cff; --brand-soft:#efe9ff;
     --sidebar:#000000; --ink:#16151c; --muted:#737888;
     --bg:#f5f4fa; --card:#fff; --line:#e7e8ef;
-    --todo:#f59e0b; --proc:#8155ff; --review:#3b82f6; --chg:#e11d48; --pub:#65a30d; --done:#10b981;
+    --todo:#94a3b8; --proc:#3b82f6; --review:#f59e0b; --chg:#e11d48; --pub:#65a30d; --done:#10b981;
   }
   *{box-sizing:border-box}
   body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
@@ -32,6 +32,9 @@
   .nav a .ct{margin-left:auto;font-size:11px;background:rgba(255,255,255,.12);padding:1px 7px;border-radius:999px}
   .back{margin-top:auto;font-size:13px;color:#8a8b9c;text-decoration:none;padding:10px;border-top:1px solid #232228}
   .back:hover{color:#fff}
+  .menu-btn{display:none;background:#fff;border:1px solid var(--line);border-radius:10px;width:42px;height:42px;font-size:18px;cursor:pointer;flex-shrink:0;align-items:center;justify-content:center}
+  .side-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:35;display:none}
+  .side-overlay.show{display:block}
 
   /* Main */
   .main{flex:1;min-width:0;display:flex;flex-direction:column}
@@ -50,7 +53,7 @@
   .kpi{background:#fff;border:1px solid var(--line);border-radius:14px;padding:15px 17px}
   .kpi .v{font-size:25px;font-weight:700}
   .kpi .l{font-size:12px;color:var(--muted);margin-top:2px}
-  .kpi .v.todo{color:#b8771a}.kpi .v.proc{color:#6a2bd6}.kpi .v.review{color:#1d4ed8}.kpi .v.done{color:#047857}
+  .kpi .v.todo{color:#475569}.kpi .v.proc{color:#1d4ed8}.kpi .v.review{color:#b8771a}.kpi .v.done{color:#047857}
 
   .section-title{font-size:15px;font-weight:700;margin:24px 0 12px;display:flex;align-items:center;gap:9px}
   .section-title .dot{width:7px;height:7px;border-radius:50%;background:var(--brand)}
@@ -67,7 +70,7 @@
   .ccard .meta{font-size:12.5px;color:var(--muted)}
   .countpills{display:flex;gap:6px;margin-top:11px;flex-wrap:wrap}
   .mini{font-size:11.5px;font-weight:600;padding:3px 9px;border-radius:999px}
-  .mini.todo{background:#fef3da;color:#9a6400}.mini.proc{background:#efe9ff;color:#6a2bd6}.mini.review{background:#e2ecfd;color:#1d4ed8}
+  .mini.todo{background:#eef1f6;color:#475569}.mini.proc{background:#e2ecfd;color:#1d4ed8}.mini.review{background:#fef3da;color:#9a6400}
   .ccard .open{font-size:12.5px;color:var(--brand);font-weight:600;margin-top:11px}
   .ccard.prospect{border-style:dashed}
 
@@ -85,7 +88,7 @@
   .who{display:flex;align-items:center;gap:8px}
   .who .a{width:24px;height:24px;border-radius:7px;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
   .pill{display:inline-block;font-size:12px;font-weight:600;padding:3px 11px;border-radius:999px;white-space:nowrap}
-  .pill.todo{background:#fef3da;color:#9a6400}.pill.proc{background:#efe9ff;color:#6a2bd6}.pill.review{background:#e2ecfd;color:#1d4ed8}
+  .pill.todo{background:#eef1f6;color:#475569}.pill.proc{background:#e2ecfd;color:#1d4ed8}.pill.review{background:#fef3da;color:#9a6400}
   .pill.chg{background:#fde2e7;color:#be123c}.pill.pub{background:#e8f0e2;color:#3f6212}.pill.published{background:#16151c;color:#fff}.pill.done{background:#dcf5ea;color:#047857}
   .tipo{font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:6px}
   .tipo.parrilla{background:#ede9fe;color:#6d28d9}.tipo.extra{background:#fff0e6;color:#c2410c}.tipo.prospecto{background:#e7f0ff;color:#1e40af}
@@ -142,7 +145,7 @@
   .gdays.head .gd{font-size:10px;color:var(--muted);text-align:center;padding:6px 0;border-right:1px solid #f0f0f5}
   .gcell{border-right:1px solid #f5f5f9;min-height:34px}
   .gbar{margin:7px 2px;height:20px;border-radius:6px;font-size:10.5px;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;overflow:hidden}
-  .gbar.todo{background:#f59e0b}.gbar.proc{background:#8155ff}.gbar.review{background:#3b82f6}.gbar.chg{background:#e11d48}.gbar.pub{background:#65a30d}.gbar.published{background:#16151c}
+  .gbar.todo{background:#94a3b8}.gbar.proc{background:#3b82f6}.gbar.review{background:#f59e0b}.gbar.chg{background:#e11d48}.gbar.pub{background:#65a30d}.gbar.published{background:#16151c}
   .ghead{display:grid;grid-template-columns:170px 1fr;border-bottom:1px solid var(--line);background:#fafafe}
   .ghead .glabel{background:#fafafe;font-size:11px;text-transform:uppercase;color:var(--muted)}
 
@@ -168,7 +171,12 @@
   .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:#16151c;color:#fff;padding:12px 20px;border-radius:12px;font-size:13.5px;opacity:0;transition:.25s;z-index:60}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-  @media(max-width:920px){.side{display:none}.split{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}.metrics{grid-template-columns:repeat(2,1fr)}.frow{grid-template-columns:1fr}}
+  @media(max-width:920px){
+    .menu-btn{display:flex}
+    .side{position:fixed;left:0;top:0;height:100vh;transform:translateX(-100%);transition:transform .22s ease;z-index:40;box-shadow:0 0 40px rgba(0,0,0,.3)}
+    .side.open{transform:translateX(0)}
+    .split{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}.metrics{grid-template-columns:repeat(2,1fr)}.frow{grid-template-columns:1fr}
+  }
 </style>
 </head>
 <body>
@@ -196,13 +204,17 @@
     </nav>
     <a class="back" href="index.html">← Volver a la propuesta</a>
   </aside>
+  <div class="side-overlay" id="sideOverlay"></div>
 
   <main class="main">
     <div class="topbar">
-      <div>
-        <div class="crumb" id="crumb"><span class="home">Inicio</span></div>
-        <h1 id="title">Inicio</h1>
-        <div class="sub" id="subtitle">Todos los clientes y su operación activa</div>
+      <div style="display:flex;align-items:center;gap:12px;min-width:0">
+        <button class="menu-btn" id="menuBtn" aria-label="Abrir menú">☰</button>
+        <div style="min-width:0">
+          <div class="crumb" id="crumb"><span class="home">Inicio</span></div>
+          <h1 id="title">Inicio</h1>
+          <div class="sub" id="subtitle">Todos los clientes y su operación activa</div>
+        </div>
       </div>
       <div class="date"><div id="today">—</div><div class="demo">Vista de ejemplo</div></div>
     </div>
@@ -366,6 +378,16 @@
             <tbody id="cli-fin-rows"></tbody>
           </table></div></div>
         </div>
+      </section>
+
+      <!-- DETALLE DE PROSPECTO -->
+      <section class="view hidden" id="view-prospecto">
+        <div class="detail-head" id="pros-head"></div>
+        <div class="section-title"><span class="dot"></span> Actividades del prospecto</div>
+        <div class="tablecard"><div class="tablewrap"><table>
+          <thead><tr><th class="num">Cant.</th><th>Qué</th><th>Responsable</th><th>Para cuándo</th><th>Estado</th><th>Link</th></tr></thead>
+          <tbody id="pros-detail-rows"></tbody>
+        </table></div></div>
       </section>
 
     </div>
@@ -632,7 +654,7 @@
         if(d===a.pub) return `<div class="gcell"><div class="gbar ${EST[a.estado][1]}">${a.cant>1?a.cant:''}</div></div>`;
         return '<div class="gcell"></div>';
       }).join('');
-      return `<div class="grow"><div class="glabel">${a.que}<small>${accName(a.acc)} · ${people[a.quien].n}</small></div><div class="gdays">${cells}</div></div>`;
+      return `<div class="grow"><div class="glabel">${a.que} <span class="pill ${EST[a.estado][1]}" style="font-size:9.5px;padding:1px 6px">${EST[a.estado][0]}</span><small>${accName(a.acc)} · ${people[a.quien].n} · publica Jul ${a.pub}</small></div><div class="gdays">${cells}</div></div>`;
     }).join('');
     return head+(items.length?rows:'<div class="empty">Sin piezas de parrilla este mes.</div>');
   }
@@ -652,10 +674,22 @@
   // ===== PORTAL DEL CLIENTE =====
   let curClient=null, cliFilter='all';
   function openClient(id){ openAcc(id,'cliente'); }
+  function openProspect(id){
+    const p=prospects.find(x=>x.id===id); if(!p)return;
+    const mine=acts.filter(a=>a.acc===id&&!a.fin);
+    const t=mine.filter(a=>bucket(a.estado)==='todo').length,pr=mine.filter(a=>bucket(a.estado)==='proc').length,r=mine.filter(a=>bucket(a.estado)==='review').length;
+    el('pros-head').innerHTML=`<div class="avatar" style="background:${p.color}">${p.ini}</div>
+      <div><h2>${p.name}</h2><div class="role">${p.role} · prospecto</div></div>
+      <div class="right">
+        <div><div class="v" style="color:#475569">${t}</div><div class="l">Por hacer</div></div>
+        <div><div class="v" style="color:#1d4ed8">${pr}</div><div class="l">En proceso</div></div>
+        <div><div class="v" style="color:#b8771a">${r}</div><div class="l">Por revisar</div></div>
+      </div>`;
+    el('pros-detail-rows').innerHTML=mine.length?mine.map(a=>`<tr><td class="num">${a.cant}</td><td>${a.que}</td><td>${who(a.quien)}</td><td>${a.due}</td><td>${pill(a.estado)}</td><td>${linkCell(a.link)}</td></tr>`).join(''):'<tr><td colspan="6"><div class="empty">Sin actividades registradas.</div></td></tr>';
+    showView('prospecto',p.name);
+  }
   function openAcc(id,cuenta){
-    if(cuenta==='prospecto'){ // prospecto: lleva a su vista de prospectos enfocada (simple)
-      showView('prospectos'); toast('Prospecto: '+accName(id)); return;
-    }
+    if(cuenta==='prospecto'){ openProspect(id); return; }
     const c=clients.find(x=>x.id===id); if(!c)return;
     curClient=c; cliFilter='all';
     const mine=acts.filter(a=>a.acc===id&&!a.fin&&a.estado!=='publicado');
@@ -663,9 +697,9 @@
     el('detail-head').innerHTML=`<div class="avatar" style="background:${c.color}">${c.ini}</div>
       <div><h2>${c.name}</h2><div class="role">${c.role}</div></div>
       <div class="right">
-        <div><div class="v" style="color:#b8771a">${t}</div><div class="l">Por hacer</div></div>
-        <div><div class="v" style="color:#6a2bd6">${p}</div><div class="l">En proceso</div></div>
-        <div><div class="v" style="color:#1d4ed8">${r}</div><div class="l">Por revisar</div></div>
+        <div><div class="v" style="color:#475569">${t}</div><div class="l">Por hacer</div></div>
+        <div><div class="v" style="color:#1d4ed8">${p}</div><div class="l">En proceso</div></div>
+        <div><div class="v" style="color:#b8771a">${r}</div><div class="l">Por revisar</div></div>
       </div>`;
     // brief
     el('cli-info').innerHTML='<h3>Brief del cliente</h3>'+Object.entries(c.info).map(([k,v])=>{
@@ -712,22 +746,31 @@
     parrilla:["Parrilla","Vista de la estratega · mes completo"],
     gantt:["Gantt general","Carga del mes de todos los clientes"],
     finalizados:["Finalizados","Histórico · nada se pierde"],
-    cliente:["",""]
+    cliente:["",""], prospecto:["",""]
   };
   function showView(view,name){
     document.querySelectorAll('.view').forEach(v=>v.classList.add('hidden'));
     el('view-'+view).classList.remove('hidden');
-    document.querySelectorAll('.nav a').forEach(n=>n.classList.toggle('active',n.dataset.view===view));
+    const navMatch=view==='prospecto'?'prospectos':view;
+    document.querySelectorAll('.nav a').forEach(n=>n.classList.toggle('active',n.dataset.view===navMatch));
     if(view==='cliente'){
       el('title').textContent=name; el('subtitle').textContent='Portal del cliente · brief, entregables y parrilla';
       el('crumb').innerHTML=`<span class="home" onclick="goHome()">Inicio</span> › <b>${name}</b>`;
+    }else if(view==='prospecto'){
+      el('title').textContent=name; el('subtitle').textContent='Prospecto · actividades asociadas';
+      el('crumb').innerHTML=`<span class="home" onclick="goHome()">Inicio</span> › <span class="home" onclick="showView('prospectos')">Prospectos</span> › <b>${name}</b>`;
     }else{
       el('title').textContent=titles[view][0]; el('subtitle').textContent=titles[view][1];
       el('crumb').innerHTML=`<span class="home" onclick="goHome()">Inicio</span>`+(view!=='inicio'?` › <b>${titles[view][0]}</b>`:'');
     }
+    closeSide();
     window.scrollTo(0,0);
   }
   function goHome(){ showView('inicio'); }
+  // ===== Cajón móvil =====
+  const sideEl=document.querySelector('.side');
+  function toggleSide(){const o=!sideEl.classList.contains('open');sideEl.classList.toggle('open',o);el('sideOverlay').classList.toggle('show',o);}
+  function closeSide(){sideEl.classList.remove('open');el('sideOverlay').classList.remove('show');}
 
   // ===== Modales =====
   function openModal(id){el(id).classList.add('open');}
@@ -782,9 +825,12 @@
   el('p-cli').addEventListener('change',renderKanban);
   el('g-cli').addEventListener('change',renderGantt);
   document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
+  el('menuBtn').addEventListener('click',toggleSide);
+  el('sideOverlay').addEventListener('click',closeSide);
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeSide();document.querySelectorAll('.overlay.open').forEach(o=>o.classList.remove('open'));}});
 
   // ===== Init =====
-  el('today').textContent=new Date(2026,5,13).toLocaleDateString('es-MX',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).replace(/^\w/,c=>c.toUpperCase());
+  el('today').textContent=new Date(2026,5,14).toLocaleDateString('es-MX',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).replace(/^\w/,c=>c.toUpperCase());
   fillAccFilter(); fillParrillaCli(); renderAll();
 </script>
 </body>
