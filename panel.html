@@ -60,10 +60,10 @@
   .crumb b{color:var(--ink)}
   .crumb .home{cursor:pointer;color:var(--brand);font-weight:600}
   .topbar h1{margin:2px 0 0;font-size:21px;font-family:var(--font-head);font-weight:700;letter-spacing:-.02em}
-  .topbar .sub{color:var(--muted);font-size:13px;margin-top:2px}
-  .toolbar{display:flex;align-items:center;gap:14px}
-  .date{font-size:12.5px;color:var(--muted);text-align:right;line-height:1.3}
-  .date .demo{display:inline-block;margin-top:4px;background:var(--brand-soft);color:var(--brand);font-size:11px;font-weight:600;padding:3px 10px;border-radius:999px}
+  .topbar h1.big{font-size:33px;margin-top:3px;line-height:1.05}
+  .topbar .sub{color:var(--muted);font-size:13.5px;margin-top:5px}
+  .toolbar{display:flex;align-items:center;gap:12px}
+  .demo{display:inline-block;background:var(--brand-soft);color:var(--brand);font-size:11px;font-weight:600;padding:5px 11px;border-radius:999px}
   /* Botones del panel — claros, borde suave, se oscurecen en hover */
   .tbtn{display:inline-flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:9px 16px;font-family:var(--font-ui);font-size:13.5px;font-weight:600;color:var(--ink);cursor:pointer;box-shadow:var(--shadow-sm);transition:background .2s var(--ease),border-color .2s var(--ease),box-shadow .2s var(--ease),transform .2s var(--ease)}
   .tbtn:hover{background:#f3f2f8;border-color:#dcdbe4;box-shadow:var(--shadow-md);transform:translateY(-1px)}
@@ -90,7 +90,7 @@
   /* Cards */
   .cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
   /* Buscador minimalista (estilo botón claro, lupa gris + "Buscar") */
-  .searchbar{position:relative;width:min(320px,100%);margin:0 0 20px auto}
+  .searchbar{position:relative;width:100%;margin:0 0 22px 0}
   .searchbar .lupa{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:17px;height:17px;color:#9a9aa4;pointer-events:none}
   .searchbar input{width:100%;border:1px solid var(--line);border-radius:12px;background:#fff;padding:11px 14px 11px 41px;font-family:var(--font-ui);font-size:13.5px;color:var(--ink);box-shadow:var(--shadow-sm);transition:border-color .2s var(--ease),box-shadow .2s var(--ease)}
   .searchbar input::placeholder{color:#9a9aa4}
@@ -201,10 +201,10 @@
   /* Modal */
   .overlay{position:fixed;inset:0;background:rgba(15,14,20,.55);display:none;align-items:flex-start;justify-content:center;z-index:50;padding:40px 16px;overflow:auto}
   .overlay.open{display:flex}
-  .modal{background:#fff;border-radius:18px;width:560px;max-width:100%;padding:24px 26px;box-shadow:0 30px 60px -20px rgba(0,0,0,.5)}
+  .modal{background:#fff;border-radius:20px;width:760px;max-width:100%;padding:30px 36px;box-shadow:0 40px 80px -24px rgba(20,15,50,.55)}
   .modal h3{margin:0 0 4px;font-size:19px}
   .modal .msub{color:var(--muted);font-size:13px;margin:0 0 18px}
-  .frow{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+  .frow{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:15px}
   .f{display:flex;flex-direction:column;gap:5px}
   .f.full{grid-column:1 / -1}
   .f label{font-size:12px;font-weight:600;color:#4a4f5e}
@@ -269,13 +269,13 @@
       <div style="display:flex;align-items:center;gap:12px;min-width:0">
         <button class="menu-btn" id="menuBtn" aria-label="Abrir menú">☰</button>
         <div style="min-width:0">
-          <div class="crumb" id="crumb"><span class="home">Inicio</span></div>
-          <h1 id="title">Welcome!</h1>
-          <div class="sub" id="subtitle">Todos los clientes y su operación activa</div>
+          <div class="crumb" id="crumb"></div>
+          <h1 id="title" class="big">Welcome!</h1>
+          <div class="sub" id="subtitle"></div>
         </div>
       </div>
       <div class="toolbar">
-        <div class="date"><div id="today">—</div><div class="demo">Vista de ejemplo</div></div>
+        <span class="demo">Vista de ejemplo</span>
         <button class="tbtn" onclick="openCliModal()"><span class="plus">+</span> Nuevo cliente</button>
         <button class="tbtn primary" onclick="openActModal()"><span class="plus">+</span> Nueva actividad</button>
       </div>
@@ -289,7 +289,6 @@
           <svg class="lupa" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
           <input id="client-search" type="text" placeholder="Buscar" autocomplete="off" aria-label="Buscar cliente">
         </div>
-        <div class="section-title"><span class="dot"></span> Clientes <span class="hint">Da clic en un cliente para abrir su portal · ordenados por lo que pide atención</span></div>
         <div class="cards" id="client-cards"></div>
       </section>
 
@@ -832,12 +831,17 @@
     finalizados:["Finalizados","Histórico · nada se pierde"],
     cliente:["",""], prospecto:["",""]
   };
+  let todayStr='';
   function showView(view,name){
     document.querySelectorAll('.view').forEach(v=>v.classList.add('hidden'));
     el('view-'+view).classList.remove('hidden');
     const navMatch=view==='prospecto'?'prospectos':view;
     document.querySelectorAll('.nav a').forEach(n=>n.classList.toggle('active',n.dataset.view===navMatch));
-    if(view==='cliente'){
+    el('title').classList.toggle('big', view==='inicio');
+    if(view==='inicio'){
+      el('title').textContent='Welcome!'; el('subtitle').textContent=todayStr;
+      el('crumb').innerHTML='';
+    }else if(view==='cliente'){
       el('title').textContent=name; el('subtitle').textContent='Portal del cliente · brief, entregables y parrilla';
       el('crumb').innerHTML=`<span class="home" onclick="goHome()">Inicio</span> › <b>${name}</b>`;
     }else if(view==='prospecto'){
@@ -916,8 +920,8 @@
 
   // ===== Init =====
   if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches) document.body.classList.add('anim');
-  el('today').textContent=new Date(2026,5,14).toLocaleDateString('es-MX',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).replace(/^\w/,c=>c.toUpperCase());
-  fillAccFilter(); fillParrillaCli(); renderAll();
+  todayStr=new Date(2026,5,14).toLocaleDateString('es-MX',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).replace(/^\w/,c=>c.toUpperCase());
+  fillAccFilter(); fillParrillaCli(); renderAll(); showView('inicio');
 </script>
 </body>
 </html>
