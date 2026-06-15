@@ -301,6 +301,13 @@
   .bchip{display:inline-flex;align-items:center;gap:7px;font-size:13px;background:var(--brand-soft);color:var(--brand-deep);border-radius:8px;padding:5px 10px;font-weight:500}
   .bchip button{border:none;background:none;cursor:pointer;color:var(--brand-deep);opacity:.55;font-size:14px;line-height:1;padding:0}
   .bchip button:hover{opacity:1}
+  .bf-links{display:flex;flex-wrap:wrap;gap:7px;align-items:center}
+  .linkchip{text-decoration:none;background:var(--brand-soft);color:var(--brand-deep)}
+  .linkchip svg{width:13px;height:13px}
+  .linkchip span{max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .linkchip:hover{text-decoration:underline}
+  .link-add{display:inline-flex;gap:6px;flex-wrap:wrap}
+  .link-add .lk-name{min-width:120px}
   .bf-add{border:1px dashed var(--line);border-radius:8px;padding:6px 10px;font-size:13px;font-family:inherit;min-width:160px;background:none;color:var(--ink)}
   .bf-add:focus{outline:none;border-color:var(--brand)}
   .ch-chip{font-size:12.5px;font-weight:600;border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 14px;cursor:pointer;color:var(--muted);transition:.15s}
@@ -968,7 +975,8 @@
     users:_sv('<circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0"/><path d="M16 5.2a3 3 0 0 1 0 5.6M21 20a6 6 0 0 0-3.5-5.4"/>'),
     globe:_sv('<circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.5 2.5 15.5 0 18M12 3c-2.5 2.5-2.5 15.5 0 18"/>'),
     folder:_sv('<path d="M3 7a2 2 0 0 1 2-2h3.5l2 2H19a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>'),
-    upload:_sv('<path d="M12 15V4M8 8l4-4 4 4M5 19h14"/>')
+    upload:_sv('<path d="M12 15V4M8 8l4-4 4 4M5 19h14"/>'),
+    link:_sv('<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1.5 1.5"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7L12.5 17"/>')
   };
   const BRIEF_SCHEMA=[
     {id:'general',n:'Información general',ic:'doc',fields:[
@@ -978,7 +986,8 @@
       {k:'cli_sector',l:'Clientes actuales · Sector',kind:'text'},
       {k:'cli_perfil',l:'Clientes actuales · Perfil',kind:'text'},
       {k:'cli_tamano',l:'Clientes actuales · Tamaño',kind:'text'},
-      {k:'cli_ideales',l:'Clientes ideales',kind:'long'}]},
+      {k:'cli_ideales',l:'Clientes ideales',kind:'long'},
+      {k:'links_recursos',l:'Links y recursos directos (brochures, landings, materiales en otras páginas)',kind:'links'}]},
     {id:'redes',n:'Redes sociales',ic:'phone',fields:[
       {k:'situacion',l:'Situación actual en redes sociales',kind:'long'},
       {k:'red_principal',l:'Red social principal',kind:'text'},
@@ -1011,6 +1020,7 @@
       {k:'tipografia',l:'Tipografía',kind:'type'},
       {k:'distintivos',l:'Logotipo, curvas o elementos gráficos distintivos',kind:'long'},
       {k:'referencias',l:'Referencias visuales',kind:'list'},
+      {k:'links_marca',l:'Links de marca (brandbook, manual, materiales)',kind:'links'},
       {k:'permitidos',l:'Elementos visuales permitidos',kind:'list'},
       {k:'nunca',l:'Elementos visuales que NUNCA se deben agregar',kind:'list'}]},
     {id:'tono',n:'Comunicación y tono de voz',ic:'chat',sub:'¿Si tu marca fuera una persona, cómo sería?',fields:[
@@ -1053,6 +1063,8 @@
       return `<div class="bf"><label>${f.l}</label><div class="type-prev"><div class="aa" style="${ff}">Aa</div><div class="sample" style="${ff}">ABCDabcd 0123 · El veloz murciélago</div><input class="bf-add" data-save="${f.k}" value="${esc(font)}" placeholder="Nombre de la tipografía" style="margin-top:10px;min-width:220px"></div></div>`;}
     if(f.kind==='logo'){const url=v||'';
       return `<div class="bf"><label>${f.l}</label>${url?`<div style="display:flex;gap:12px;align-items:center"><img src="${esc(url)}" style="max-height:58px;border-radius:8px"><button type="button" class="qchip" data-logo="1">Cambiar</button></div>`:`<button type="button" class="qchip empty" data-logo="1">${ICONS.upload} Subir / pegar link del logo</button>`}</div>`;}
+    if(f.kind==='links'){const arr=v||[];
+      return `<div class="bf"><label>${f.l}</label><div class="bf-links">${arr.map((it,i)=>`<a class="bchip linkchip" href="${esc(it.u)}" target="_blank" rel="noopener">${ICONS.link} <span>${esc(it.t||it.u)}</span><button type="button" data-rmlink="${f.k}|${i}" title="Quitar">×</button></a>`).join('')}<span class="link-add"><input class="bf-add lk-name" data-lkname="${f.k}" placeholder="Nombre (ej. Brochure)"><input class="bf-add lk-url" data-lkurl="${f.k}" placeholder="Pega el link y Enter"></span></div></div>`;}
     return '';
   }
   function dosHTML(c,sec){const b=gb(c);
@@ -1105,6 +1117,8 @@
     if(!curClient)return; const b=gb(curClient);
     const head=e.target.closest('[data-acc]');
     if(head){const id=head.dataset.acc;const item=head.closest('.acc-item');const open=item.classList.toggle('open');open?briefOpen.add(id):briefOpen.delete(id);return;}
+    const rl=e.target.closest('[data-rmlink]');
+    if(rl){e.preventDefault();const[k,i]=rl.dataset.rmlink.split('|');briefArr(curClient,k).splice(+i,1);renderBrief(curClient);return;}
     const rm=e.target.closest('[data-rm]');
     if(rm){const[k,i]=rm.dataset.rm.split('|');briefArr(curClient,k).splice(+i,1);renderBrief(curClient);return;}
     const ch=e.target.closest('[data-ch]');
@@ -1124,6 +1138,7 @@
     if(!curClient)return;const t=e.target;
     if(e.key==='Enter'&&t.dataset&&t.dataset.add){e.preventDefault();const v=t.value.trim();if(v){briefArr(curClient,t.dataset.add).push(v);const k=t.dataset.add;renderBrief(curClient);const ni=document.querySelector(`[data-add="${k}"]`);if(ni)ni.focus();}}
     if(e.key==='Enter'&&t.dataset&&t.dataset.addcolor){e.preventDefault();let v=t.value.trim();if(v){if(v[0]!=='#'&&/^[0-9a-fA-F]{3,6}$/.test(v))v='#'+v;briefArr(curClient,t.dataset.addcolor).push(v);const k=t.dataset.addcolor;renderBrief(curClient);const ni=document.querySelector(`[data-addcolor="${k}"]`);if(ni)ni.focus();}}
+    if(e.key==='Enter'&&t.dataset&&t.dataset.lkurl){e.preventDefault();let u=t.value.trim();if(u){if(!/^https?:\/\//i.test(u))u='https://'+u;const wrap=t.closest('.link-add');const ne=wrap&&wrap.querySelector('[data-lkname]');const nm=ne?ne.value.trim():'';const k=t.dataset.lkurl;briefArr(curClient,k).push({t:nm,u:u});renderBrief(curClient);const ni=document.querySelector(`[data-lkurl="${k}"]`);if(ni)ni.focus();}}
   }
   function onBriefBlur(e){
     if(!curClient)return;const t=e.target;
