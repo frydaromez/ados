@@ -720,7 +720,20 @@
   };
   // ===== Cuentas =====
   let clients = [
-    {id:"auren",name:"Auren",role:"Salud empresarial",color:"#8155ff",ini:"AU",
+    {id:"auren",name:"Auren",role:"Servicios profesionales",color:"#8155ff",ini:"AU",
+      brief:{
+        giro:"Firma de servicios profesionales: auditoría, consultoría, legal e impuestos (B2B).",
+        descripcion:"Auren es una firma de servicios profesionales que genera confianza a través de auditoría, consultoría y servicios legales y fiscales, con una asesoría 360° adaptada a cada organización.",
+        servicios:["Auditoría","Consultoría","Legal","Impuestos"],
+        sitio:"https://auren.com/mx/",
+        tipografia:"Bodoni MT",
+        links_redes:[
+          {t:"Facebook",u:"https://www.facebook.com/aurenmx/"},
+          {t:"Instagram",u:"https://www.instagram.com/aurenmexico/"},
+          {t:"LinkedIn",u:"https://www.linkedin.com/company/auren-méxico/"},
+          {t:"TikTok",u:"https://www.tiktok.com/@aurenmexico"}
+        ]
+      },
       info:{"Qué hace":"Salud y bienestar para empresas.","Redes":"Instagram · LinkedIn · Facebook","Objetivo":"Agendas para CheckUp Empresarial.","Tono":"Cercano, claro, profesional. Nada alarmista.","Identidad":["Azul Auren","Poppins","Logo en fondo claro"],"Links":"Drive · Identidad · Parrilla"},
       memo:["No usar letras pequeñas.","Evitar diseños saturados.","Respetar el azul de marca.","Tono cercano, sin alarmar.","Les gustó la parrilla de mayo con fotos reales.","Revisar el logo en fondos oscuros."],
       pauta:{"Campaña":"CheckUp Empresarial","Periodo":"Jun 1 – Jun 30","Objetivo":"Leads / mensajes"},
@@ -991,6 +1004,7 @@
     {id:'redes',n:'Redes sociales',ic:'phone',fields:[
       {k:'situacion',l:'Situación actual en redes sociales',kind:'long'},
       {k:'red_principal',l:'Red social principal',kind:'text'},
+      {k:'links_redes',l:'Perfiles / links de redes',kind:'links'},
       {k:'objetivo_red',l:'Objetivo por red social',kind:'long'},
       {k:'look_red',l:'Look por red social',kind:'long'},
       {k:'formatos_red',l:'Formatos recomendados por red social',kind:'list'},
