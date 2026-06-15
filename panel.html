@@ -1083,7 +1083,7 @@
   }
   function renderBrief(c){
     const b=gb(c);
-    const snap=`<div class="brief-snap"><div class="brief-logo" data-logo="1">${b.logo?`<img src="${esc(b.logo)}">`:esc(c.ini)}</div><div class="si"><h2>${esc(c.name)}</h2><div class="giro">${b.giro?esc(b.giro):'Giro pendiente'}</div><div class="desc">${b.descripcion?esc(b.descripcion):'Descripción pendiente'}</div></div><div class="brief-quick">${b.sitio?`<a class="qchip" href="${esc(b.sitio)}" target="_blank" rel="noopener">${ICONS.globe} Sitio</a>`:`<button type="button" class="qchip empty" data-snaplink="sitio">${ICONS.globe} Sitio</button>`}${b.drive?`<a class="qchip" href="${esc(b.drive)}" target="_blank" rel="noopener">${ICONS.folder} Drive</a>`:`<button type="button" class="qchip empty" data-snaplink="drive">${ICONS.folder} Drive</button>`}</div></div>`;
+    const snap=`<div class="brief-snap"><div class="brief-logo" data-logo="1">${b.logo?`<img src="${esc(b.logo)}">`:esc(c.ini)}</div><div class="si"><h2>${esc(c.name)}</h2><div class="giro">${b.giro?esc(b.giro):'Giro pendiente'}</div><div class="desc">${b.descripcion?esc(b.descripcion):'Descripción pendiente'}</div></div><div class="brief-quick">${b.sitio?`<a class="qchip" href="${esc(b.sitio)}" target="_blank" rel="noopener">${ICONS.globe} Sitio</a>`:`<button type="button" class="qchip empty" data-snaplink="sitio">${ICONS.globe} Sitio</button>`}</div></div>`;
     el('brief-root').innerHTML=snap+BRIEF_SCHEMA.map(s=>sectionHTML(c,s)).join('');
     renderBriefIndex(); renderBriefRail(); updateBriefProgress();
   }
