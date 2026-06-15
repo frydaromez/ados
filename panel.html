@@ -64,8 +64,10 @@
   .head-left{display:flex;flex-direction:column;justify-content:flex-end;min-width:0;padding-bottom:4px}
   .brandmark{display:flex;align-items:center;gap:9px;margin-bottom:10px}
   .brandmark .bm-ic svg{width:30px;height:30px;display:block}
-  .brandmark .bm-txt{font-family:var(--font-head);font-weight:800;font-size:20px;letter-spacing:-.02em;color:var(--ink)}
+  .brandmark .bm-txt{display:inline-flex;flex-direction:column;line-height:1.05;font-family:var(--font-head);font-weight:800;font-size:20px;letter-spacing:-.02em;color:var(--ink)}
+  .brandmark .bm-txt small{font-family:var(--font-ui);font-size:10.5px;font-weight:600;letter-spacing:.01em;color:var(--muted);margin-top:2px}
   .home-btn svg{width:16px;height:16px;color:var(--muted)}
+  .acc-actions{display:flex;gap:12px;align-items:flex-start}
   .topbar-right{display:flex;flex-direction:column;align-items:stretch;gap:12px}
   .crumb{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
   .crumb b{color:var(--ink)}
@@ -327,7 +329,7 @@
   .vrow[aria-pressed="true"] .vbox span{opacity:1}
   .drive-row{margin-top:16px;padding-top:14px;border-top:1px dashed var(--line)}
   /* Snapshot compacto: solo logo + accesos */
-  .brief-snap{justify-content:flex-start;padding:16px 22px}
+  .brief-snap{padding:20px 24px}
   .brief-snap .brief-quick{margin-left:auto}
   /* Barra de progreso del brief */
   .brief-progress{position:sticky;top:84px;height:4px;background:#ececf3;border-radius:99px;overflow:hidden;margin-bottom:16px;z-index:4}
@@ -344,7 +346,7 @@
   .bi-item.active{background:var(--brand-soft);color:var(--brand-deep);font-weight:600}
   /* Botón + dropdown "Menú del brief" */
   .brief-menu-wrap{position:relative}
-  .brief-menu-btn{width:100%;justify-content:center}
+  .brief-menu-btn{justify-content:center}
   .brief-menu-btn svg{width:16px;height:16px;color:var(--muted)}
   .brief-menu-pop{position:absolute;right:0;top:calc(100% + 8px);background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 24px 56px -22px rgba(20,15,50,.45);padding:8px;min-width:248px;z-index:25;display:none;max-height:72vh;overflow:auto}
   .brief-menu-pop.open{display:block;animation:accIn .2s var(--ease-out)}
@@ -407,7 +409,7 @@
         <div class="head-left">
           <div class="brandmark" id="brandmark" style="display:none">
             <span class="bm-ic"><svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="adsg2" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="#6a3cf0"/><stop offset="1" stop-color="#b9a3ff"/></linearGradient></defs><g stroke="url(#adsg2)" stroke-width="1.5" opacity=".85"><line x1="6" y1="8" x2="13" y2="14"/><line x1="13" y1="14" x2="9" y2="23"/><line x1="13" y1="14" x2="20" y2="21"/><line x1="9" y1="23" x2="20" y2="21"/><line x1="20" y1="21" x2="25" y2="12"/><line x1="25" y1="12" x2="22" y2="6"/></g><g fill="url(#adsg2)"><circle cx="6" cy="8" r="3"/><circle cx="13" cy="14" r="3.4"/><circle cx="20" cy="21" r="3"/><circle cx="22" cy="6" r="2.4"/></g><g fill="#15121f" stroke="url(#adsg2)" stroke-width="1.7"><circle cx="9" cy="23" r="2.7"/><circle cx="25" cy="12" r="2.5"/></g></svg></span>
-            <span class="bm-txt">AdsOS</span>
+            <span class="bm-txt">AdsOS<small>AdsProject Media</small></span>
           </div>
           <div>
             <div class="crumb" id="crumb"></div>
@@ -421,10 +423,12 @@
           <button class="tbtn" onclick="openCliModal()"><span class="plus">+</span> Nuevo cliente</button>
           <button class="tbtn primary" onclick="openActModal()"><span class="plus">+</span> Nueva actividad</button>
         </div>
-        <button class="tbtn home-btn" id="homeBtn" onclick="goHome()" style="display:none"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10"/></svg> Inicio</button>
-        <div class="brief-menu-wrap" id="briefMenuWrap" style="display:none">
-          <button class="tbtn brief-menu-btn" id="briefMenuBtn" onclick="toggleBriefMenu(event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg> Menú del brief</button>
-          <div class="brief-menu-pop" id="briefMenuPop"></div>
+        <div class="acc-actions" id="accActions" style="display:none">
+          <div class="brief-menu-wrap" id="briefMenuWrap" style="display:none">
+            <button class="tbtn brief-menu-btn" id="briefMenuBtn" onclick="toggleBriefMenu(event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg> Menú del brief</button>
+            <div class="brief-menu-pop" id="briefMenuPop"></div>
+          </div>
+          <button class="tbtn home-btn" id="homeBtn" onclick="goHome()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10"/></svg> Inicio</button>
         </div>
         <div class="searchbar" id="headerSearch">
           <svg class="lupa" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
@@ -965,6 +969,16 @@
       {k:'cli_perfil',l:'Clientes actuales · Perfil',kind:'text'},
       {k:'cli_tamano',l:'Clientes actuales · Tamaño',kind:'text'},
       {k:'cli_ideales',l:'Clientes ideales',kind:'long'}]},
+    {id:'redes',n:'Redes sociales',ic:'phone',fields:[
+      {k:'situacion',l:'Situación actual en redes sociales',kind:'long'},
+      {k:'red_principal',l:'Red social principal',kind:'text'},
+      {k:'objetivo_red',l:'Objetivo por red social',kind:'long'},
+      {k:'look_red',l:'Look por red social',kind:'long'},
+      {k:'formatos_red',l:'Formatos recomendados por red social',kind:'list'},
+      {k:'contenido_prioritario',l:'Tipo de contenido prioritario',kind:'text'},
+      {k:'frecuencia',l:'Frecuencia sugerida',kind:'text'},
+      {k:'funciono',l:'Contenido que mejor ha funcionado',kind:'list'},
+      {k:'evitar',l:'Contenido que debe evitarse',kind:'list'}]},
     {id:'estrategia',n:'Propuesta estratégica',ic:'target',fields:[
       {k:'puv',l:'Propuesta única de valor',kind:'long'},
       {k:'diferenciadores',l:'Diferenciadores principales',kind:'list'},
@@ -996,16 +1010,6 @@
       {k:'traduccion',l:'Cambio de tecnicismos a lenguaje cálido y entendible',kind:'long'},
       {k:'palabras_si',l:'Palabras o frases que SÍ se pueden usar',kind:'list'},
       {k:'palabras_no',l:'Palabras o frases que deben evitarse',kind:'list'}]},
-    {id:'redes',n:'Redes sociales',ic:'phone',fields:[
-      {k:'situacion',l:'Situación actual en redes sociales',kind:'long'},
-      {k:'red_principal',l:'Red social principal',kind:'text'},
-      {k:'objetivo_red',l:'Objetivo por red social',kind:'long'},
-      {k:'look_red',l:'Look por red social',kind:'long'},
-      {k:'formatos_red',l:'Formatos recomendados por red social',kind:'list'},
-      {k:'contenido_prioritario',l:'Tipo de contenido prioritario',kind:'text'},
-      {k:'frecuencia',l:'Frecuencia sugerida',kind:'text'},
-      {k:'funciono',l:'Contenido que mejor ha funcionado',kind:'list'},
-      {k:'evitar',l:'Contenido que debe evitarse',kind:'list'}]},
     {id:'dosdonts',n:"Do's & Don'ts",ic:'checklist',kind:'dos',pairs:[
       ['Generales de marca','dos_gen','dont_gen'],
       ['Visuales','dos_vis','dont_vis'],
@@ -1057,7 +1061,7 @@
   }
   function renderBrief(c){
     const b=gb(c);
-    const snap=`<div class="brief-snap"><div class="brief-logo" data-logo="1">${b.logo?`<img src="${esc(b.logo)}">`:esc(c.ini)}</div><div class="brief-quick">${b.sitio?`<a class="qchip" href="${esc(b.sitio)}" target="_blank" rel="noopener">${ICONS.globe} Sitio</a>`:`<button type="button" class="qchip empty" data-snaplink="sitio">${ICONS.globe} Sitio</button>`}${b.drive?`<a class="qchip" href="${esc(b.drive)}" target="_blank" rel="noopener">${ICONS.folder} Drive</a>`:`<button type="button" class="qchip empty" data-snaplink="drive">${ICONS.folder} Drive</button>`}</div></div>`;
+    const snap=`<div class="brief-snap"><div class="brief-logo" data-logo="1">${b.logo?`<img src="${esc(b.logo)}">`:esc(c.ini)}</div><div class="si"><h2>${esc(c.name)}</h2><div class="giro">${b.giro?esc(b.giro):'Giro pendiente'}</div><div class="desc">${b.descripcion?esc(b.descripcion):'Descripción pendiente'}</div></div><div class="brief-quick">${b.sitio?`<a class="qchip" href="${esc(b.sitio)}" target="_blank" rel="noopener">${ICONS.globe} Sitio</a>`:`<button type="button" class="qchip empty" data-snaplink="sitio">${ICONS.globe} Sitio</button>`}${b.drive?`<a class="qchip" href="${esc(b.drive)}" target="_blank" rel="noopener">${ICONS.folder} Drive</a>`:`<button type="button" class="qchip empty" data-snaplink="drive">${ICONS.folder} Drive</button>`}</div></div>`;
     el('brief-root').innerHTML=snap+BRIEF_SCHEMA.map(s=>sectionHTML(c,s)).join('');
     renderBriefIndex(); updateBriefProgress();
   }
@@ -1173,6 +1177,8 @@
     document.querySelectorAll('#ptabs .tab').forEach(t=>t.classList.toggle('active',t.dataset.pt===name));
     document.querySelectorAll('.ptab').forEach(p=>p.classList.toggle('active',p.id==='pt-'+name));
     el('detail-head').style.display = name==='brief' ? 'none' : '';
+    el('briefMenuWrap').style.display = name==='brief' ? '' : 'none';
+    if(name!=='brief')closeBriefMenu();
     if(name==='brief'){window.scrollTo(0,0);setTimeout(updateBriefProgress,40);}
   }
 
@@ -1199,9 +1205,8 @@
     document.querySelector('.topbar').classList.toggle('compact', inAcc);
     el('brandmark').style.display = inAcc ? '' : 'none';
     el('toolbar').style.display = inAcc ? 'none' : '';
-    el('homeBtn').style.display = inAcc ? '' : 'none';
-    el('briefMenuWrap').style.display = view==='cliente' ? '' : 'none';
-    if(view!=='cliente')closeBriefMenu();
+    el('accActions').style.display = inAcc ? '' : 'none';
+    if(view!=='cliente'){el('briefMenuWrap').style.display='none';closeBriefMenu();}
     el('headerSearch').style.display = view==='inicio' ? '' : 'none';
     if(view==='inicio'){
       el('title').textContent='Welcome!';
