@@ -332,9 +332,16 @@
   /* Snapshot compacto: solo logo + accesos */
   .brief-snap{padding:20px 24px}
   .brief-snap .brief-quick{margin-left:auto}
-  /* Barra de progreso del brief */
-  .brief-progress{position:sticky;top:84px;height:4px;background:#ececf3;border-radius:99px;overflow:hidden;margin-bottom:16px;z-index:4}
-  .brief-progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--brand),var(--brand-2));border-radius:99px;transition:width .15s linear}
+  /* Barra lateral de progreso (puntos por sección) */
+  .brief-layout{display:grid;grid-template-columns:30px 1fr;gap:20px;align-items:start}
+  .brief-rail{position:sticky;top:104px;height:calc(100vh - 190px);max-height:540px;min-height:300px;display:flex;justify-content:center}
+  .br-track{position:relative;width:4px;background:#e9e9f1;border-radius:99px;display:flex;flex-direction:column;justify-content:space-between;align-items:center;padding:3px 0}
+  .br-fill{position:absolute;top:0;left:0;width:100%;background:linear-gradient(var(--brand),var(--brand-2));border-radius:99px;height:0;transition:height .25s var(--ease)}
+  .br-dot{position:relative;z-index:1;width:13px;height:13px;border-radius:50%;border:2px solid #d6d6e0;background:#fff;cursor:pointer;padding:0;transition:transform .18s var(--ease),border-color .18s var(--ease),background .18s var(--ease)}
+  .br-dot:hover{border-color:var(--brand);transform:scale(1.25)}
+  .br-dot.passed{border-color:var(--brand);background:var(--brand)}
+  .br-dot.active{box-shadow:0 0 0 4px var(--brand-soft);transform:scale(1.15)}
+  @media(max-width:860px){.brief-layout{grid-template-columns:1fr}.brief-rail{display:none}}
   /* Coloreado de secciones recorridas */
   .acc-item{scroll-margin-top:96px}
   .acc-head{position:relative}
@@ -555,8 +562,10 @@
         </div>
 
         <div class="ptab" id="pt-brief">
-          <div class="brief-progress" id="briefProgress"><i id="briefProgressFill"></i></div>
-          <div id="brief-root"></div>
+          <div class="brief-layout">
+            <div class="brief-rail" id="briefRail"></div>
+            <div id="brief-root"></div>
+          </div>
         </div>
 
         <div class="ptab" id="pt-parrilla">
@@ -1064,21 +1073,23 @@
     const b=gb(c);
     const snap=`<div class="brief-snap"><div class="brief-logo" data-logo="1">${b.logo?`<img src="${esc(b.logo)}">`:esc(c.ini)}</div><div class="si"><h2>${esc(c.name)}</h2><div class="giro">${b.giro?esc(b.giro):'Giro pendiente'}</div><div class="desc">${b.descripcion?esc(b.descripcion):'Descripción pendiente'}</div></div><div class="brief-quick">${b.sitio?`<a class="qchip" href="${esc(b.sitio)}" target="_blank" rel="noopener">${ICONS.globe} Sitio</a>`:`<button type="button" class="qchip empty" data-snaplink="sitio">${ICONS.globe} Sitio</button>`}${b.drive?`<a class="qchip" href="${esc(b.drive)}" target="_blank" rel="noopener">${ICONS.folder} Drive</a>`:`<button type="button" class="qchip empty" data-snaplink="drive">${ICONS.folder} Drive</button>`}</div></div>`;
     el('brief-root').innerHTML=snap+BRIEF_SCHEMA.map(s=>sectionHTML(c,s)).join('');
-    renderBriefIndex(); updateBriefProgress();
+    renderBriefIndex(); renderBriefRail(); updateBriefProgress();
   }
   // Índice / navegador del brief
   function briefIndexHTML(){return '<div class="bi-title">Secciones</div>'+BRIEF_SCHEMA.map(s=>`<button type="button" class="bi-item" data-jump="${s.id}"><span class="ic">${ICONS[s.ic]||''}</span>${s.n}</button>`).join('');}
   function renderBriefIndex(){const p=el('briefMenuPop');if(p)p.innerHTML=briefIndexHTML();}
   function setActiveIndex(id){document.querySelectorAll('.bi-item').forEach(b=>b.classList.toggle('active',b.dataset.jump===id));}
+  function renderBriefRail(){const r=el('briefRail');if(r)r.innerHTML='<div class="br-track"><i class="br-fill" id="briefRailFill"></i>'+BRIEF_SCHEMA.map(s=>`<button type="button" class="br-dot" data-jump="${s.id}" title="${esc(s.n)}"></button>`).join('')+'</div>';}
   function updateBriefProgress(){
     const pt=el('pt-brief'); if(!pt||!pt.classList.contains('active'))return;
     const items=[...document.querySelectorAll('#brief-root .acc-item')]; if(!items.length)return;
-    const line=(window.innerHeight||800)*0.32+90; let cur=-1;
+    const line=(window.innerHeight||800)*0.32+90; let cur=0;
     items.forEach((it,i)=>{ if(it.getBoundingClientRect().top<=line)cur=i; });
     items.forEach((it,i)=>it.classList.toggle('passed', i<=cur));
-    if(cur>=0){const h=items[cur].querySelector('[data-acc]');if(h)setActiveIndex(h.dataset.acc);}
-    const root=el('brief-root'); const fill=el('briefProgressFill');
-    if(root&&fill){const r=root.getBoundingClientRect();const total=r.height-(window.innerHeight||800)*0.5;const done=Math.min(total,Math.max(0,-r.top+ (window.innerHeight||800)*0.32));fill.style.width=(total>0?Math.min(100,done/total*100):100)+'%';}
+    const dots=document.querySelectorAll('.br-dot');
+    dots.forEach((d,i)=>{d.classList.toggle('passed',i<=cur);d.classList.toggle('active',i===cur);});
+    const fill=el('briefRailFill'); if(fill)fill.style.height=(items.length>1?cur/(items.length-1)*100:100)+'%';
+    const h=items[cur].querySelector('[data-acc]'); if(h)setActiveIndex(h.dataset.acc);
   }
   function jumpToSection(id){
     setPtab('brief'); briefOpen.add(id);
