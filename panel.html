@@ -456,6 +456,7 @@
           <div class="sub" id="subtitle"></div>
         </div>
       </div>
+      <input type="file" id="logoFileInput" accept="image/*" hidden>
       <div class="topbar-right">
         <div class="toolbar" id="toolbar">
           <button class="tbtn" onclick="openCliModal()"><span class="plus">+</span> Nuevo cliente</button>
@@ -1118,7 +1119,7 @@
     if(f.kind==='type'){const font=v||'';const ff=font?`font-family:'${esc(font)}',sans-serif`:'';
       return `<div class="bf"><label>${f.l}</label><div class="type-prev"><div class="aa" style="${ff}">Aa</div><div class="sample" style="${ff}">ABCDabcd 0123 · El veloz murciélago</div><input class="bf-add" data-save="${f.k}" value="${esc(font)}" placeholder="Nombre de la tipografía" style="margin-top:10px;min-width:220px"></div></div>`;}
     if(f.kind==='logo'){const url=v||'';
-      return `<div class="bf"><label>${f.l}</label>${url?`<div style="display:flex;gap:12px;align-items:center"><img src="${esc(url)}" style="max-height:58px;border-radius:8px"><button type="button" class="qchip" data-logo="1">Cambiar</button></div>`:`<button type="button" class="qchip empty" data-logo="1">${ICONS.upload} Subir / pegar link del logo</button>`}</div>`;}
+      return `<div class="bf"><label>${f.l}</label>${url?`<div style="display:flex;gap:12px;align-items:center"><img src="${esc(url)}" style="max-height:58px;border-radius:8px"><button type="button" class="qchip" data-logo="1">Cambiar</button></div>`:`<button type="button" class="qchip empty" data-logo="1">${ICONS.upload} Subir logo (PNG/JPG)</button>`}</div>`;}
     if(f.kind==='links'){const arr=v||[];
       return `<div class="bf"><label>${f.l}</label><div class="bf-links">${arr.map((it,i)=>`<a class="bchip linkchip" href="${esc(it.u)}" target="_blank" rel="noopener">${ICONS.link} <span>${esc(it.t||it.u)}</span><button type="button" data-rmlink="${f.k}|${i}" title="Quitar">×</button></a>`).join('')}<span class="link-add"><input class="bf-add lk-name" data-lkname="${f.k}" placeholder="Nombre (ej. Brochure)"><input class="bf-add lk-url" data-lkurl="${f.k}" placeholder="Pega el link y Enter"></span></div></div>`;}
     return '';
@@ -1190,7 +1191,7 @@
     const dr=e.target.closest('[data-drive]');
     if(dr){const cur=b['_drive_'+dr.dataset.drive]||'';const url=prompt('Pega el link de la carpeta de Drive:',cur);if(url!==null){b['_drive_'+dr.dataset.drive]=url.trim();renderBrief(curClient);}return;}
     const lg=e.target.closest('[data-logo]');
-    if(lg){const url=prompt('Pega el link de la imagen del logo (PNG/JPG):',b.logo||'');if(url!==null){b.logo=url.trim();renderBrief(curClient);}return;}
+    if(lg){el('logoFileInput').click();return;}
     const sl=e.target.closest('[data-snaplink]');
     if(sl){const key=sl.dataset.snaplink;const url=prompt('Pega el link:',b[key]||'');if(url!==null){b[key]=url.trim();renderBrief(curClient);}return;}
   }
@@ -1207,6 +1208,18 @@
   }
   // ===== Persistencia (localStorage) + exportar a Word =====
   function persist(){try{localStorage.setItem('adsos_data',JSON.stringify({clients:clients,prospects:prospects,acts:acts}));}catch(e){}}
+  function handleLogoFile(e){
+    const f=e.target.files&&e.target.files[0]; if(!f||!curClient){e.target.value='';return;}
+    const rd=new FileReader();
+    rd.onload=()=>{const img=new Image();img.onload=()=>{
+      const max=320,w=img.width,h=img.height,s=Math.min(1,max/Math.max(w,h));
+      const cv=document.createElement('canvas');cv.width=Math.round(w*s)||1;cv.height=Math.round(h*s)||1;
+      try{cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height);gb(curClient).logo=cv.toDataURL('image/png');}
+      catch(err){gb(curClient).logo=rd.result;}
+      renderBrief(curClient);persist();toast('Logo actualizado ✓');
+    };img.onerror=()=>{gb(curClient).logo=rd.result;renderBrief(curClient);persist();};img.src=rd.result;};
+    rd.readAsDataURL(f);e.target.value='';
+  }
   function saveBriefData(){persist();toast('Brief guardado ✓');}
   function loadPersisted(){try{const s=JSON.parse(localStorage.getItem('adsos_data')||'null');if(s&&Array.isArray(s.clients)&&s.clients.length){clients.length=0;s.clients.forEach(x=>clients.push(x));if(Array.isArray(s.prospects)){prospects.length=0;s.prospects.forEach(x=>prospects.push(x));}if(Array.isArray(s.acts)){acts.length=0;s.acts.forEach(x=>acts.push(x));}}}catch(e){}}
   function briefToHTML(c){
@@ -1474,6 +1487,7 @@
   briefRoot.addEventListener('click',onBriefClick);
   briefRoot.addEventListener('keydown',onBriefKey);
   briefRoot.addEventListener('focusout',onBriefBlur);
+  el('logoFileInput').addEventListener('change',handleLogoFile);
   document.addEventListener('click',e=>{const j=e.target.closest('[data-jump]');if(j){jumpToSection(j.dataset.jump);return;}if(!e.target.closest('#briefMenuWrap'))closeBriefMenu();});
   window.addEventListener('scroll',updateBriefProgress,{passive:true});
   window.addEventListener('resize',updateBriefProgress);
