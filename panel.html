@@ -332,9 +332,9 @@
   /* Snapshot compacto: solo logo + accesos */
   .brief-snap{padding:20px 24px}
   .brief-snap .brief-quick{margin-left:auto}
-  /* Barra lateral de progreso (puntos por sección) */
-  .brief-layout{display:grid;grid-template-columns:30px 1fr;gap:20px;align-items:start}
-  .brief-rail{position:sticky;top:104px;height:calc(100vh - 190px);max-height:540px;min-height:300px;display:flex;justify-content:center}
+  /* Barra lateral de progreso (puntos por sección) — fija a la derecha */
+  .brief-layout{position:relative;padding-right:26px}
+  .brief-rail{position:fixed;right:18px;top:50%;transform:translateY(-50%);height:min(58vh,440px);width:30px;display:flex;justify-content:center;z-index:6}
   .br-track{position:relative;width:4px;background:#e9e9f1;border-radius:99px;display:flex;flex-direction:column;justify-content:space-between;align-items:center;padding:3px 0}
   .br-fill{position:absolute;top:0;left:0;width:100%;background:linear-gradient(var(--brand),var(--brand-2));border-radius:99px;height:0;transition:height .25s var(--ease)}
   .br-dot{position:relative;z-index:1;width:13px;height:13px;border-radius:50%;border:2px solid #d6d6e0;background:#fff;cursor:pointer;padding:0;transition:transform .18s var(--ease),border-color .18s var(--ease),background .18s var(--ease)}
