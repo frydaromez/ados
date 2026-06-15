@@ -68,6 +68,29 @@
   .brandmark .bm-txt small{font-family:var(--font-ui);font-size:10.5px;font-weight:600;letter-spacing:.01em;color:var(--muted);margin-top:2px}
   .home-btn svg{width:16px;height:16px;color:var(--muted)}
   .acc-actions{display:flex;gap:12px;align-items:flex-start}
+  .brief-tools{display:flex;gap:10px;align-items:flex-start}
+  #saveBtn svg,#wordBtn svg{width:15px;height:15px;color:var(--muted)}
+  #saveBtn:hover{border-color:#16a34a;color:#16a34a}
+  #wordBtn:hover{border-color:#2563eb;color:#2563eb}
+  /* Subencabezado de grupo dentro de una sección */
+  .bf-subhead{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:6px 0 10px;padding-top:12px;border-top:1px solid var(--line)}
+  /* Tarjetas de competidores */
+  .comp-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+  .comp-card{border:1px solid var(--line);border-radius:12px;padding:13px 15px;background:#fafafe;position:relative}
+  .comp-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .comp-name{font-weight:700;font-size:14px;color:var(--ink)}
+  .comp-rm{border:none;background:none;cursor:pointer;color:var(--muted);font-size:16px;line-height:1;padding:0}
+  .comp-rm:hover{color:#e11d48}
+  .comp-links{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+  .clink{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:600;text-decoration:none;color:var(--brand-deep);background:var(--brand-soft);border-radius:7px;padding:3px 8px}
+  .clink svg{width:12px;height:12px}
+  .clink:hover{filter:brightness(.96)}
+  .comp-desc{font-size:12.5px;color:#4a4f5e;line-height:1.45;border:1px solid transparent;border-radius:8px;padding:5px 7px;outline:none;white-space:pre-wrap}
+  .comp-desc:hover{background:#f2f2f8}
+  .comp-desc:focus{background:#fff;border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
+  .comp-desc:empty:before{content:'Descripción…';color:var(--muted);font-style:italic}
+  .comp-add{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:7px;align-items:center;border:1px dashed var(--line);border-radius:12px;padding:11px 13px}
+  .comp-add .bf-add{min-width:130px}
   .topbar-right{display:flex;flex-direction:column;align-items:stretch;gap:12px}
   .crumb{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
   .crumb b{color:var(--ink)}
@@ -439,9 +462,13 @@
           <button class="tbtn primary" onclick="openActModal()"><span class="plus">+</span> Nueva actividad</button>
         </div>
         <div class="acc-actions" id="accActions" style="display:none">
-          <div class="brief-menu-wrap" id="briefMenuWrap" style="display:none">
-            <button class="tbtn brief-menu-btn" id="briefMenuBtn" onclick="toggleBriefMenu(event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg> Menú del brief</button>
-            <div class="brief-menu-pop" id="briefMenuPop"></div>
+          <div class="brief-tools" id="briefTools" style="display:none">
+            <div class="brief-menu-wrap" id="briefMenuWrap">
+              <button class="tbtn brief-menu-btn" id="briefMenuBtn" onclick="toggleBriefMenu(event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg> Menú del brief</button>
+              <div class="brief-menu-pop" id="briefMenuPop"></div>
+            </div>
+            <button class="tbtn" id="saveBtn" onclick="saveBriefData()" title="Guardar cambios"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg> Guardar</button>
+            <button class="tbtn" id="wordBtn" onclick="downloadBriefWord()" title="Descargar en Word"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M9 13l1.5 4 1.5-4 1.5 4 1.5-4"/></svg> Word</button>
           </div>
           <button class="tbtn home-btn" id="homeBtn" onclick="goHome()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10"/></svg> Inicio</button>
         </div>
@@ -735,14 +762,13 @@
         ],
         colores:["#DA291C","#262729","#FFFFFF"],
         versiones:["Logo con claim","Logo sin claim","Logo a un color","Logo en negativo"],
-        cli_perfil:"Audit & Assurance · Accountancy · Tax · Legal · Litigio · IT Consulting · Marketing · BPO · Advisory",
-        competencia:[
-          {t:"BDO México",u:"https://www.bdomexico.com"},
-          {t:"Grant Thornton",u:"https://www.grantthornton.mx"},
-          {t:"RSM México",u:"https://www.rsm.global/mexico"},
-          {t:"Forvis Mazars",u:"https://www.forvismazars.com/mx/es"}
-        ],
-        competencia_notas:"BDO México (bdomexico.com · X @BDOMexico · LinkedIn: BDO Castillo Miranda): red global de auditoría, impuestos y consultoría; en México como BDO Castillo Miranda desde 1943; empresas medianas-grandes y corporativos con operación internacional.\nGrant Thornton (grantthornton.mx · IG @grantthorntonmexico): red internacional enfocada en el middle market; empresas en crecimiento, negocios familiares y corporativos.\nRSM México (rsm.global/mexico · IG @rsmglobalmx): red global líder del middle market; organizaciones emprendedoras enfocadas en el crecimiento.\nForvis Mazars (forvismazars.com/mx · IG @forvismazarsmx; antes Mazars): red internacional de auditoría, contabilidad y asesoría fiscal/de negocios en 100+ países; corporativos, multinacionales y sector financiero."
+        lineas_servicio:["Audit & Assurance","Accountancy","Tax","Legal","Litigio","IT Consulting","Marketing","BPO","Advisory"],
+        competidores:[
+          {n:"BDO México",web:"https://www.bdomexico.com",li:"https://www.linkedin.com/company/bdo-castillo-miranda",x:"https://x.com/BDOMexico",d:"Red global de auditoría, impuestos y consultoría (en México como BDO Castillo Miranda desde 1943). Clientes: empresas medianas-grandes y corporativos con operación internacional. Sin Instagram MX (usa X)."},
+          {n:"Grant Thornton",web:"https://www.grantthornton.mx",li:"https://www.linkedin.com/company/grantthorntonmx",ig:"https://www.instagram.com/grantthorntonmexico/",d:"Red internacional enfocada en el middle market. Clientes: empresas en crecimiento, negocios familiares y corporativos."},
+          {n:"RSM México",web:"https://www.rsm.global/mexico",li:"https://www.linkedin.com/company/rsmglobalmx",ig:"https://www.instagram.com/rsmglobalmx/",d:"Red global líder del middle market. Clientes: organizaciones emprendedoras enfocadas en el crecimiento."},
+          {n:"Forvis Mazars",web:"https://www.forvismazars.com/mx/es",li:"https://www.linkedin.com/company/forvismazars-en-mexico",ig:"https://www.instagram.com/forvismazarsmx/",d:"Red internacional de auditoría, contabilidad y asesoría fiscal/de negocios en 100+ países (antes Mazars). Clientes: corporativos, multinacionales y sector financiero."}
+        ]
       },
       info:{"Qué hace":"Salud y bienestar para empresas.","Redes":"Instagram · LinkedIn · Facebook","Objetivo":"Agendas para CheckUp Empresarial.","Tono":"Cercano, claro, profesional. Nada alarmista.","Identidad":["Azul Auren","Poppins","Logo en fondo claro"],"Links":"Drive · Identidad · Parrilla"},
       memo:["No usar letras pequeñas.","Evitar diseños saturados.","Respetar el azul de marca.","Tono cercano, sin alarmar.","Les gustó la parrilla de mayo con fotos reales.","Revisar el logo en fondos oscuros."],
@@ -1006,9 +1032,12 @@
       {k:'giro',l:'Giro o industria',kind:'text'},
       {k:'descripcion',l:'Descripción breve del negocio',kind:'long'},
       {k:'servicios',l:'Servicios principales',kind:'list'},
-      {k:'cli_sector',l:'Clientes actuales · Sector',kind:'text'},
-      {k:'cli_perfil',l:'Clientes actuales · Perfil',kind:'text'},
-      {k:'cli_tamano',l:'Clientes actuales · Tamaño',kind:'text'},
+      {k:'lineas_servicio',l:'Líneas de servicio / áreas',kind:'list'},
+      {l:'Clientes actuales',kind:'subhead'},
+      {k:'cli_sector',l:'Sector',kind:'text'},
+      {k:'cli_perfil',l:'Perfil (quién decide)',kind:'text'},
+      {k:'cli_tamano',l:'Tamaño',kind:'text'},
+      {l:'Otros',kind:'subhead'},
       {k:'cli_ideales',l:'Clientes ideales',kind:'long'},
       {k:'links_recursos',l:'Links y recursos directos (brochures, landings, materiales en otras páginas)',kind:'links'}]},
     {id:'redes',n:'Redes sociales',ic:'phone',fields:[
@@ -1028,8 +1057,7 @@
       {k:'gancho',l:'Productos o servicios gancho',kind:'list'},
       {k:'keywords',l:'Palabras clave (como hablan los clientes)',kind:'list'},
       {k:'temporadas',l:'Temporadas altas y bajas',kind:'text'},
-      {k:'competencia',l:'Competencia / referentes (sitios)',kind:'links'},
-      {k:'competencia_notas',l:'Notas de competencia (perfil y redes)',kind:'long'}]},
+      {k:'competidores',l:'Competencia / referentes',kind:'competitors'}]},
     {id:'objetivos',n:'Objetivos y métricas',ic:'trend',nuevo:true,fields:[
       {k:'obj_negocio',l:'Objetivo de negocio',kind:'long'},
       {k:'obj_comunicacion',l:'Objetivo de comunicación',kind:'long'},
@@ -1075,7 +1103,10 @@
     return `<div class="bf-chips" data-list="${key}">${arr.map((x,i)=>`<span class="bchip">${esc(x)}<button type="button" data-rm="${key}|${i}">×</button></span>`).join('')}<input class="bf-add" data-add="${key}" placeholder="+ agregar y Enter"></div>`;
   }
   function fieldHTML(c,f){
+    if(f.kind==='subhead')return `<div class="bf-subhead">${esc(f.l)}</div>`;
     const v=gb(c)[f.k];
+    if(f.kind==='competitors'){const arr=v||[];
+      return `<div class="bf"><label>${f.l}</label><div class="comp-list">${arr.map((x,i)=>`<div class="comp-card"><div class="comp-head"><span class="comp-name">${esc(x.n)}</span><button type="button" class="comp-rm" data-rmcomp="${f.k}|${i}" title="Quitar">×</button></div><div class="comp-links">${x.web?`<a class="clink" href="${esc(x.web)}" target="_blank" rel="noopener">${ICONS.globe} Sitio</a>`:''}${x.li?`<a class="clink" href="${esc(x.li)}" target="_blank" rel="noopener">in LinkedIn</a>`:''}${x.ig?`<a class="clink" href="${esc(x.ig)}" target="_blank" rel="noopener">IG</a>`:''}${x.x?`<a class="clink" href="${esc(x.x)}" target="_blank" rel="noopener">X</a>`:''}</div><div class="comp-desc" contenteditable="true" data-compdesc="${f.k}|${i}">${esc(x.d||'')}</div></div>`).join('')}<div class="comp-add"><input class="bf-add" data-compf="n" placeholder="Nombre"><input class="bf-add" data-compf="web" placeholder="Sitio web"><input class="bf-add" data-compf="li" placeholder="LinkedIn (opcional)"><input class="bf-add" data-compf="ig" placeholder="Instagram (opcional)"><button type="button" class="attach-btn" data-compadd="${f.k}">+ Agregar competidor</button></div></div></div>`;}
     if(f.kind==='text'||f.kind==='long')
       return `<div class="bf"><label>${f.l}</label><div class="bf-val" contenteditable="true" data-save="${f.k}">${esc(v||'')}</div></div>`;
     if(f.kind==='list')
@@ -1110,7 +1141,7 @@
     const b=gb(c);
     const snap=`<div class="brief-snap"><div class="brief-logo" data-logo="1">${b.logo?`<img src="${esc(b.logo)}">`:esc(c.ini)}</div><div class="si"><h2>${esc(c.name)}</h2><div class="giro">${b.giro?esc(b.giro):'Giro pendiente'}</div><div class="desc">${b.descripcion?esc(b.descripcion):'Descripción pendiente'}</div></div><div class="brief-quick">${b.sitio?`<a class="qchip" href="${esc(b.sitio)}" target="_blank" rel="noopener">${ICONS.globe} Sitio</a>`:`<button type="button" class="qchip empty" data-snaplink="sitio">${ICONS.globe} Sitio</button>`}</div></div>`;
     el('brief-root').innerHTML=snap+BRIEF_SCHEMA.map(s=>sectionHTML(c,s)).join('');
-    renderBriefIndex(); renderBriefRail(); updateBriefProgress();
+    renderBriefIndex(); renderBriefRail(); updateBriefProgress(); persist();
   }
   // Índice / navegador del brief
   function briefIndexHTML(){return '<div class="bi-title">Secciones</div>'+BRIEF_SCHEMA.map(s=>`<button type="button" class="bi-item" data-jump="${s.id}"><span class="ic">${ICONS[s.ic]||''}</span>${s.n}</button>`).join('');}
@@ -1144,6 +1175,10 @@
     if(head){const id=head.dataset.acc;const item=head.closest('.acc-item');const open=item.classList.toggle('open');open?briefOpen.add(id):briefOpen.delete(id);return;}
     const rl=e.target.closest('[data-rmlink]');
     if(rl){e.preventDefault();const[k,i]=rl.dataset.rmlink.split('|');briefArr(curClient,k).splice(+i,1);renderBrief(curClient);return;}
+    const rcp=e.target.closest('[data-rmcomp]');
+    if(rcp){const[k,i]=rcp.dataset.rmcomp.split('|');briefArr(curClient,k).splice(+i,1);renderBrief(curClient);return;}
+    const ca=e.target.closest('[data-compadd]');
+    if(ca){const w=ca.closest('.comp-add');const g=s=>{const el2=w.querySelector(`[data-compf="${s}"]`);return el2?el2.value.trim():'';};const n=g('n');if(!n){toast('Pon al menos el nombre del competidor');return;}const norm=u=>u&&!/^https?:\/\//i.test(u)?'https://'+u:u;briefArr(curClient,ca.dataset.compadd).push({n,web:norm(g('web')),li:norm(g('li')),ig:norm(g('ig')),d:''});renderBrief(curClient);return;}
     const rm=e.target.closest('[data-rm]');
     if(rm){const[k,i]=rm.dataset.rm.split('|');briefArr(curClient,k).splice(+i,1);renderBrief(curClient);return;}
     const ch=e.target.closest('[data-ch]');
@@ -1167,7 +1202,38 @@
   }
   function onBriefBlur(e){
     if(!curClient)return;const t=e.target;
-    if(t.dataset&&t.dataset.save!==undefined&&t.dataset.save!==''){const k=t.dataset.save;const val=(t.isContentEditable?t.textContent:t.value).trim();gb(curClient)[k]=val;if(BRIEF_RERENDER_ON_SAVE.indexOf(k)>=0)renderBrief(curClient);}
+    if(t.dataset&&t.dataset.compdesc){const[k,i]=t.dataset.compdesc.split('|');const a=briefArr(curClient,k);if(a[i]){a[i].d=(t.isContentEditable?t.textContent:t.value).trim();persist();}return;}
+    if(t.dataset&&t.dataset.save!==undefined&&t.dataset.save!==''){const k=t.dataset.save;const val=(t.isContentEditable?t.textContent:t.value).trim();gb(curClient)[k]=val;persist();if(BRIEF_RERENDER_ON_SAVE.indexOf(k)>=0)renderBrief(curClient);}
+  }
+  // ===== Persistencia (localStorage) + exportar a Word =====
+  function persist(){try{localStorage.setItem('adsos_data',JSON.stringify({clients:clients,prospects:prospects,acts:acts}));}catch(e){}}
+  function saveBriefData(){persist();toast('Brief guardado ✓');}
+  function loadPersisted(){try{const s=JSON.parse(localStorage.getItem('adsos_data')||'null');if(s&&Array.isArray(s.clients)&&s.clients.length){clients.length=0;s.clients.forEach(x=>clients.push(x));if(Array.isArray(s.prospects)){prospects.length=0;s.prospects.forEach(x=>prospects.push(x));}if(Array.isArray(s.acts)){acts.length=0;s.acts.forEach(x=>acts.push(x));}}}catch(e){}}
+  function briefToHTML(c){
+    const b=gb(c); let h=`<h1>Brief — ${esc(c.name)}</h1>`;
+    const val=(f)=>{const v=b[f.k];
+      if(f.kind==='subhead')return null;
+      if(f.kind==='list')return (v&&v.length)?'<ul>'+v.map(x=>`<li>${esc(x)}</li>`).join('')+'</ul>':'<i>Pendiente</i>';
+      if(f.kind==='channels')return (v&&v.length)?esc(v.join(' · ')):'<i>Pendiente</i>';
+      if(f.kind==='colors')return (v&&v.length)?v.map(x=>esc(x)).join(' · '):'<i>Pendiente</i>';
+      if(f.kind==='links')return (v&&v.length)?v.map(x=>`<a href="${esc(x.u)}">${esc(x.t||x.u)}</a>`).join(' · '):'<i>Pendiente</i>';
+      if(f.kind==='competitors')return (v&&v.length)?'<ul>'+v.map(x=>`<li><b>${esc(x.n)}</b>${x.web?` — <a href="${esc(x.web)}">${esc(x.web)}</a>`:''}${x.d?`<br>${esc(x.d)}`:''}</li>`).join('')+'</ul>':'<i>Pendiente</i>';
+      if(f.kind==='type')return v?esc(v):'<i>Pendiente</i>';
+      if(f.kind==='logo')return v?`<a href="${esc(v)}">${esc(v)}</a>`:'<i>Pendiente</i>';
+      return v?esc(v).replace(/\n/g,'<br>'):'<i>Pendiente</i>';
+    };
+    BRIEF_SCHEMA.forEach(sec=>{
+      h+=`<h2>${esc(sec.n)}</h2>`;
+      if(sec.kind==='dos'){sec.pairs.forEach(p=>{h+=`<p><b>${esc(p[0])}</b><br>Do's: ${(b[p[1]]||[]).map(esc).join(', ')||'—'}<br>Don'ts: ${(b[p[2]]||[]).map(esc).join(', ')||'—'}</p>`;});return;}
+      if(sec.kind==='checklist'){const on=b._val||{};h+='<ul>'+sec.items.map((it,i)=>`<li>${on[i]?'☑':'☐'} ${esc(it)}</li>`).join('')+'</ul>';return;}
+      (sec.fields||[]).forEach(f=>{if(f.kind==='subhead'){h+=`<h3>${esc(f.l)}</h3>`;return;}h+=`<p><b>${esc(f.l)}:</b> ${val(f)}</p>`;});
+    });
+    return h;
+  }
+  function downloadBriefWord(){
+    if(!curClient){toast('Abre un cliente primero');return;}
+    const html='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><style>body{font-family:Calibri,Arial,sans-serif;color:#222} h1{color:#6a3cf0} h2{border-bottom:1px solid #ccc;padding-bottom:3px;margin-top:18px} h3{color:#666;font-size:12px;text-transform:uppercase}</style></head><body>'+briefToHTML(curClient)+'</body></html>';
+    try{const blob=new Blob(['﻿',html],{type:'application/msword'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='Brief-'+curClient.name.replace(/\s+/g,'_')+'.doc';document.body.appendChild(a);a.click();a.remove();toast('Descargando Word…');}catch(e){toast('No se pudo generar el Word');}
   }
 
   // ===== PORTAL DEL CLIENTE =====
@@ -1229,7 +1295,7 @@
     document.querySelectorAll('#ptabs .tab').forEach(t=>t.classList.toggle('active',t.dataset.pt===name));
     document.querySelectorAll('.ptab').forEach(p=>p.classList.toggle('active',p.id==='pt-'+name));
     el('detail-head').style.display = name==='brief' ? 'none' : '';
-    el('briefMenuWrap').style.display = name==='brief' ? '' : 'none';
+    el('briefTools').style.display = name==='brief' ? '' : 'none';
     if(name!=='brief')closeBriefMenu();
     if(name==='brief'){window.scrollTo(0,0);setTimeout(updateBriefProgress,40);}
   }
@@ -1259,7 +1325,7 @@
     el('content').classList.toggle('tight-top', inAcc);
     el('toolbar').style.display = inAcc ? 'none' : '';
     el('accActions').style.display = inAcc ? '' : 'none';
-    if(view!=='cliente'){el('briefMenuWrap').style.display='none';closeBriefMenu();}
+    if(view!=='cliente'){el('briefTools').style.display='none';closeBriefMenu();}
     el('headerSearch').style.display = view==='inicio' ? '' : 'none';
     if(view==='inicio'){
       el('title').textContent='Welcome!';
@@ -1415,6 +1481,7 @@
   // ===== Init =====
   if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches) document.body.classList.add('anim');
   todayStr=new Date(2026,5,14).toLocaleDateString('es-MX',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).replace(/^\w/,c=>c.toUpperCase());
+  loadPersisted();
   fillAccFilter(); fillParrillaCli(); renderAll(); showView('inicio');
 </script>
 </body>
