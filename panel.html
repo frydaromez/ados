@@ -89,6 +89,7 @@
   .tbtn.primary:hover{background:var(--brand-deep);border-color:var(--brand-deep);box-shadow:0 12px 26px -8px rgba(106,60,240,.6)}
   .tbtn.primary:hover .plus{color:#fff}
   .content{padding:28px 34px 64px;overflow:auto}
+  .content.tight-top{padding-top:12px}
 
   /* KPIs */
   .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:22px}
@@ -170,7 +171,7 @@
   .detail-head .role{color:var(--muted);font-size:13px}
   .detail-head .right{margin-left:auto;display:flex;gap:16px;text-align:center}
   .detail-head .right .v{font-size:19px;font-weight:700}.detail-head .right .l{font-size:11px;color:var(--muted)}
-  .tabs{display:flex;gap:5px;margin:16px 0 14px;flex-wrap:wrap;border-bottom:1px solid var(--line)}
+  .tabs{display:flex;gap:5px;margin:2px 0 16px;flex-wrap:wrap;border-bottom:1px solid var(--line)}
   .tab{background:none;border:none;border-bottom:2px solid transparent;color:#5a5f6e;padding:9px 13px;font-size:13.5px;cursor:pointer;font-weight:600;margin-bottom:-1px}
   .tab.active{color:var(--brand);border-color:var(--brand)}
   .ptab{display:none}.ptab.active{display:block}
@@ -528,7 +529,6 @@
 
       <!-- PORTAL DEL CLIENTE -->
       <section class="view hidden" id="view-cliente">
-        <div class="detail-head" id="detail-head"></div>
         <div class="tabs" id="ptabs">
           <button class="tab active" data-pt="entregables">Entregables</button>
           <button class="tab" data-pt="brief">Brief</button>
@@ -537,6 +537,7 @@
           <button class="tab" data-pt="gantt">Gantt</button>
           <button class="tab" data-pt="finalizados">Finalizados</button>
         </div>
+        <div class="detail-head" id="detail-head"></div>
 
         <div class="ptab active" id="pt-entregables">
           <div class="filters" id="cli-filters">
@@ -1204,6 +1205,7 @@
     const inAcc = view==='cliente'||view==='prospecto';
     document.querySelector('.topbar').classList.toggle('compact', inAcc);
     el('brandmark').style.display = inAcc ? '' : 'none';
+    el('content').classList.toggle('tight-top', inAcc);
     el('toolbar').style.display = inAcc ? 'none' : '';
     el('accActions').style.display = inAcc ? '' : 'none';
     if(view!=='cliente'){el('briefMenuWrap').style.display='none';closeBriefMenu();}
