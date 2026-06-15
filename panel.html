@@ -136,6 +136,9 @@
   .searchbar input:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
   .ccard{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px 18px 16px;cursor:pointer;box-shadow:var(--shadow-sm);transition:transform .45s var(--ease-out),box-shadow .3s var(--ease-out),border-color .3s var(--ease),opacity .5s var(--ease-out)}
   .ccard:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);border-color:#e1e0ea}
+  .ccard-off{cursor:default;opacity:.55}
+  .ccard-off:hover{transform:none;box-shadow:var(--shadow-sm);border-color:var(--line)}
+  .ccard-off .open{color:var(--muted)}
   body.anim .ccard{opacity:0;transform:translateY(22px) scale(.98)}
   body.anim .ccard.in{opacity:1;transform:none}
   body.anim .ccard.in:hover{transform:translateY(-4px)}
@@ -888,7 +891,7 @@
     // Orden por urgencia: primero más por revisar, luego más por hacer, luego más carga total
     data.sort((a,b)=> b.r-a.r || b.t-a.t || b.total-a.total);
     if(!data.length){ el('client-cards').innerHTML=`<div class="empty" style="grid-column:1/-1">Sin clientes que coincidan con “${cardSearch}”.</div>`; return; }
-    el('client-cards').innerHTML=data.map(({c,total,t,p,r})=>`<div class="ccard" onclick="openClient('${c.id}')">
+    el('client-cards').innerHTML=data.map(({c,total,t,p,r})=>{const on=c.id==='auren';return `<div class="ccard${on?'':' ccard-off'}" ${on?`onclick="openClient('${c.id}')"`:''}>
         <div class="head">
           <div class="avatar" style="background:${c.color}">${c.ini}</div>
           <div class="hmeta"><div class="name">${c.name}</div><div class="role">${c.role}</div></div>
@@ -899,7 +902,7 @@
           <div class="cstat proc"><div class="n">${p}</div><div class="t">En proceso</div></div>
           <div class="cstat review"><div class="n">${r}</div><div class="t">Por revisar</div></div>
         </div>
-        <div class="open">Ver cliente →</div></div>`).join('');
+        <div class="open">${on?'Ver cliente →':'Próximamente'}</div></div>`;}).join('');
     revealCards();
   }
   // Revelado interactivo al hacer scroll (fundido + elevación escalonada)
@@ -1267,6 +1270,7 @@
     showView('prospecto',p.name);
   }
   function openAcc(id,cuenta){
+    if(cuenta==='cliente'&&id!=='auren'){toast('Por ahora solo trabajamos con Auren');return;}
     if(cuenta==='prospecto'){ openProspect(id); return; }
     const c=clients.find(x=>x.id===id); if(!c)return;
     curClient=c; cliFilter='all';
