@@ -1152,14 +1152,14 @@
   let briefOpen=new Set(['general']);
   function gb(c){c.brief=c.brief||{};return c.brief;}
   function listHTML(key,arr){
-    arr=arr||[];
+    arr=Array.isArray(arr)?arr:[];
     return `<div class="bf-chips" data-list="${key}">${arr.map((x,i)=>`<span class="bchip">${esc(x)}<button type="button" data-rm="${key}|${i}">×</button></span>`).join('')}<input class="bf-add" data-add="${key}" placeholder="+ agregar y Enter"></div>`;
   }
   let _uploadCtx=null;
-  function linksHTML(key,arr){arr=arr||[];return `<div class="bf-links">${arr.map((it,i)=>`<a class="bchip linkchip" href="${esc(it.u)}" target="_blank" rel="noopener">${ICONS.link} <span>${esc(it.t||it.u)}</span><button type="button" data-rmlink="${key}|${i}" title="Quitar">×</button></a>`).join('')}<span class="link-add"><input class="bf-add lk-name" data-lkname="${key}" placeholder="Nombre"><input class="bf-add lk-url" data-lkurl="${key}" placeholder="Pega el link y Enter"></span></div>`;}
-  function mediaHTML(key,arr){arr=arr||[];return `<div class="media-grid">${arr.map((m,i)=>`<div class="media-card">${m.img?`<img src="${esc(m.img)}" class="media-img">`:`<button type="button" class="media-into" data-mediainto="${key}|${i}">${ICONS.upload}<span>Subir imagen</span></button>`}<div class="media-cap" contenteditable="true" data-mediacap="${key}|${i}">${esc(m.txt||'')}</div><button type="button" class="media-rm" data-rmmedia="${key}|${i}" title="Quitar">×</button></div>`).join('')}</div><div class="media-add"><button type="button" class="attach-btn soft" data-mediaup="${key}">${ICONS.upload} Agregar imagen</button><input class="bf-add" data-mediatxt="${key}" placeholder="+ nota o texto y Enter"></div>`;}
-  function fontsHTML(key,arr){arr=arr||[];return `<div class="fonts-grid">${arr.map((ft,i)=>`<div class="font-card"><button type="button" class="comp-rm" data-rmfont="${key}|${i}" title="Quitar">×</button><div class="font-aa" style="font-family:'${esc(ft.name)}',serif">Aa</div><div class="font-name" contenteditable="true" data-fontf2="${key}|${i}|name">${esc(ft.name||'')}</div><div class="font-role" contenteditable="true" data-fontf2="${key}|${i}|role">${esc(ft.role||'')}</div></div>`).join('')}<div class="font-add"><input class="bf-add" data-fontf="name" placeholder="Tipografía"><input class="bf-add" data-fontf="role" placeholder="Uso (ej. principal)"><button type="button" class="attach-btn soft" data-fontadd="${key}">+ Agregar</button></div></div>`;}
-  function filesHTML(key,arr){arr=arr||[];return `<div class="bf-chips">${arr.map((m,i)=>`<span class="bchip">${m.u?`<a class="filelink" href="${esc(m.u)}" target="_blank" rel="noopener">${esc(m.t||m.u)}</a>`:`<a class="filelink" href="${esc(m.file)}" download="${esc(m.t||'archivo')}">${esc(m.t||'archivo')}</a>`}<button type="button" data-rmfile="${key}|${i}">×</button></span>`).join('')}</div><div class="comp-add"><input class="bf-add" data-fname="${key}" placeholder="Nombre"><input class="bf-add" data-furl="${key}" placeholder="Pega un link y Enter"><button type="button" class="attach-btn" data-fileup="${key}">${ICONS.upload} Subir archivo</button></div>`;}
+  function linksHTML(key,arr){arr=Array.isArray(arr)?arr:[];return `<div class="bf-links">${arr.map((it,i)=>`<a class="bchip linkchip" href="${esc(it.u)}" target="_blank" rel="noopener">${ICONS.link} <span>${esc(it.t||it.u)}</span><button type="button" data-rmlink="${key}|${i}" title="Quitar">×</button></a>`).join('')}<span class="link-add"><input class="bf-add lk-name" data-lkname="${key}" placeholder="Nombre"><input class="bf-add lk-url" data-lkurl="${key}" placeholder="Pega el link y Enter"></span></div>`;}
+  function mediaHTML(key,arr){arr=Array.isArray(arr)?arr:[];return `<div class="media-grid">${arr.map((m,i)=>`<div class="media-card">${m.img?`<img src="${esc(m.img)}" class="media-img">`:`<button type="button" class="media-into" data-mediainto="${key}|${i}">${ICONS.upload}<span>Subir imagen</span></button>`}<div class="media-cap" contenteditable="true" data-mediacap="${key}|${i}">${esc(m.txt||'')}</div><button type="button" class="media-rm" data-rmmedia="${key}|${i}" title="Quitar">×</button></div>`).join('')}</div><div class="media-add"><button type="button" class="attach-btn soft" data-mediaup="${key}">${ICONS.upload} Agregar imagen</button><input class="bf-add" data-mediatxt="${key}" placeholder="+ nota o texto y Enter"></div>`;}
+  function fontsHTML(key,arr){arr=Array.isArray(arr)?arr:[];return `<div class="fonts-grid">${arr.map((ft,i)=>`<div class="font-card"><button type="button" class="comp-rm" data-rmfont="${key}|${i}" title="Quitar">×</button><div class="font-aa" style="font-family:'${esc(ft.name)}',serif">Aa</div><div class="font-name" contenteditable="true" data-fontf2="${key}|${i}|name">${esc(ft.name||'')}</div><div class="font-role" contenteditable="true" data-fontf2="${key}|${i}|role">${esc(ft.role||'')}</div></div>`).join('')}<div class="font-add"><input class="bf-add" data-fontf="name" placeholder="Tipografía"><input class="bf-add" data-fontf="role" placeholder="Uso (ej. principal)"><button type="button" class="attach-btn soft" data-fontadd="${key}">+ Agregar</button></div></div>`;}
+  function filesHTML(key,arr){arr=Array.isArray(arr)?arr:[];return `<div class="bf-chips">${arr.map((m,i)=>`<span class="bchip">${m.u?`<a class="filelink" href="${esc(m.u)}" target="_blank" rel="noopener">${esc(m.t||m.u)}</a>`:`<a class="filelink" href="${esc(m.file)}" download="${esc(m.t||'archivo')}">${esc(m.t||'archivo')}</a>`}<button type="button" data-rmfile="${key}|${i}">×</button></span>`).join('')}</div><div class="comp-add"><input class="bf-add" data-fname="${key}" placeholder="Nombre"><input class="bf-add" data-furl="${key}" placeholder="Pega un link y Enter"><button type="button" class="attach-btn" data-fileup="${key}">${ICONS.upload} Subir archivo</button></div>`;}
   function idmanualHTML(c,f){const b=gb(c),has=b.manual_has;let inner='';
     if(has==='si')inner=`<div class="idman-area">${b.manual_file?`<a class="qchip" href="${esc(b.manual_file.file)}" download="${esc(b.manual_file.t||'manual.pdf')}">${ICONS.folder} ${esc(b.manual_file.t||'Descargar manual')}</a> <button type="button" class="qchip" data-manrm="1">Quitar</button>`:`<button type="button" class="qchip" data-manup="1">${ICONS.upload} Subir PDF</button>`}<input class="bf-add" data-manlink="1" value="${esc(b.manual_link||'')}" placeholder="…o pega el link de Drive y Enter">${b.manual_link?` <a class="qchip" href="${esc(b.manual_link)}" target="_blank" rel="noopener">${ICONS.globe} Abrir</a>`:''}</div>`;
     else if(has==='no')inner='<div class="idman-no">El cliente no cuenta con manual de identidad.</div>';
@@ -1181,15 +1181,15 @@
     if(f.kind==='media')return `<div class="bf"><label>${esc(f.l)}</label>${mediaHTML(f.k,v)}</div>`;
     if(f.kind==='files')return `<div class="bf"><label>${esc(f.l)}</label>${filesHTML(f.k,v)}</div>`;
     if(f.kind==='fonts')return `<div class="bf"><label>${esc(f.l)}</label>${fontsHTML(f.k,v)}</div>`;
-    if(f.kind==='competitors'){const arr=v||[];
+    if(f.kind==='competitors'){const arr=Array.isArray(v)?v:[];
       return `<div class="bf"><label>${f.l}</label><div class="comp-list">${arr.map((x,i)=>`<div class="comp-card"><div class="comp-head"><span class="comp-name">${esc(x.n)}</span><button type="button" class="comp-rm" data-rmcomp="${f.k}|${i}" title="Quitar">×</button></div>${x.loc?`<div class="comp-meta">${esc(x.loc)}</div>`:''}<div class="comp-links">${SOC.filter(s=>x[s[0]]).map(s=>`<a class="clink" href="${esc(x[s[0]])}" target="_blank" rel="noopener">${s[1]}</a>`).join('')}</div><div class="comp-desc" contenteditable="true" data-compdesc="${f.k}|${i}">${esc(x.d||'')}</div></div>`).join('')}<div class="comp-add"><input class="bf-add" data-compf="n" placeholder="Nombre"><input class="bf-add" data-compf="loc" placeholder="Localidad"><input class="bf-add" data-compf="web" placeholder="Sitio web"><input class="bf-add" data-compf="instagram" placeholder="Instagram"><input class="bf-add" data-compf="facebook" placeholder="Facebook"><input class="bf-add" data-compf="tiktok" placeholder="TikTok"><input class="bf-add" data-compf="linkedin" placeholder="LinkedIn"><input class="bf-add" data-compf="x" placeholder="X"><button type="button" class="attach-btn" data-compadd="${f.k}">+ Agregar competidor</button></div></div></div>`;}
     if(f.kind==='text'||f.kind==='long')
       return `<div class="bf"><label>${f.l}</label><div class="bf-val" contenteditable="true" data-save="${f.k}">${esc(v||'')}</div></div>`;
     if(f.kind==='list')
       return `<div class="bf"><label>${f.l}</label>${listHTML(f.k,v)}</div>`;
-    if(f.kind==='channels'){const arr=v||[];
+    if(f.kind==='channels'){const arr=Array.isArray(v)?v:[];
       return `<div class="bf"><label>${f.l}</label><div class="bf-chips">${CANALES.map(ch=>`<button type="button" class="ch-chip" data-ch="${f.k}|${esc(ch)}" aria-pressed="${arr.indexOf(ch)>=0}">${ch}</button>`).join('')}</div></div>`;}
-    if(f.kind==='colors'){const arr=v||[];
+    if(f.kind==='colors'){const arr=Array.isArray(v)?v:[];
       return `<div class="bf"><label>${f.l}</label><div class="swatches">${arr.map((cv,i)=>{const pp=String(cv).split('|');const hex=pp[0],nm=pp[1];return `<span class="swatch"><i style="background:${esc(hex)}"></i><small>${esc(nm||hex)}</small>${nm?`<em>${esc(hex)}</em>`:''}<button type="button" data-rmcolor="${f.k}|${i}">×</button></span>`;}).join('')}<input class="bf-add" data-addcolor="${f.k}" placeholder="#HEX  o  #HEX|Nombre"></div></div>`;}
     if(f.kind==='type'){const font=v||'';const ff=font?`font-family:'${esc(font)}',sans-serif`:'';
       return `<div class="bf"><label>${f.l}</label><div class="type-prev"><div class="aa" style="${ff}">Aa</div><div class="sample" style="${ff}">ABCDabcd 0123 · El veloz murciélago</div><input class="bf-add" data-save="${f.k}" value="${esc(font)}" placeholder="Nombre de la tipografía" style="margin-top:10px;min-width:220px"></div></div>`;}
@@ -1296,7 +1296,7 @@
     if(t.dataset&&t.dataset.save!==undefined&&t.dataset.save!==''){const k=t.dataset.save;const val=(t.isContentEditable?t.textContent:t.value).trim();gb(curClient)[k]=val;persist();if(BRIEF_RERENDER_ON_SAVE.indexOf(k)>=0)renderBrief(curClient);}
   }
   // ===== Persistencia (localStorage) + exportar a Word =====
-  function persist(){try{localStorage.setItem('adsos_data',JSON.stringify({clients:clients,prospects:prospects,acts:acts}));}catch(e){}}
+  function persist(){try{localStorage.setItem('adsos_v3',JSON.stringify({clients:clients,prospects:prospects,acts:acts}));}catch(e){}}
   function handleLogoFile(e){
     const f=e.target.files&&e.target.files[0]; if(!f||!curClient){e.target.value='';return;}
     const rd=new FileReader();
@@ -1311,7 +1311,7 @@
   }
   function saveBriefData(){persist();toast('Brief guardado ✓');}
   function downloadLogo(){const u=curClient&&gb(curClient).logo;if(!u){toast('No hay logo cargado');return;}try{const a=document.createElement('a');a.href=u;a.download=curClient.name.replace(/\s+/g,'_')+'-logo.png';document.body.appendChild(a);a.click();a.remove();}catch(e){toast('No se pudo descargar el logo');}}
-  function loadPersisted(){try{const s=JSON.parse(localStorage.getItem('adsos_data')||'null');if(s&&Array.isArray(s.clients)&&s.clients.length){clients.length=0;s.clients.forEach(x=>clients.push(x));if(Array.isArray(s.prospects)){prospects.length=0;s.prospects.forEach(x=>prospects.push(x));}if(Array.isArray(s.acts)){acts.length=0;s.acts.forEach(x=>acts.push(x));}}}catch(e){}}
+  function loadPersisted(){try{localStorage.removeItem('adsos_data');const s=JSON.parse(localStorage.getItem('adsos_v3')||'null');if(s&&Array.isArray(s.clients)&&s.clients.length){clients.length=0;s.clients.forEach(x=>clients.push(x));if(Array.isArray(s.prospects)){prospects.length=0;s.prospects.forEach(x=>prospects.push(x));}if(Array.isArray(s.acts)){acts.length=0;s.acts.forEach(x=>acts.push(x));}}}catch(e){}}
   function briefToHTML(c){
     const b=gb(c); let h=`<h1>Brief — ${esc(c.name)}</h1>`;
     const val=(f)=>{const v=b[f.k];
@@ -1371,7 +1371,7 @@
         <div><div class="v" style="color:#b8771a">${r}</div><div class="l">Por revisar</div></div>
       </div>`;
     // brief
-    renderBrief(c);
+    try{renderBrief(c);}catch(err){console.error('brief',err);try{el('brief-root').innerHTML='<div class="empty">No se pudo cargar el brief. Recarga la página.</div>';}catch(_){}}
     renderCliEntregables();
     // parrilla del cliente
     const par=acts.filter(a=>a.acc===id&&a.tipo==='parrilla'&&!a.fin);
