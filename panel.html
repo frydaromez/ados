@@ -367,6 +367,12 @@
   .bf-val:hover{background:#f2f2f8}
   .bf-val:focus{background:#fff;border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
   .bf-val:empty:before{content:'Pendiente';color:#b8771a;font-style:italic}
+  .redcards{display:flex;flex-direction:column;gap:12px}
+  .redcard{border:1px solid var(--line);border-radius:13px;padding:13px 15px;background:#fafafe}
+  .redcard-head{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+  .redcard-name{flex:1;border:1px solid var(--line);border-radius:9px;padding:8px 11px;font-family:inherit;font-size:14px;font-weight:600;color:var(--ink);background:#fff}
+  .redcard-name:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
+  .rc-label{font-size:11px;font-weight:600;color:var(--muted);margin:10px 0 5px;text-transform:uppercase;letter-spacing:.04em}
   .blist{display:flex;flex-direction:column;gap:5px}
   .bli{display:flex;align-items:flex-start;gap:8px}
   .bli-dot{color:var(--brand);font-weight:700;line-height:1.7;flex-shrink:0}
@@ -1105,7 +1111,7 @@
       {k:'situacion',l:'Situación actual en redes sociales',kind:'blist'},
       {k:'red_principal',l:'Red social principal',kind:'text'},
       {k:'objetivo_red',l:'Objetivo por red social',kind:'blist'},
-      {k:'look_red',l:'Look por red social',kind:'blist'},
+      {k:'look_red',l:'Look por red social',kind:'redcards'},
       {k:'formatos_red',l:'Formatos recomendados por red social',kind:'list'},
       {k:'contenido_prioritario',l:'Tipo de contenido prioritario',kind:'text'},
       {k:'frecuencia',l:'Frecuencia sugerida',kind:'text'},
@@ -1199,6 +1205,7 @@
     if(f.kind==='text'||f.kind==='long')
       return `<div class="bf"><label>${f.l}</label><div class="bf-val" contenteditable="true" data-save="${f.k}">${esc(v||'')}</div></div>`;
     if(f.kind==='blist')return `<div class="bf"><label>${f.l}</label>${blistHTML(f.k,v)}</div>`;
+    if(f.kind==='redcards')return `<div class="bf"><label>${f.l}</label>${redcardsHTML(f.k,v)}</div>`;
     if(f.kind==='list')
       return `<div class="bf"><label>${f.l}</label>${listHTML(f.k,v)}</div>`;
     if(f.kind==='channels'){const arr=Array.isArray(v)?v:[];
@@ -1257,7 +1264,8 @@
   }
   function toggleBriefMenu(e){if(e)e.stopPropagation();el('briefMenuPop').classList.toggle('open');}
   function closeBriefMenu(){const p=el('briefMenuPop');if(p)p.classList.remove('open');}
-  function briefArr(c,key){const b=gb(c);if(!Array.isArray(b[key]))b[key]=[];return b[key];}
+  function briefArr(c,key){var parts=String(key).split('.');var o=gb(c);for(var n=0;n<parts.length-1;n++){var p=/^\d+$/.test(parts[n])?+parts[n]:parts[n];var nextIdx=/^\d+$/.test(parts[n+1]);if(o[p]==null||typeof o[p]!=='object')o[p]=nextIdx?[]:{};o=o[p];}var last=/^\d+$/.test(parts[parts.length-1])?+parts[parts.length-1]:parts[parts.length-1];if(!Array.isArray(o[last]))o[last]=[];return o[last];}
+  function redcardsHTML(key,arr){arr=Array.isArray(arr)?arr:[];return `<div class="redcards">${arr.map((rc,i)=>`<div class="redcard"><div class="redcard-head"><input class="redcard-name" data-redname="${key}|${i}" value="${esc(rc.red||'')}" placeholder="Red social (ej. Instagram)"><button type="button" class="comp-rm" data-rmredcard="${key}|${i}" title="Quitar">×</button></div><div class="rc-label">Look / notas</div>${blistHTML(key+'.'+i+'.notes',rc.notes)}<div class="rc-label">Imágenes de referencia</div>${mediaHTML(key+'.'+i+'.imgs',rc.imgs)}<div class="rc-label">Links</div>${linksHTML(key+'.'+i+'.links',rc.links)}</div>`).join('')}<div class="comp-add"><input class="bf-add" data-redf="${key}" placeholder="Red social (ej. Instagram)"><button type="button" class="attach-btn soft" data-redadd="${key}">+ Agregar red</button></div></div>`;}
   function onBriefClick(e){
     if(!curClient)return; const b=gb(curClient);
     const head=e.target.closest('[data-acc]');
@@ -1271,6 +1279,8 @@
     const ld=e.target.closest('[data-logodl]');
     if(ld){downloadLogo();return;}
     const rbl=e.target.closest('[data-rmbli]');if(rbl){const[k,i]=rbl.dataset.rmbli.split('|');briefArr(curClient,k).splice(+i,1);renderBrief(curClient);return;}
+    const rrc=e.target.closest('[data-rmredcard]');if(rrc){const[k,i]=rrc.dataset.rmredcard.split('|');briefArr(curClient,k).splice(+i,1);renderBrief(curClient);return;}
+    const rca=e.target.closest('[data-redadd]');if(rca){const w=rca.parentNode;const ne=w.querySelector('[data-redf]');const nm=ne?ne.value.trim():'';if(!nm){toast('Pon el nombre de la red');return;}briefArr(curClient,rca.dataset.redadd).push({red:nm,notes:[],imgs:[],links:[]});renderBrief(curClient);return;}
     const rmm=e.target.closest('[data-rmmedia]');if(rmm){const[k,i]=rmm.dataset.rmmedia.split('|');briefArr(curClient,k).splice(+i,1);renderBrief(curClient);return;}
     const rmf=e.target.closest('[data-rmfile]');if(rmf){const[k,i]=rmf.dataset.rmfile.split('|');briefArr(curClient,k).splice(+i,1);renderBrief(curClient);return;}
     const mu=e.target.closest('[data-mediaup]');if(mu){triggerUpload(mu.dataset.mediaup,'media','image/*');return;}
@@ -1309,6 +1319,7 @@
     if(!curClient)return;const t=e.target;
     if(t.dataset&&t.dataset.compdesc){const[k,i]=t.dataset.compdesc.split('|');const a=briefArr(curClient,k);if(a[i]){a[i].d=(t.isContentEditable?t.textContent:t.value).trim();persist();}return;}
     if(t.dataset&&t.dataset.bli){const[k,i]=t.dataset.bli.split('|');const a=briefArr(curClient,k);if(a[+i]!==undefined){a[+i]=(t.isContentEditable?t.textContent:t.value).trim();persist();}return;}
+    if(t.dataset&&t.dataset.redname){const[k,i]=t.dataset.redname.split('|');const a=gb(curClient)[k];if(a&&a[+i]){a[+i].red=t.value.trim();persist();}return;}
     if(t.dataset&&t.dataset.mediacap){const[k,i]=t.dataset.mediacap.split('|');const a=briefArr(curClient,k);if(a[i]){a[i].txt=(t.isContentEditable?t.textContent:t.value).trim();persist();}return;}
     if(t.dataset&&t.dataset.fontf2){const p=t.dataset.fontf2.split('|');const a=briefArr(curClient,p[0]);if(a[+p[1]]){a[+p[1]][p[2]]=(t.isContentEditable?t.textContent:t.value).trim();persist();}return;}
     if(t.dataset&&t.dataset.save!==undefined&&t.dataset.save!==''){const k=t.dataset.save;const val=(t.isContentEditable?t.textContent:t.value).trim();gb(curClient)[k]=val;persist();if(BRIEF_RERENDER_ON_SAVE.indexOf(k)>=0)renderBrief(curClient);}
