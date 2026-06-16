@@ -109,6 +109,14 @@
   .idman-seg .seg-opt{padding:6px 16px}
   .idman-area{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
   .idman-no{font-size:12.5px;color:var(--muted);font-style:italic}
+  .people-list{display:flex;flex-direction:column;gap:8px}
+  .people-card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 13px;display:flex;align-items:flex-start;gap:10px}
+  .people-card-info{flex:1;display:flex;flex-direction:column;gap:2px}
+  .people-card-name{font-weight:600;font-size:13.5px;color:var(--text)}
+  .people-card-rol{font-size:12px;color:var(--muted)}
+  .people-card-email a{font-size:12px;color:var(--brand);text-decoration:none}
+  .people-card-email a:hover{text-decoration:underline}
+  .people-add{display:flex;flex-wrap:wrap;gap:7px;align-items:center;border:1px dashed var(--line);border-radius:10px;padding:10px 13px;margin-top:6px}
   .filelink{text-decoration:none;color:var(--brand-deep);font-weight:500}
   .filelink:hover{text-decoration:underline}
   .media-into{width:100%;height:96px;border:none;border-bottom:1px solid var(--line);background:#f7f7fb;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;color:var(--brand);font-size:11px;font-weight:500;font-family:inherit}
@@ -1047,8 +1055,8 @@
           "¿El servicio y el área son correctos y no se mezcla fiscal con legal sin sentido?"
         ],
         // ===== Contactos =====
-        contacto:"Goretti Olmos · Gerente Administrativa · goretti.olmos@auren.mx",
-        aprobador:"Goretti Olmos — revisa y aprueba el contenido antes de publicar."
+        contactos_personas:[{n:"Goretti Olmos",rol:"Gerente Administrativa",email:"goretti.olmos@auren.mx"}],
+        aprobadores:[{n:"Goretti Olmos",rol:"Gerente Administrativa",email:"goretti.olmos@auren.mx"}]
       },
       info:{"Qué hace":"Salud y bienestar para empresas.","Redes":"Instagram · LinkedIn · Facebook","Objetivo":"Agendas para CheckUp Empresarial.","Tono":"Cercano, claro, profesional. Nada alarmista.","Identidad":["Azul Auren","Poppins","Logo en fondo claro"],"Links":"Drive · Identidad · Parrilla"},
       memo:["No usar letras pequeñas.","Evitar diseños saturados.","Respetar el azul de marca.","Tono cercano, sin alarmar.","Les gustó la parrilla de mayo con fotos reales.","Revisar el logo en fondos oscuros."],
@@ -1374,8 +1382,8 @@
     {id:'validaciones',n:'Validaciones necesarias',ic:'shield',kind:'checklist',sub:'Información que el cliente siempre debe validar antes de publicar',
       items:['Precios','Promociones','Servicios','Fechas','Datos técnicos','Casos de éxito','Testimonios','Uso de nombres de clientes','Claims o promesas comerciales','Información legal, regulatoria o sensible']},
     {id:'contactos',n:'Contactos y aprobaciones',ic:'users',nuevo:true,fields:[
-      {k:'contacto',l:'Contacto principal del cliente',kind:'text'},
-      {k:'aprobador',l:'Quién aprueba antes de publicar',kind:'text'},
+      {k:'contactos_personas',l:'Contactos del cliente',kind:'people'},
+      {k:'aprobadores',l:'Quién aprueba antes de publicar',kind:'people'},
       {k:'tiempos',l:'Tiempos de respuesta / disponibilidad',kind:'text'}]},
     {id:'docs',n:'Investigaciones / Documentos adicionales',ic:'doc',nuevo:true,noDrive:true,fields:[
       {k:'docs_items',l:'Links o archivos (investigaciones, contenido propio sobre el cliente)',kind:'files'}]}
@@ -1413,6 +1421,7 @@
     const v=gb(c)[f.k];
     if(f.kind==='media')return `<div class="bf"><label>${esc(f.l)}</label>${mediaHTML(f.k,v)}</div>`;
     if(f.kind==='files')return `<div class="bf"><label>${esc(f.l)}</label>${filesHTML(f.k,v)}</div>`;
+    if(f.kind==='people'){const arr=Array.isArray(v)?v:[];return `<div class="bf"><label>${esc(f.l)}</label><div class="people-list">${arr.map((p,i)=>`<div class="people-card"><div class="people-card-info"><div class="people-card-name">${esc(p.n||'')}</div>${p.rol?`<div class="people-card-rol">${esc(p.rol)}</div>`:''}</div>${p.email?`<div class="people-card-email"><a href="mailto:${esc(p.email)}">${esc(p.email)}</a></div>`:''}<button type="button" class="comp-rm" data-rmperson="${f.k}|${i}" title="Quitar">×</button></div>`).join('')}</div><div class="people-add"><input class="bf-add" data-pf="n" placeholder="Nombre"><input class="bf-add" data-pf="rol" placeholder="Cargo"><input class="bf-add" data-pf="email" placeholder="Correo electrónico"><button type="button" class="attach-btn soft" data-peopleadd="${f.k}">+ Agregar persona</button></div></div>`;}
     if(f.kind==='fonts')return `<div class="bf"><label>${esc(f.l)}</label>${fontsHTML(f.k,v)}</div>`;
     if(f.kind==='competitors'){const arr=Array.isArray(v)?v:[];
       return `<div class="bf"><label>${f.l}</label><div class="comp-list">${arr.map((x,i)=>`<div class="comp-card"><div class="comp-head"><span class="comp-name">${esc(x.n)}</span><button type="button" class="comp-rm" data-rmcomp="${f.k}|${i}" title="Quitar">×</button></div>${x.loc?`<div class="comp-meta">${esc(x.loc)}</div>`:''}<div class="comp-links">${SOC.filter(s=>x[s[0]]).map(s=>`<a class="clink" href="${esc(x[s[0]])}" target="_blank" rel="noopener">${s[1]}</a>`).join('')}</div><div class="comp-desc" contenteditable="true" data-compdesc="${f.k}|${i}">${esc(x.d||'')}</div></div>`).join('')}<div class="comp-add"><input class="bf-add" data-compf="n" placeholder="Nombre"><input class="bf-add" data-compf="loc" placeholder="Localidad"><input class="bf-add" data-compf="web" placeholder="Sitio web"><input class="bf-add" data-compf="instagram" placeholder="Instagram"><input class="bf-add" data-compf="facebook" placeholder="Facebook"><input class="bf-add" data-compf="tiktok" placeholder="TikTok"><input class="bf-add" data-compf="linkedin" placeholder="LinkedIn"><input class="bf-add" data-compf="x" placeholder="X"><button type="button" class="attach-btn" data-compadd="${f.k}">+ Agregar competidor</button></div></div></div>`;}
@@ -1499,6 +1508,8 @@
     const rca=e.target.closest('[data-redadd]');if(rca){const w=rca.parentNode;const ne=w.querySelector('[data-redf]');const nm=ne?ne.value.trim():'';if(!nm){toast('Pon el nombre de la red');return;}briefArr(curClient,rca.dataset.redadd).push({red:nm,notes:[],imgs:[],links:[]});renderBrief(curClient);return;}
     const rmcl=e.target.closest('[data-rmcli]');if(rmcl){const[k,i]=rmcl.dataset.rmcli.split('|');briefArr(curClient,k).splice(+i,1);renderBrief(curClient);return;}
     const clad=e.target.closest('[data-cladd]');if(clad){const w=clad.parentNode;const ne=w.querySelector('[data-clf]');const nm=ne?ne.value.trim():'';if(!nm){toast('Pon el nombre del cliente');return;}briefArr(curClient,clad.dataset.cladd).push({n:nm,web:'',redes:[]});renderBrief(curClient);return;}
+    const pad=e.target.closest('[data-peopleadd]');if(pad){const w=pad.closest('.people-add');const g=s=>{const el2=w.querySelector(`[data-pf="${s}"]`);return el2?el2.value.trim():'';};const n=g('n');if(!n){toast('Pon al menos el nombre');return;}briefArr(curClient,pad.dataset.peopleadd).push({n,rol:g('rol'),email:g('email')});renderBrief(curClient);return;}
+    const rmp=e.target.closest('[data-rmperson]');if(rmp){const[k,i]=rmp.dataset.rmperson.split('|');briefArr(curClient,k).splice(+i,1);renderBrief(curClient);return;}
     const rmm=e.target.closest('[data-rmmedia]');if(rmm){const[k,i]=rmm.dataset.rmmedia.split('|');briefArr(curClient,k).splice(+i,1);renderBrief(curClient);return;}
     const rmf=e.target.closest('[data-rmfile]');if(rmf){const[k,i]=rmf.dataset.rmfile.split('|');briefArr(curClient,k).splice(+i,1);renderBrief(curClient);return;}
     const mu=e.target.closest('[data-mediaup]');if(mu){triggerUpload(mu.dataset.mediaup,'media','image/*');return;}
