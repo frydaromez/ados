@@ -391,6 +391,8 @@
   .linkchip svg{width:13px;height:13px}
   .linkchip span{max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .linkchip:hover{text-decoration:underline}
+  .linkchip.nolink{cursor:default;background:#f1f1f6;color:#4a4f5e}
+  .linkchip.nolink:hover{text-decoration:none}
   .link-add{display:inline-flex;gap:6px;flex-wrap:wrap}
   .link-add .lk-name{min-width:120px}
   .bf-add{border:1px dashed var(--line);border-radius:8px;padding:6px 10px;font-size:13px;font-family:inherit;min-width:160px;background:none;color:var(--ink)}
@@ -828,7 +830,7 @@
         versiones:[{txt:"Logo con lema"},{txt:"Logo sin lema"},{txt:"Logo a un color"},{txt:"Logo en negativo"},{txt:"Logo con servicios"},{txt:"Logo + Antea (alianza)"}],
         tipografias:[{name:"Bodoni MT",role:"Principal / display"},{name:"Minion Pro",role:"Secundaria / texto"},{name:"Verdana",role:"Digital / web"}],
         distintivos:[{txt:"Óvalo rojo característico + “auren” en serif."},{txt:"Marca afiliada a la alianza internacional Antea (firmas independientes)."}],
-        cli_principales:["Audit & Assurance","Accountancy Services","Tax Services"],
+        cli_principales:[{t:"Audit & Assurance (área)"},{t:"Accountancy Services (área)"},{t:"Tax Services (área)"}],
         competidores:[
           {n:"BDO México",loc:"Ciudad de México",web:"https://www.bdomexico.com",linkedin:"https://www.linkedin.com/company/bdo-castillo-miranda",x:"https://x.com/BDOMexico",d:"Red global de auditoría, impuestos y consultoría (en México como BDO Castillo Miranda). Clientes: empresas medianas-grandes y corporativos con operación internacional. Sin Instagram MX (usa X)."},
           {n:"Grant Thornton",loc:"Ciudad de México",web:"https://www.grantthornton.mx",linkedin:"https://www.linkedin.com/company/grantthorntonmx",instagram:"https://www.instagram.com/grantthorntonmexico/",d:"Firma local Salles, Sainz – Grant Thornton; red internacional enfocada en el middle market. Clientes: empresas en crecimiento, negocios familiares y corporativos."},
@@ -1101,7 +1103,7 @@
       {k:'servicios',l:'Servicios principales',kind:'list'},
       {k:'links_recursos',l:'Links y recursos directos (brochures, landings, materiales en otras páginas)',kind:'links'}]},
     {id:'clientes',n:'Clientes',ic:'users',fields:[
-      {k:'cli_principales',l:'Principales clientes (por área / práctica)',kind:'list'},
+      {k:'cli_principales',l:'Principales clientes (empresa → enlaza a su sitio)',kind:'links'},
       {k:'cli_sector',l:'Sector',kind:'text'},
       {k:'cli_perfil',l:'Perfil (quién decide)',kind:'text'},
       {k:'cli_tamano',l:'Tamaño',kind:'text'},
@@ -1174,7 +1176,7 @@
     return `<div class="bf-chips" data-list="${key}">${arr.map((x,i)=>`<span class="bchip">${esc(x)}<button type="button" data-rm="${key}|${i}">×</button></span>`).join('')}<input class="bf-add" data-add="${key}" placeholder="+ Agregar y Enter"></div>`;
   }
   let _uploadCtx=null;
-  function linksHTML(key,arr){arr=Array.isArray(arr)?arr:[];return `<div class="bf-links">${arr.map((it,i)=>`<a class="bchip linkchip" href="${esc(it.u)}" target="_blank" rel="noopener">${ICONS.link} <span>${esc(it.t||it.u)}</span><button type="button" data-rmlink="${key}|${i}" title="Quitar">×</button></a>`).join('')}<span class="link-add"><input class="bf-add lk-name" data-lkname="${key}" placeholder="Nombre"><input class="bf-add lk-url" data-lkurl="${key}" placeholder="Pega el link y Enter"></span></div>`;}
+  function linksHTML(key,arr){arr=Array.isArray(arr)?arr:[];return `<div class="bf-links">${arr.map((it,i)=>{const inner=`${ICONS.link} <span>${esc(it.t||it.u)}</span><button type="button" data-rmlink="${key}|${i}" title="Quitar">×</button>`;return it.u?`<a class="bchip linkchip" href="${esc(it.u)}" target="_blank" rel="noopener">${inner}</a>`:`<span class="bchip linkchip nolink">${inner}</span>`;}).join('')}<span class="link-add"><input class="bf-add lk-name" data-lkname="${key}" placeholder="Nombre"><input class="bf-add lk-url" data-lkurl="${key}" placeholder="Pega el link y Enter (opcional)"></span></div>`;}
   function blistHTML(key,arr){arr=Array.isArray(arr)?arr:[];return `<div class="blist">${arr.map((x,i)=>`<div class="bli"><span class="bli-dot">•</span><div class="bli-txt" contenteditable="true" data-bli="${key}|${i}">${esc(x)}</div><button type="button" class="bli-rm" data-rmbli="${key}|${i}" title="Quitar">×</button></div>`).join('')}<input class="bf-add" data-bladd="${key}" placeholder="+ Agregar y Enter"></div>`;}
   function mediaHTML(key,arr){arr=Array.isArray(arr)?arr:[];return `<div class="media-grid">${arr.map((m,i)=>`<div class="media-card">${m.img?`<img src="${esc(m.img)}" class="media-img">`:`<button type="button" class="media-into" data-mediainto="${key}|${i}">${ICONS.upload}<span>Subir imagen</span></button>`}<div class="media-cap" contenteditable="true" data-mediacap="${key}|${i}">${esc(m.txt||'')}</div><button type="button" class="media-rm" data-rmmedia="${key}|${i}" title="Quitar">×</button></div>`).join('')}</div><div class="media-add"><button type="button" class="attach-btn soft" data-mediaup="${key}">${ICONS.upload} Agregar imagen</button><input class="bf-add" data-mediatxt="${key}" placeholder="+ Nota o texto y Enter"></div>`;}
   function fontsHTML(key,arr){arr=Array.isArray(arr)?arr:[];return `<div class="fonts-grid">${arr.map((ft,i)=>`<div class="font-card"><button type="button" class="comp-rm" data-rmfont="${key}|${i}" title="Quitar">×</button>${ft.img?`<img src="${esc(ft.img)}" class="font-img">`:`<div class="font-aa" style="font-family:'${esc(ft.name)}',serif">Aa</div>`}<div class="font-name" contenteditable="true" data-fontf2="${key}|${i}|name">${esc(ft.name||'')}</div><div class="font-role" contenteditable="true" data-fontf2="${key}|${i}|role">${esc(ft.role||'')}</div><button type="button" class="font-up" data-fontimg="${key}|${i}">${ICONS.upload} ${ft.img?'Cambiar imagen':'Subir imagen'}</button></div>`).join('')}<div class="font-add"><input class="bf-add" data-fontf="name" placeholder="Tipografía"><input class="bf-add" data-fontf="role" placeholder="Uso (ej. principal)"><button type="button" class="attach-btn soft" data-fontadd="${key}">+ Agregar</button></div></div>`;}
@@ -1310,6 +1312,7 @@
     if(e.key==='Enter'&&t.dataset&&t.dataset.bladd){e.preventDefault();const v=t.value.trim();if(v){briefArr(curClient,t.dataset.bladd).push(v);const k=t.dataset.bladd;renderBrief(curClient);const ni=document.querySelector(`[data-bladd="${k}"]`);if(ni)ni.focus();}return;}
     if(e.key==='Enter'&&t.dataset&&t.dataset.add){e.preventDefault();const v=t.value.trim();if(v){briefArr(curClient,t.dataset.add).push(v);const k=t.dataset.add;renderBrief(curClient);const ni=document.querySelector(`[data-add="${k}"]`);if(ni)ni.focus();}}
     if(e.key==='Enter'&&t.dataset&&t.dataset.addcolor){e.preventDefault();let v=t.value.trim();if(v){if(v[0]!=='#'&&/^[0-9a-fA-F]{3,6}$/.test(v))v='#'+v;briefArr(curClient,t.dataset.addcolor).push(v);const k=t.dataset.addcolor;renderBrief(curClient);const ni=document.querySelector(`[data-addcolor="${k}"]`);if(ni)ni.focus();}}
+    if(e.key==='Enter'&&t.dataset&&t.dataset.lkname){e.preventDefault();const nm=t.value.trim();if(nm){briefArr(curClient,t.dataset.lkname).push({t:nm});const k=t.dataset.lkname;renderBrief(curClient);const ni=document.querySelector(`[data-lkname="${k}"]`);if(ni)ni.focus();}return;}
     if(e.key==='Enter'&&t.dataset&&t.dataset.lkurl){e.preventDefault();let u=t.value.trim();if(u){if(!/^https?:\/\//i.test(u))u='https://'+u;const wrap=t.closest('.link-add');const ne=wrap&&wrap.querySelector('[data-lkname]');const nm=ne?ne.value.trim():'';const k=t.dataset.lkurl;briefArr(curClient,k).push({t:nm,u:u});renderBrief(curClient);const ni=document.querySelector(`[data-lkurl="${k}"]`);if(ni)ni.focus();}}
     if(e.key==='Enter'&&t.dataset&&t.dataset.mediatxt){e.preventDefault();const v=t.value.trim();if(v){briefArr(curClient,t.dataset.mediatxt).push({img:'',txt:v});renderBrief(curClient);}}
     if(e.key==='Enter'&&t.dataset&&t.dataset.furl){e.preventDefault();let u=t.value.trim();if(u){if(!/^https?:\/\//i.test(u))u='https://'+u;const w=t.closest('.comp-add');const ne=w&&w.querySelector('[data-fname]');briefArr(curClient,t.dataset.furl).push({t:ne?ne.value.trim():'',u:u});renderBrief(curClient);}}
