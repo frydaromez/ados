@@ -1,0 +1,591 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+<meta charset="UTF-8">
+<style>
+  @page { margin: 2.5cm 3cm; }
+  body { font-family: Calibri, Arial, sans-serif; font-size: 11pt; color: #1a1a1a; line-height: 1.6; }
+  h1 { font-size: 22pt; font-weight: 700; color: #DA291C; margin: 0 0 4pt 0; letter-spacing: 1px; }
+  h2 { font-size: 13pt; font-weight: 700; color: #fff; background: #262729; padding: 6pt 10pt; margin: 22pt 0 8pt 0; page-break-after: avoid; }
+  h3 { font-size: 10.5pt; font-weight: 700; color: #DA291C; margin: 12pt 0 3pt 0; page-break-after: avoid; }
+  h4 { font-size: 10pt; font-weight: 700; color: #262729; margin: 10pt 0 2pt 0; border-left: 3pt solid #DA291C; padding-left: 6pt; }
+  p { margin: 2pt 0 6pt 0; }
+  ul { margin: 3pt 0 8pt 18pt; padding: 0; }
+  li { margin-bottom: 3pt; }
+  .header { border-bottom: 3pt solid #DA291C; padding-bottom: 10pt; margin-bottom: 14pt; }
+  .subtitle { font-size: 11pt; color: #666; margin: 2pt 0 0 0; }
+  .brand { color: #DA291C; font-weight: 700; }
+  .pending { color: #b45309; font-style: italic; }
+  .field-label { font-weight: 700; color: #444; font-size: 10pt; }
+  .section-intro { font-size: 10pt; color: #555; font-style: italic; margin-bottom: 8pt; }
+  table { border-collapse: collapse; width: 100%; margin: 8pt 0 12pt 0; }
+  td, th { border: 1px solid #ddd; padding: 5pt 8pt; font-size: 10pt; vertical-align: top; }
+  th { background: #f4f4f4; font-weight: 700; color: #333; }
+  .color-cell { width: 18pt; }
+  .dos-table th.do { background: #d4edda; color: #155724; }
+  .dos-table th.dont { background: #f8d7da; color: #721c24; }
+  .link { color: #8155ff; text-decoration: none; }
+  .footer { margin-top: 30pt; border-top: 1pt solid #ddd; padding-top: 8pt; font-size: 9pt; color: #aaa; text-align: right; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>BRIEF — AUREN MÉXICO</h1>
+  <p class="subtitle">AdsProject Media &nbsp;·&nbsp; Documento de trabajo interno &nbsp;·&nbsp; Junio 2026</p>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     1. INFORMACIÓN GENERAL
+════════════════════════════════════════════ -->
+<h2>1. Información general del cliente</h2>
+
+<h3>Nombre de la marca / empresa</h3>
+<p>Auren México</p>
+
+<h3>Sitio web</h3>
+<p><a class="link" href="https://auren.com/mx/">https://auren.com/mx/</a></p>
+
+<h3>Blog / Tendencias</h3>
+<p><a class="link" href="https://auren.com/mx/tendencias/blog/">https://auren.com/mx/tendencias/blog/</a></p>
+
+<h3>Redes sociales</h3>
+<table>
+  <tr><th>Plataforma</th><th>Link</th></tr>
+  <tr><td>Facebook</td><td><a class="link" href="https://www.facebook.com/aurenmx/">https://www.facebook.com/aurenmx/</a></td></tr>
+  <tr><td>Instagram</td><td><a class="link" href="https://www.instagram.com/aurenmexico/">https://www.instagram.com/aurenmexico/</a></td></tr>
+  <tr><td>LinkedIn</td><td><a class="link" href="https://www.linkedin.com/company/aurenmexico">https://www.linkedin.com/company/aurenmexico</a></td></tr>
+  <tr><td>X (Twitter)</td><td><a class="link" href="https://x.com/auren_mexico">https://x.com/auren_mexico</a></td></tr>
+  <tr><td>TikTok</td><td><a class="link" href="https://www.tiktok.com/@aurenmexico">https://www.tiktok.com/@aurenmexico</a> <em>(sin verificar)</em></td></tr>
+</table>
+
+<h3>Giro o industria</h3>
+<p>Firma de servicios profesionales: auditoría, consultoría, legal e impuestos (B2B).</p>
+
+<h3>Descripción breve del negocio</h3>
+<p>Auren es una firma de servicios profesionales que genera confianza a través de auditoría, consultoría y servicios legales y fiscales, con una asesoría 360° adaptada a cada organización.</p>
+
+<h3>Servicios principales</h3>
+<ul>
+  <li>Auditoría</li>
+  <li>Consultoría</li>
+  <li>Legal</li>
+  <li>Impuestos</li>
+</ul>
+
+<h3>Plataformas activas</h3>
+<p>Facebook, Instagram, LinkedIn, TikTok y Boletín (newsletter/blog). El contenido se distribuye por área de servicio: Auditoría, Consultoría, Legal e Impuestos.</p>
+
+
+<!-- ══════════════════════════════════════════
+     CLIENTES
+════════════════════════════════════════════ -->
+<h2>Clientes actuales</h2>
+
+<h3>Principales clientes / áreas de servicio</h3>
+<table>
+  <tr><th>Nombre</th><th>Sitio web</th><th>Redes</th></tr>
+  <tr><td>Audit &amp; Assurance</td><td class="pending">⏳ Pendiente</td><td class="pending">⏳ Pendiente</td></tr>
+  <tr><td>Accountancy Services</td><td class="pending">⏳ Pendiente</td><td class="pending">⏳ Pendiente</td></tr>
+  <tr><td>Tax Services</td><td class="pending">⏳ Pendiente</td><td class="pending">⏳ Pendiente</td></tr>
+  <tr><td>Advisory</td><td class="pending">⏳ Pendiente</td><td class="pending">⏳ Pendiente</td></tr>
+  <tr><td>Legal</td><td class="pending">⏳ Pendiente</td><td class="pending">⏳ Pendiente</td></tr>
+  <tr><td>Litigio</td><td class="pending">⏳ Pendiente</td><td class="pending">⏳ Pendiente</td></tr>
+  <tr><td>IT Consulting</td><td class="pending">⏳ Pendiente</td><td class="pending">⏳ Pendiente</td></tr>
+  <tr><td>Mkt</td><td class="pending">⏳ Pendiente</td><td class="pending">⏳ Pendiente</td></tr>
+  <tr><td>BPO</td><td class="pending">⏳ Pendiente</td><td class="pending">⏳ Pendiente</td></tr>
+</table>
+
+<h3>Sector</h3>
+<p>Consultoría y servicios a empresas, contabilidad, despachos de abogados, servicios y consultoría de TI, servicios financieros.</p>
+
+<h3>Perfil (quién decide)</h3>
+<p>Dueños y directores de PyMEs; directores financieros o CFOs; contadores, fiscalistas y despachos.</p>
+<p>Perfil de audiencia real (datos de plataformas): predominantemente hombres (25–54 años). Principales ciudades: Ciudad de México (la más relevante por amplísimo margen), seguida de Monterrey, León, Querétaro y Aguascalientes.</p>
+
+<h3>Tamaño</h3>
+<p class="pending">⏳ Pendiente (Charlie / cliente)</p>
+
+<h3>Clientes ideales</h3>
+<p class="pending">⏳ Pendiente (Charlie / cliente)</p>
+
+
+<!-- ══════════════════════════════════════════
+     2. PROPUESTA ESTRATÉGICA
+════════════════════════════════════════════ -->
+<h2>2. Propuesta estratégica</h2>
+
+<h3>Propuesta única de valor</h3>
+<ul>
+  <li>Auren no vende servicios: explica temas y se posiciona como quien sabe resolverlos.</li>
+  <li>Debe percibirse como una firma con criterio, experta pero accesible, estratégica (no reactiva) y cercana (no comercial).</li>
+</ul>
+
+<h3>Diferenciadores principales</h3>
+<p class="pending">⏳ Pendiente (Charlie / cliente)</p>
+
+<h3>Productos o servicios gancho</h3>
+<p class="pending">⏳ Pendiente (Charlie / cliente)</p>
+
+<h3>Principales palabras clave (como hablan los clientes)</h3>
+<p class="pending">⏳ Pendiente (Charlie / cliente)</p>
+
+<h3>Temporadas altas y bajas</h3>
+<p class="pending">⏳ Pendiente (Charlie / cliente)</p>
+
+<h3>Competidores / referentes</h3>
+<table>
+  <tr><th>Nombre</th><th>Localidad</th><th>Web</th><th>Redes</th><th>Notas</th></tr>
+  <tr>
+    <td><strong>BDO México</strong></td>
+    <td>Ciudad de México</td>
+    <td><a class="link" href="https://www.bdomexico.com">bdomexico.com</a></td>
+    <td>
+      <a class="link" href="https://www.linkedin.com/company/bdo-castillo-miranda">LinkedIn</a><br>
+      <a class="link" href="https://x.com/BDOMexico">X</a>
+    </td>
+    <td>Red global de auditoría, impuestos y consultoría (en México como BDO Castillo Miranda). Clientes: empresas medianas-grandes y corporativos con operación internacional. Sin Instagram MX (usa X).</td>
+  </tr>
+  <tr>
+    <td><strong>Grant Thornton</strong></td>
+    <td>Ciudad de México</td>
+    <td><a class="link" href="https://www.grantthornton.mx">grantthornton.mx</a></td>
+    <td>
+      <a class="link" href="https://www.linkedin.com/company/grantthorntonmx">LinkedIn</a><br>
+      <a class="link" href="https://www.instagram.com/grantthorntonmexico/">Instagram</a>
+    </td>
+    <td>Firma local Salles, Sainz – Grant Thornton; red internacional enfocada en el middle market. Clientes: empresas en crecimiento, negocios familiares y corporativos.</td>
+  </tr>
+  <tr>
+    <td><strong>RSM México</strong></td>
+    <td>Ciudad de México</td>
+    <td><a class="link" href="https://www.rsm.global/mexico">rsm.global/mexico</a></td>
+    <td>
+      <a class="link" href="https://www.linkedin.com/company/rsmglobalmx">LinkedIn</a><br>
+      <a class="link" href="https://www.instagram.com/rsmglobalmx/">Instagram</a>
+    </td>
+    <td>RSM México Bogarín; red global líder del middle market. Clientes: organizaciones emprendedoras enfocadas en el crecimiento.</td>
+  </tr>
+  <tr>
+    <td><strong>Forvis Mazars</strong></td>
+    <td>Ciudad de México</td>
+    <td><a class="link" href="https://www.forvismazars.com/mx/es">forvismazars.com/mx/es</a></td>
+    <td>
+      <a class="link" href="https://www.linkedin.com/company/forvismazars-en-mexico">LinkedIn</a><br>
+      <a class="link" href="https://www.instagram.com/forvismazarsmx/">Instagram</a>
+    </td>
+    <td>Red internacional de auditoría, contabilidad y asesoría fiscal/de negocios en 100+ países (antes Mazars). Clientes: corporativos, multinacionales y sector financiero.</td>
+  </tr>
+</table>
+
+
+<!-- ══════════════════════════════════════════
+     3. PROCESO COMERCIAL
+════════════════════════════════════════════ -->
+<h2>3. Proceso comercial y captación</h2>
+
+<h3>Proceso de compra</h3>
+<p class="pending">⏳ Pendiente (Charlie / cliente)</p>
+
+<h3>Tiempo promedio de decisión / compra</h3>
+<p class="pending">⏳ Pendiente (Charlie / cliente)</p>
+
+<h3>Canales principales de captación (fuera de redes sociales)</h3>
+<p class="pending">⏳ Pendiente (Charlie / cliente)</p>
+
+<h3>Objetivos de negocio</h3>
+<ul>
+  <li>Generación de leads (captar prospectos interesados en los servicios de Auren).</li>
+  <li>Crecimiento de seguidores/comunidad en todas las plataformas activas (Facebook, Instagram, LinkedIn, TikTok).</li>
+</ul>
+
+<h3>Objetivo de comunicación</h3>
+<p class="pending">⏳ Pendiente (Charlie / cliente)</p>
+
+<h3>KPIs / Métricas de seguimiento</h3>
+<ul>
+  <li>Leads generados por campañas activas.</li>
+  <li>Crecimiento neto de seguidores por plataforma (Facebook, Instagram, LinkedIn, TikTok).</li>
+  <li>Alcance mensual (personas distintas que vieron el contenido).</li>
+  <li>Interacciones totales (likes, reacciones, comentarios y compartidos).</li>
+  <li>Impresiones por canal.</li>
+  <li>Número de publicaciones por canal y por área de servicio (Auditoría, Consultoría, Legal, Impuestos).</li>
+</ul>
+
+
+<!-- ══════════════════════════════════════════
+     4. IDENTIDAD VISUAL
+════════════════════════════════════════════ -->
+<h2>4. Identidad visual</h2>
+
+<h3>Logo</h3>
+<p>Archivo disponible en el panel AdsOS (subido por el equipo). <span class="pending">⏳ Pendiente adjuntar aquí.</span></p>
+
+<h3>Manual de identidad</h3>
+<p>Auren cuenta con manual de identidad corporativa. Archivo PDF disponible en el panel AdsOS.</p>
+
+<h3>Versiones permitidas del logo</h3>
+<ul>
+  <li>Logo con lema</li>
+  <li>Logo sin lema</li>
+  <li>Logo a un color</li>
+  <li>Logo en negativo</li>
+  <li>Logo con servicios</li>
+  <li>Logo + Antea (alianza)</li>
+</ul>
+
+<h3>Colores institucionales</h3>
+<table>
+  <tr><th>Color</th><th>Hex</th><th>Referencia Pantone</th></tr>
+  <tr><td style="background:#DA291C;width:30pt;">&nbsp;</td><td>#DA291C</td><td>Pantone 485 C</td></tr>
+  <tr><td style="background:#262729;width:30pt;">&nbsp;</td><td>#262729</td><td>Pantone 426 C</td></tr>
+  <tr><td style="background:#FFFFFF;border:1px solid #ddd;width:30pt;">&nbsp;</td><td>#FFFFFF</td><td>Blanco</td></tr>
+</table>
+
+<h3>Tipografía</h3>
+<table>
+  <tr><th>Tipografía</th><th>Uso</th></tr>
+  <tr><td>Bodoni MT</td><td>Principal / display</td></tr>
+  <tr><td>Minion Pro</td><td>Secundaria / texto</td></tr>
+  <tr><td>Verdana</td><td>Digital / web</td></tr>
+</table>
+
+<h3>Logotipo, curvas o elementos gráficos distintivos</h3>
+<ul>
+  <li>Óvalo rojo característico + "auren" en serif.</li>
+  <li>Marca afiliada a la alianza internacional Antea (firmas independientes).</li>
+</ul>
+
+<h3>Referencias visuales</h3>
+<p class="pending">⏳ Pendiente (Charlie / cliente)</p>
+
+<h3>Elementos visuales permitidos</h3>
+<p class="pending">⏳ Pendiente (Charlie / cliente)</p>
+
+<h3>Elementos visuales que NUNCA se deben agregar</h3>
+<p class="pending">⏳ Pendiente (Charlie / cliente)</p>
+
+
+<!-- ══════════════════════════════════════════
+     5. COMUNICACIÓN Y TONO DE VOZ
+════════════════════════════════════════════ -->
+<h2>5. Comunicación y tono de voz &nbsp;— ¿Si Auren fuera una persona, cómo sería?</h2>
+
+<h3>Tono de voz del cliente</h3>
+<ul>
+  <li>Profesional, pero cercana.</li>
+  <li>Clara, pero con fondo.</li>
+  <li>Estratégica, pero fácil de entender.</li>
+  <li>Útil, pero sin sonar pesada.</li>
+  <li>Segura, pero sin prometer de más.</li>
+  <li>Sobria.</li>
+  <li>No suena a agencia ni a vendedor: suena a un experto que explica.</li>
+</ul>
+
+<h3>Tono de voz para reels / video</h3>
+<ul>
+  <li>Revisar sobre todo el diálogo.</li>
+  <li>Cuidar que el guion sea ágil, claro y atractivo, sin volverse vacío ni publicitario.</li>
+  <li>Hacer cambios mínimos: mover solo lo que realmente pueda brincarle a la clienta.</li>
+  <li>Quitar frases con demasiado "no", promesas fuertes, tecnicismos pesados o cierres demasiado directos.</li>
+  <li>Que el cierre aterrice a Auren desde el acompañamiento, no desde un CTA agresivo.</li>
+</ul>
+
+<h3>Nivel de tecnicismos permitido</h3>
+<p>Términos técnicos siempre explicados con palabras sencillas, sin bajarles el nivel. Evitar tecnicismos sin contexto y el lenguaje rebuscado.</p>
+
+<h3>Cambio de tecnicismos a lenguaje cálido y entendible</h3>
+<ul>
+  <li>Redactar de forma coloquial y digerible para todos, pensando en que el contenido llegue a más gente.</li>
+  <li>Asumir que muchas personas no tendrán conocimiento técnico legal.</li>
+  <li>Usar frases simples, ideas directas y párrafos cortos.</li>
+  <li>Texto espaciado y fácil de asimilar, que funcione también para quien no está acostumbrado a leer textos largos o densos.</li>
+  <li>Que lo entienda alguien que no domina el tema, pero que también le haga sentido a alguien con más experiencia.</li>
+</ul>
+
+<h3>Palabras o frases que SÍ se pueden usar</h3>
+<ul>
+  <li>"Te invitamos a…"</li>
+  <li>"Puedes consultarlo…"</li>
+  <li>"Conoce más…" (uso moderado)</li>
+  <li>"En Auren acompañamos…"</li>
+  <li>Cierres institucionales o de acompañamiento: acompañamiento, estructura, claridad, respaldo.</li>
+</ul>
+
+<h3>Palabras o frases que deben evitarse</h3>
+<ul>
+  <li>"Contáctanos ya"</li>
+  <li>"No pongas en riesgo…"</li>
+  <li>"Evita problemas…"</li>
+  <li>"Aseguramos…" / "Garantizamos…"</li>
+  <li>"certeza absoluta" / "certeza total"</li>
+  <li>"tu mejor defensa"</li>
+  <li>"rentabilidad asegurada" / "tu rentabilidad no conoce fronteras"</li>
+  <li>"firma líder"</li>
+  <li>"blindamos tu patrimonio"</li>
+  <li>"no se trata de…" / "el problema no es…" / "muchas empresas no…"</li>
+  <li>"Anticípate al riesgo antes de que sea realidad"</li>
+  <li>"La transparencia es el lenguaje que hablan los inversionistas globales"</li>
+  <li>"Dale a tus números el respaldo de una firma líder"</li>
+  <li>"Es tu mejor carta de presentación ante socios globales"</li>
+  <li>"Trabajar más no es trabajar mejor"</li>
+  <li>"No es un escudo. Es preparación profesional."</li>
+</ul>
+
+
+<!-- ══════════════════════════════════════════
+     6. REDES SOCIALES
+════════════════════════════════════════════ -->
+<h2>6. Redes sociales</h2>
+
+<h3>Situación actual en redes sociales</h3>
+<ul>
+  <li>Plataformas activas: Facebook, Instagram, LinkedIn, TikTok y Boletín (newsletter). El contenido se distribuye por área de servicio: Auditoría, Consultoría, Legal e Impuestos.</li>
+  <li>La parrilla de abril tiene un tono muy cargado a servicio, CTA, promesa de acompañamiento y enfoque comercial directo, tanto en Facebook como en Instagram y LinkedIn.</li>
+  <li>En conjunto se mueve mucho en la lógica problema → servicio → contacto, cuando la clienta pide valor → posicionamiento → solución sutil.</li>
+  <li>Se repite mucho el patrón: frase principal fuerte, una línea de beneficio, "Más en auren.com/mx", y correo y teléfono; eso la vuelve uniforme y más promocional.</li>
+  <li>Facebook está cargado de piezas de servicio con copy corto y CTA claro; Instagram es muy promocional y orientado a un mensaje rápido; LinkedIn tiene copies más largos, pero ahí también aparece el tono de venta, el uso del "no" y el argumento comercial directo.</li>
+  <li>Algunas piezas confunden el servicio o el área (por ejemplo, mensajes fiscales o consultivos colocados en Legal), lo que hace dudar sobre qué se está ofreciendo.</li>
+</ul>
+
+<h3>Red social principal</h3>
+<p>LinkedIn — es la plataforma más importante para la reputación y el posicionamiento de Auren.</p>
+
+<h3>Objetivo por red social</h3>
+<ul>
+  <li>Primero valor, después marca.</li>
+  <li>Primero claridad, después profundidad técnica.</li>
+  <li>Primero acompañamiento, no venta.</li>
+  <li>Cada pieza debe explicar, aclarar, ordenar ideas, dar contexto o ayudar a tomar mejores decisiones; si no cumple al menos uno, no pasa.</li>
+</ul>
+
+<h3>Look por red social</h3>
+<table>
+  <tr><th>Red</th><th>Objetivo</th><th>Sí hacer</th><th>No hacer</th></tr>
+  <tr>
+    <td><strong>Facebook</strong></td>
+    <td>Claridad + contacto</td>
+    <td>Copies breves sobre un tema concreto, con una idea útil o una advertencia clara, sin exceso de dureza. Lectura simple, directa e institucional, con una capa mínima de valor.</td>
+    <td>Que todo termine en venta. Frases muy absolutas. Piezas muy negativas. Repetir siempre la misma estructura.</td>
+  </tr>
+  <tr>
+    <td><strong>Instagram</strong></td>
+    <td>Claridad visual y consumo rápido</td>
+    <td>Una idea por pieza. Textos cortos. Carruseles con puntos concretos. Títulos que se entiendan rápido. El arte debe explicar rápido de qué va la pieza.</td>
+    <td>Copies largos. Exceso de CTA. Frases dramáticas. Promesas o absolutos. Copiar lo de LinkedIn.</td>
+  </tr>
+  <tr>
+    <td><strong>LinkedIn</strong></td>
+    <td>Posicionamiento, credibilidad y contenido de valor (la más importante para la reputación)</td>
+    <td>Piezas con más contexto, ideas claras, bullets, postura y explicación. Publicaciones editoriales, webinars, difusión de documentos y reflexiones técnicas aterrizadas.</td>
+    <td>Venta directa. Párrafos densos. Tono agresivo. Exceso de contraste "no se trata…". Promesas fuertes.</td>
+  </tr>
+</table>
+
+<h3>Formatos recomendados por red social</h3>
+<ul>
+  <li><strong>LinkedIn:</strong> publicaciones editoriales, difusión de documentos, webinars y materiales propios.</li>
+  <li><strong>Instagram:</strong> carruseles con puntos concretos y posts de una sola idea.</li>
+  <li><strong>Facebook:</strong> posts breves sobre un tema concreto.</li>
+  <li><strong>Fórmula general:</strong> tema claro + valor o contexto útil + cierre institucional.</li>
+  <li><strong>Contenido de valor / educativo:</strong> contexto claro + idea útil + explicación breve + cierre institucional (Auren).</li>
+  <li><strong>Para servicio:</strong> situación o necesidad + idea útil + Auren como acompañamiento (<em>nunca</em>: problema + miedo + venta + contacto).</li>
+  <li><strong>Eventos / webinars:</strong> qué fue + qué se abordó (bullets) + cierre institucional + agradecimiento o invitación.</li>
+  <li><strong>Difusión de publicaciones:</strong> título + de qué trata + contexto (Fundación / Auren) + invitación a consultar.</li>
+</ul>
+
+<h3>Tipo de contenido prioritario</h3>
+<p>Contenido de valor que posicione a Auren como referencia técnica (explicar, aclarar, dar contexto), por encima del contenido promocional.</p>
+
+<h3>Frecuencia sugerida</h3>
+<p class="pending">⏳ Pendiente (Charlie / cliente)</p>
+
+<h3>Contenido que mejor ha funcionado</h3>
+<ul>
+  <li>Línea visual corporativa consistente, con branding claro por área (Auditoría, Consultoría, Legal, Impuestos).</li>
+  <li>Artes que dejan ver con rapidez el tema o servicio principal.</li>
+  <li>Copies más claros y menos agresivos (por ejemplo, auditoría o declaración anual).</li>
+  <li>Piezas con lectura breve y directa, especialmente en Instagram.</li>
+  <li>Estructura validada para eventos y webinars: bullets, breve y sin CTA agresivo.</li>
+</ul>
+
+<h3>Contenido que debe evitarse</h3>
+<ul>
+  <li>Exceso de CTA.</li>
+  <li>Repetición de estructura entre piezas y entre un mes y otro.</li>
+  <li>Tono comercial dominante.</li>
+  <li>Frases demasiado fuertes o absolutas.</li>
+  <li>Uso excesivo del "no" y de construcciones negativas.</li>
+  <li>Promesas elevadas o que Auren no pueda sostener.</li>
+  <li>Mezcla de servicios o áreas que genere duda.</li>
+  <li>Publicaciones tipo meme o contenido demasiado ligero.</li>
+  <li>Promover servicios tercerizados o temas que ya se pidió quitar.</li>
+  <li>Cualquier tema de Propiedad Intelectual (ver Do's &amp; Don'ts).</li>
+</ul>
+
+
+<!-- ══════════════════════════════════════════
+     7. DO'S & DON'TS
+════════════════════════════════════════════ -->
+<h2>7. Do's &amp; Don'ts</h2>
+
+<h4>Generales de marca</h4>
+<table class="dos-table">
+  <tr><th class="do">✓ Do's</th><th class="dont">✗ Don'ts</th></tr>
+  <tr>
+    <td>
+      <ul>
+        <li>Primero valor, después marca; primero claridad, después profundidad técnica; primero acompañamiento, no venta.</li>
+        <li>Que cada pieza explique, aclare, ordene ideas, dé contexto o ayude a tomar mejores decisiones (si no, no pasa).</li>
+        <li>Hacer que Auren se vea como una firma con criterio, experiencia y conocimiento.</li>
+        <li>Cuidar que el contenido ayude al posicionamiento de marca y a la reputación técnica de Auren.</li>
+        <li>Tomar decisiones con base en resultados cuando ya se tenga esa información.</li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li>Hacer contenido que se sienta solo para vender servicios.</li>
+        <li>Hablar de servicios que Auren no ofrece directamente o de temas que ya se pidió quitar.</li>
+        <li>Promover servicios tercerizados.</li>
+        <li>Hacer promesas que Auren no pueda sostener.</li>
+        <li>Usar porcentajes o datos sin una fuente clara y confiable.</li>
+        <li>Repetir frases o ideas entre piezas o entre un mes y otro.</li>
+      </ul>
+    </td>
+  </tr>
+</table>
+
+<h4>Visuales</h4>
+<table class="dos-table">
+  <tr><th class="do">✓ Do's</th><th class="dont">✗ Don'ts</th></tr>
+  <tr>
+    <td>
+      <ul>
+        <li>Que el arte deje claro de qué trata la pieza.</li>
+        <li>Cuidar la jerarquía visual y los títulos fuertes.</li>
+        <li>Mantener coherencia por área (Auditoría, Consultoría, Legal, Impuestos).</li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li>Caer en la ambigüedad.</li>
+        <li>Sobrecargar la pieza.</li>
+        <li>Usar elementos decorativos sin función.</li>
+      </ul>
+    </td>
+  </tr>
+</table>
+
+<h4>Comunicación</h4>
+<table class="dos-table">
+  <tr><th class="do">✓ Do's</th><th class="dont">✗ Don'ts</th></tr>
+  <tr>
+    <td>
+      <ul>
+        <li>Redactar de forma clara, coloquial y fácil de entender, incluso para quien no domina el tema.</li>
+        <li>Hacer contenido que deje valor: que enseñe algo, aclare una idea o ayude a entender mejor el tema.</li>
+        <li>Mantener un tono profesional, cercano, estratégico y útil, sin sonar pesado.</li>
+        <li>Mencionar a Auren de forma natural, no como anuncio.</li>
+        <li>Aterrizar la solución de Auren, pero de forma sutil.</li>
+        <li>Usar cierres institucionales o de acompañamiento; el CTA nunca es el foco, nunca abre el copy y nunca es agresivo.</li>
+        <li>Cambiar las construcciones negativas por un enfoque positivo (ej.: en vez de "No tener control interno genera problemas", decir "Un control interno sólido da claridad y orden a la operación").</li>
+        <li>Validar siempre que el servicio y el área correspondan.</li>
+        <li>En blogs: párrafos espaciados, cerrar con Auren integrado al texto y dejar una idea útil al lector.</li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li>Abusar del "no" ni de construcciones negativas o correctivas.</li>
+        <li>Usar frases de regaño, demasiado duras o confrontativas.</li>
+        <li>Hacer publicaciones que hagan dudar sobre qué servicio o tema se comunica.</li>
+        <li>Arrancar desde el miedo o la carencia si se puede evitar.</li>
+        <li>Usar un tono más agresivo que técnico.</li>
+        <li>Hacer copies que sean solo una excusa para meter contacto, correo y teléfono.</li>
+        <li><strong>Propiedad Intelectual (restricción total):</strong> no tocar, desarrollar, proponer ni calendarizar ningún tema relacionado con propiedad intelectual o industrial, derechos de autor, registro de marcas, patentes, modelos de utilidad, diseños industriales, secretos comerciales o industriales, licencias, franquicias, transferencia o vinculación de conocimiento, acuerdos de confidencialidad o de no competencia ni desarrollo tecnológico. Aplica a redes, blog, carruseles, copy, arte, video, contenido editorial o educativo y propuestas de parrilla. Si surge una idea relacionada, se descarta o se sustituye por un tema permitido. <em>(Nota interna: Auren sí ofrece servicios de Propiedad Intelectual, pero para efectos de contenido el tema debe evitarse por completo, salvo que la clienta lo solicite expresamente.)</em></li>
+      </ul>
+    </td>
+  </tr>
+</table>
+
+<h4>Por red social</h4>
+<table class="dos-table">
+  <tr><th class="do">✓ Do's</th><th class="dont">✗ Don'ts</th></tr>
+  <tr>
+    <td>
+      <ul>
+        <li><strong>LinkedIn:</strong> piezas con más contexto, valor, postura y difusión de contenido; es la plataforma más importante para la reputación.</li>
+        <li><strong>Instagram:</strong> una idea por pieza, textos cortos y carruseles útiles; que el arte explique rápido la pieza.</li>
+        <li><strong>Facebook:</strong> directo, claro y útil, con una capa mínima de valor.</li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li><strong>LinkedIn:</strong> convertirlo en brochure largo, con párrafos densos o tono comercial.</li>
+        <li><strong>Instagram:</strong> saturar de texto, copiar lo de LinkedIn o abusar del CTA.</li>
+        <li><strong>Facebook:</strong> que todo termine en venta o que repita siempre la misma estructura.</li>
+      </ul>
+    </td>
+  </tr>
+</table>
+
+
+<!-- ══════════════════════════════════════════
+     8. VALIDACIONES
+════════════════════════════════════════════ -->
+<h2>8. Validaciones necesarias</h2>
+<p class="section-intro">Información que el cliente siempre debe validar antes de publicar:</p>
+
+<table>
+  <tr><th>Elemento</th><th>Validar</th></tr>
+  <tr><td>Precios</td><td>☐</td></tr>
+  <tr><td>Promociones</td><td>☐</td></tr>
+  <tr><td>Servicios</td><td>☐</td></tr>
+  <tr><td>Fechas</td><td>☐</td></tr>
+  <tr><td>Datos técnicos</td><td>☐</td></tr>
+  <tr><td>Casos de éxito</td><td>☐</td></tr>
+  <tr><td>Testimonios</td><td>☐</td></tr>
+  <tr><td>Uso de nombres de clientes</td><td>☐</td></tr>
+  <tr><td>Claims o promesas comerciales</td><td>☐</td></tr>
+  <tr><td>Información legal, regulatoria o sensible</td><td>☐</td></tr>
+</table>
+
+<h3>Preguntas antes de aprobar una pieza</h3>
+<ul>
+  <li>¿Se entiende fácil, incluso para alguien no técnico?</li>
+  <li>¿Aporta valor real y deja una idea útil?</li>
+  <li>¿Evita el "no" visible o las frases negativas innecesarias?</li>
+  <li>¿No hace promesas que Auren no pueda sostener?</li>
+  <li>¿Menciona a Auren de forma natural?</li>
+  <li>¿Coincide con los servicios que Auren sí ofrece?</li>
+  <li>¿Evita sonar genérica, repetida o demasiado vendedora?</li>
+  <li>¿Tiene un tono claro, profesional y cercano?</li>
+  <li>¿Hay algo técnicamente riesgoso o mal dicho?</li>
+  <li>¿El servicio y el área son correctos y no se mezcla fiscal con legal sin sentido?</li>
+</ul>
+
+
+<!-- ══════════════════════════════════════════
+     9. CONTACTOS Y APROBACIONES
+════════════════════════════════════════════ -->
+<h2>9. Contactos y aprobaciones</h2>
+
+<h3>Contacto principal del cliente</h3>
+<table>
+  <tr><th>Nombre</th><th>Cargo</th><th>Correo</th></tr>
+  <tr><td>Goretti Olmos</td><td>Gerente Administrativa</td><td><a class="link" href="mailto:goretti.olmos@auren.mx">goretti.olmos@auren.mx</a></td></tr>
+</table>
+
+<h3>Quién aprueba antes de publicar</h3>
+<p>Goretti Olmos — revisa y aprueba el contenido antes de publicar.</p>
+
+<h3>Tiempos de respuesta / disponibilidad</h3>
+<p class="pending">⏳ Pendiente (Charlie / cliente)</p>
+
+
+<!-- footer -->
+<div class="footer">
+  Brief Auren México &nbsp;·&nbsp; AdsProject Media &nbsp;·&nbsp; Junio 2026 &nbsp;·&nbsp; Documento de trabajo interno
+</div>
+
+</body>
+</html>
