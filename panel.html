@@ -94,6 +94,23 @@
   .comp-desc:empty:before{content:'Descripción…';color:var(--muted);font-style:italic}
   .comp-add{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:7px;align-items:center;border:1px dashed var(--line);border-radius:12px;padding:11px 13px}
   .comp-add .bf-add{min-width:130px}
+  /* Media (texto + imágenes en tarjetas) */
+  .media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+  .media-card{position:relative;border:1px solid var(--line);border-radius:11px;overflow:hidden;background:#fafafe}
+  .media-img{width:100%;height:96px;object-fit:cover;display:block}
+  .media-cap{font-size:12px;color:#4a4f5e;padding:7px 9px;outline:none;min-height:18px;white-space:pre-wrap}
+  .media-cap:empty:before{content:'Descripción…';color:var(--muted);font-style:italic}
+  .media-cap:focus{background:#fff;box-shadow:inset 0 0 0 2px var(--brand-soft)}
+  .media-rm{position:absolute;top:5px;right:5px;width:20px;height:20px;border-radius:50%;border:none;background:rgba(255,255,255,.92);box-shadow:var(--shadow-sm);cursor:pointer;color:#e11d48;font-size:13px;line-height:1}
+  .media-add{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:9px}
+  /* Manual sí/no */
+  .idman-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:9px}
+  .idman-q{font-size:12px;font-weight:600;color:#4a4f5e}
+  .idman-seg .seg-opt{padding:6px 16px}
+  .idman-area{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+  .idman-no{font-size:12.5px;color:var(--muted);font-style:italic}
+  .filelink{text-decoration:none;color:var(--brand-deep);font-weight:500}
+  .filelink:hover{text-decoration:underline}
   .topbar-right{display:flex;flex-direction:column;align-items:stretch;gap:12px}
   .crumb{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
   .crumb b{color:var(--ink)}
@@ -463,6 +480,7 @@
         </div>
       </div>
       <input type="file" id="logoFileInput" accept="image/*" hidden>
+      <input type="file" id="mediaFileInput" hidden>
       <div class="topbar-right">
         <div class="toolbar" id="toolbar">
           <button class="tbtn" onclick="openCliModal()"><span class="plus">+</span> Nuevo cliente</button>
@@ -769,14 +787,15 @@
         ],
         colores:["#DA291C|Pantone 485 C","#262729|Pantone 426 C","#FFFFFF|Blanco"],
         versiones:["Logo con claim","Logo sin claim","Logo a un color","Logo en negativo","Logo con servicios","Logo + Antea (alianza)"],
-        tipografia_apoyo:"Minion Pro · Verdana (digital)",
+        tipografia_sec:"Minion Pro",
+        tipografia_digital:"Verdana",
         distintivos:"Óvalo rojo característico + “auren” en serif. Marca afiliada a la alianza internacional Antea (firmas independientes).",
-        lineas_servicio:["Audit & Assurance","Accountancy","Tax","Legal","Litigio","IT Consulting","Marketing","BPO","Advisory"],
+        cli_principales:["Audit & Assurance","Accountancy","Tax","Legal","Litigio","IT Consulting","Marketing","BPO","Advisory"],
         competidores:[
-          {n:"BDO México",loc:"Ciudad de México",years:"1943",web:"https://www.bdomexico.com",linkedin:"https://www.linkedin.com/company/bdo-castillo-miranda",x:"https://x.com/BDOMexico",d:"Red global de auditoría, impuestos y consultoría (en México como BDO Castillo Miranda). Clientes: empresas medianas-grandes y corporativos con operación internacional. Sin Instagram MX (usa X)."},
-          {n:"Grant Thornton",loc:"Ciudad de México",years:"1979",web:"https://www.grantthornton.mx",linkedin:"https://www.linkedin.com/company/grantthorntonmx",instagram:"https://www.instagram.com/grantthorntonmexico/",d:"Firma local Salles, Sainz – Grant Thornton; red internacional enfocada en el middle market. Clientes: empresas en crecimiento, negocios familiares y corporativos."},
-          {n:"RSM México",loc:"Ciudad de México",web:"https://www.rsm.global/mexico",linkedin:"https://www.linkedin.com/company/rsmglobalmx",instagram:"https://www.instagram.com/rsmglobalmx/",d:"RSM México Bogarín; red global líder del middle market (+45 años en MX, año exacto no verificado). Clientes: organizaciones emprendedoras enfocadas en el crecimiento."},
-          {n:"Forvis Mazars",loc:"Ciudad de México",web:"https://www.forvismazars.com/mx/es",linkedin:"https://www.linkedin.com/company/forvismazars-en-mexico",instagram:"https://www.instagram.com/forvismazarsmx/",d:"Red internacional de auditoría, contabilidad y asesoría fiscal/de negocios en 100+ países (antes Mazars; año de entrada a MX no verificado). Clientes: corporativos, multinacionales y sector financiero."}
+          {n:"BDO México",loc:"Ciudad de México",web:"https://www.bdomexico.com",linkedin:"https://www.linkedin.com/company/bdo-castillo-miranda",x:"https://x.com/BDOMexico",d:"Red global de auditoría, impuestos y consultoría (en México como BDO Castillo Miranda). Clientes: empresas medianas-grandes y corporativos con operación internacional. Sin Instagram MX (usa X)."},
+          {n:"Grant Thornton",loc:"Ciudad de México",web:"https://www.grantthornton.mx",linkedin:"https://www.linkedin.com/company/grantthorntonmx",instagram:"https://www.instagram.com/grantthorntonmexico/",d:"Firma local Salles, Sainz – Grant Thornton; red internacional enfocada en el middle market. Clientes: empresas en crecimiento, negocios familiares y corporativos."},
+          {n:"RSM México",loc:"Ciudad de México",web:"https://www.rsm.global/mexico",linkedin:"https://www.linkedin.com/company/rsmglobalmx",instagram:"https://www.instagram.com/rsmglobalmx/",d:"RSM México Bogarín; red global líder del middle market. Clientes: organizaciones emprendedoras enfocadas en el crecimiento."},
+          {n:"Forvis Mazars",loc:"Ciudad de México",web:"https://www.forvismazars.com/mx/es",linkedin:"https://www.linkedin.com/company/forvismazars-en-mexico",instagram:"https://www.instagram.com/forvismazarsmx/",d:"Red internacional de auditoría, contabilidad y asesoría fiscal/de negocios en 100+ países (antes Mazars). Clientes: corporativos, multinacionales y sector financiero."}
         ]
       },
       info:{"Qué hace":"Salud y bienestar para empresas.","Redes":"Instagram · LinkedIn · Facebook","Objetivo":"Agendas para CheckUp Empresarial.","Tono":"Cercano, claro, profesional. Nada alarmista.","Identidad":["Azul Auren","Poppins","Logo en fondo claro"],"Links":"Drive · Identidad · Parrilla"},
@@ -1042,8 +1061,8 @@
       {k:'giro',l:'Giro o industria',kind:'text'},
       {k:'descripcion',l:'Descripción breve del negocio',kind:'long'},
       {k:'servicios',l:'Servicios principales',kind:'list'},
-      {k:'lineas_servicio',l:'Líneas de servicio / áreas',kind:'list'},
       {l:'Clientes actuales',kind:'subhead'},
+      {k:'cli_principales',l:'Principales clientes (por área / práctica)',kind:'list'},
       {k:'cli_sector',l:'Sector',kind:'text'},
       {k:'cli_perfil',l:'Perfil (quién decide)',kind:'text'},
       {k:'cli_tamano',l:'Tamaño',kind:'text'},
@@ -1066,7 +1085,7 @@
       {k:'diferenciadores',l:'Diferenciadores principales',kind:'list'},
       {k:'gancho',l:'Productos o servicios gancho',kind:'list'},
       {k:'keywords',l:'Palabras clave (como hablan los clientes)',kind:'list'},
-      {k:'temporadas',l:'Temporadas altas y bajas',kind:'text'},
+      {k:'temporadas',l:'Temporadas (bajas / altas)',kind:'duo',left:['temp_bajas','Bajas'],right:['temp_altas','Altas']},
       {k:'competidores',l:'Competencia / referentes',kind:'competitors'}]},
     {id:'objetivos',n:'Objetivos y métricas',ic:'trend',nuevo:true,fields:[
       {k:'obj_negocio',l:'Objetivo de negocio',kind:'long'},
@@ -1077,17 +1096,22 @@
       {k:'tiempo',l:'Tiempo promedio de decisión / compra',kind:'text'},
       {k:'canales',l:'Canales de captación (fuera de redes sociales)',kind:'channels'}]},
     {id:'identidad',n:'Identidad visual',ic:'image',fields:[
-      {k:'logo',l:'Logo',kind:'logo'},
-      {k:'manual',l:'Manual de identidad (PDF) — ¿lo tiene? pega el link para descargar',kind:'links'},
+      {k:'logo',l:'Logo principal',kind:'logo'},
+      {k:'logos_img',l:'Variaciones de logo (imágenes)',kind:'media'},
+      {k:'manual',l:'¿El cliente tiene manual/PDF de identidad?',kind:'idmanual'},
       {k:'versiones',l:'Versiones permitidas del logo',kind:'list'},
       {k:'colores',l:'Colores institucionales',kind:'colors'},
+      {l:'Tipografías',kind:'subhead'},
       {k:'tipografia',l:'Tipografía principal',kind:'type'},
-      {k:'tipografia_apoyo',l:'Tipografías de apoyo',kind:'text'},
+      {k:'tipografia_sec',l:'Tipografía secundaria',kind:'type'},
+      {k:'tipografia_digital',l:'Tipografía digital / web',kind:'text'},
+      {k:'tipografia_usos',l:'Uso de tipografías (jerarquías: títulos, cuerpo…)',kind:'long'},
+      {l:'Estilo visual',kind:'subhead'},
       {k:'distintivos',l:'Elementos gráficos distintivos',kind:'long'},
-      {k:'referencias',l:'Referencias visuales',kind:'list'},
+      {k:'referencias',l:'Referencias visuales (texto e imágenes)',kind:'media'},
       {k:'links_marca',l:'Links de marca (brandbook, materiales)',kind:'links'},
-      {k:'permitidos',l:'Elementos visuales permitidos',kind:'list'},
-      {k:'nunca',l:'Elementos visuales que NUNCA se deben agregar',kind:'list'}]},
+      {k:'permitidos',l:'Elementos visuales permitidos (texto e imágenes)',kind:'media'},
+      {k:'nunca',l:'Elementos visuales que NUNCA se deben agregar (texto e imágenes)',kind:'media'}]},
     {id:'tono',n:'Comunicación y tono de voz',ic:'chat',sub:'¿Si tu marca fuera una persona, cómo sería?',fields:[
       {k:'tono_cliente',l:'Tono de voz del cliente',kind:'long'},
       {k:'tono_reels',l:'Tono de voz para reels / video',kind:'long'},
@@ -1105,7 +1129,9 @@
     {id:'contactos',n:'Contactos y aprobaciones',ic:'users',nuevo:true,fields:[
       {k:'contacto',l:'Contacto principal del cliente',kind:'text'},
       {k:'aprobador',l:'Quién aprueba antes de publicar',kind:'text'},
-      {k:'tiempos',l:'Tiempos de respuesta / disponibilidad',kind:'text'}]}
+      {k:'tiempos',l:'Tiempos de respuesta / disponibilidad',kind:'text'}]},
+    {id:'docs',n:'Investigaciones / Documentos adicionales',ic:'doc',nuevo:true,fields:[
+      {k:'docs_items',l:'Links o archivos (investigaciones, contenido propio sobre el cliente)',kind:'files'}]}
   ];
   const BRIEF_RERENDER_ON_SAVE=['giro','descripcion','tipografia'];
   let briefOpen=new Set(['general']);
@@ -1114,11 +1140,29 @@
     arr=arr||[];
     return `<div class="bf-chips" data-list="${key}">${arr.map((x,i)=>`<span class="bchip">${esc(x)}<button type="button" data-rm="${key}|${i}">×</button></span>`).join('')}<input class="bf-add" data-add="${key}" placeholder="+ agregar y Enter"></div>`;
   }
+  let _uploadCtx=null;
+  function mediaHTML(key,arr){arr=arr||[];return `<div class="media-grid">${arr.map((m,i)=>`<div class="media-card">${m.img?`<img src="${esc(m.img)}" class="media-img">`:''}<div class="media-cap" contenteditable="true" data-mediacap="${key}|${i}">${esc(m.txt||'')}</div><button type="button" class="media-rm" data-rmmedia="${key}|${i}" title="Quitar">×</button></div>`).join('')}</div><div class="media-add"><button type="button" class="attach-btn" data-mediaup="${key}">${ICONS.upload} Subir imagen</button><input class="bf-add" data-mediatxt="${key}" placeholder="+ nota o texto y Enter"></div>`;}
+  function filesHTML(key,arr){arr=arr||[];return `<div class="bf-chips">${arr.map((m,i)=>`<span class="bchip">${m.u?`<a class="filelink" href="${esc(m.u)}" target="_blank" rel="noopener">${esc(m.t||m.u)}</a>`:`<a class="filelink" href="${esc(m.file)}" download="${esc(m.t||'archivo')}">${esc(m.t||'archivo')}</a>`}<button type="button" data-rmfile="${key}|${i}">×</button></span>`).join('')}</div><div class="comp-add"><input class="bf-add" data-fname="${key}" placeholder="Nombre"><input class="bf-add" data-furl="${key}" placeholder="Pega un link y Enter"><button type="button" class="attach-btn" data-fileup="${key}">${ICONS.upload} Subir archivo</button></div>`;}
+  function idmanualHTML(c,f){const b=gb(c),has=b.manual_has;let inner='';
+    if(has==='si')inner=`<div class="idman-area">${b.manual_file?`<a class="qchip" href="${esc(b.manual_file.file)}" download="${esc(b.manual_file.t||'manual.pdf')}">${ICONS.folder} ${esc(b.manual_file.t||'Descargar manual')}</a> <button type="button" class="qchip" data-manrm="1">Quitar</button>`:`<button type="button" class="qchip" data-manup="1">${ICONS.upload} Subir PDF</button>`}<input class="bf-add" data-manlink="1" value="${esc(b.manual_link||'')}" placeholder="…o pega el link de Drive y Enter">${b.manual_link?` <a class="qchip" href="${esc(b.manual_link)}" target="_blank" rel="noopener">${ICONS.globe} Abrir</a>`:''}</div>`;
+    else if(has==='no')inner='<div class="idman-no">El cliente no cuenta con manual de identidad.</div>';
+    return `<div class="bf"><div class="idman-row"><span class="idman-q">${esc(f.l)}</span><div class="seg idman-seg"><button type="button" class="seg-opt${has==='si'?' active':''}" data-idman="si">Sí</button><button type="button" class="seg-opt${has==='no'?' active':''}" data-idman="no">No</button></div></div>${inner}</div>`;}
+  function duoHTML(c,f){const b=gb(c);return `<div class="bf"><label>${esc(f.l)}</label><div class="dos-grid"><div class="dos-col no"><h5>${esc(f.left[1])}</h5>${listHTML(f.left[0],b[f.left[0]])}</div><div class="dos-col yes"><h5>${esc(f.right[1])}</h5>${listHTML(f.right[0],b[f.right[0]])}</div></div></div>`;}
+  function triggerUpload(key,type,accept){_uploadCtx={key:key,type:type};const inp=el('mediaFileInput');inp.accept=accept||'';inp.click();}
+  function handleMediaFile(e){const f=e.target.files&&e.target.files[0];e.target.value='';if(!f||!curClient||!_uploadCtx)return;const ctx=_uploadCtx;_uploadCtx=null;const rd=new FileReader();
+    rd.onload=()=>{if(ctx.type==='media'){const img=new Image();img.onload=()=>{const max=480,s=Math.min(1,max/Math.max(img.width,img.height));const cv=document.createElement('canvas');cv.width=Math.round(img.width*s)||1;cv.height=Math.round(img.height*s)||1;let data;try{cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height);data=cv.toDataURL('image/jpeg',0.85);}catch(_){data=rd.result;}briefArr(curClient,ctx.key).push({img:data,txt:''});renderBrief(curClient);persist();toast('Imagen agregada ✓');};img.onerror=()=>{briefArr(curClient,ctx.key).push({img:rd.result,txt:f.name});renderBrief(curClient);persist();};img.src=rd.result;}
+      else if(ctx.type==='manual'){gb(curClient).manual_file={t:f.name,file:rd.result};renderBrief(curClient);persist();toast('Manual cargado ✓');}
+      else{briefArr(curClient,ctx.key).push({t:f.name,file:rd.result});renderBrief(curClient);persist();toast('Archivo agregado ✓');}};
+    rd.readAsDataURL(f);}
   function fieldHTML(c,f){
     if(f.kind==='subhead')return `<div class="bf-subhead">${esc(f.l)}</div>`;
+    if(f.kind==='idmanual')return idmanualHTML(c,f);
+    if(f.kind==='duo')return duoHTML(c,f);
     const v=gb(c)[f.k];
+    if(f.kind==='media')return `<div class="bf"><label>${esc(f.l)}</label>${mediaHTML(f.k,v)}</div>`;
+    if(f.kind==='files')return `<div class="bf"><label>${esc(f.l)}</label>${filesHTML(f.k,v)}</div>`;
     if(f.kind==='competitors'){const arr=v||[];
-      return `<div class="bf"><label>${f.l}</label><div class="comp-list">${arr.map((x,i)=>`<div class="comp-card"><div class="comp-head"><span class="comp-name">${esc(x.n)}</span><button type="button" class="comp-rm" data-rmcomp="${f.k}|${i}" title="Quitar">×</button></div>${(x.loc||x.years)?`<div class="comp-meta">${[x.loc?esc(x.loc):'',x.years?'Desde '+esc(x.years):''].filter(Boolean).join(' · ')}</div>`:''}<div class="comp-links">${SOC.filter(s=>x[s[0]]).map(s=>`<a class="clink" href="${esc(x[s[0]])}" target="_blank" rel="noopener">${s[1]}</a>`).join('')}</div><div class="comp-desc" contenteditable="true" data-compdesc="${f.k}|${i}">${esc(x.d||'')}</div></div>`).join('')}<div class="comp-add"><input class="bf-add" data-compf="n" placeholder="Nombre"><input class="bf-add" data-compf="loc" placeholder="Localidad"><input class="bf-add" data-compf="years" placeholder="Desde (año)"><input class="bf-add" data-compf="web" placeholder="Sitio web"><input class="bf-add" data-compf="instagram" placeholder="Instagram"><input class="bf-add" data-compf="facebook" placeholder="Facebook"><input class="bf-add" data-compf="tiktok" placeholder="TikTok"><input class="bf-add" data-compf="linkedin" placeholder="LinkedIn"><input class="bf-add" data-compf="x" placeholder="X"><button type="button" class="attach-btn" data-compadd="${f.k}">+ Agregar competidor</button></div></div></div>`;}
+      return `<div class="bf"><label>${f.l}</label><div class="comp-list">${arr.map((x,i)=>`<div class="comp-card"><div class="comp-head"><span class="comp-name">${esc(x.n)}</span><button type="button" class="comp-rm" data-rmcomp="${f.k}|${i}" title="Quitar">×</button></div>${x.loc?`<div class="comp-meta">${esc(x.loc)}</div>`:''}<div class="comp-links">${SOC.filter(s=>x[s[0]]).map(s=>`<a class="clink" href="${esc(x[s[0]])}" target="_blank" rel="noopener">${s[1]}</a>`).join('')}</div><div class="comp-desc" contenteditable="true" data-compdesc="${f.k}|${i}">${esc(x.d||'')}</div></div>`).join('')}<div class="comp-add"><input class="bf-add" data-compf="n" placeholder="Nombre"><input class="bf-add" data-compf="loc" placeholder="Localidad"><input class="bf-add" data-compf="web" placeholder="Sitio web"><input class="bf-add" data-compf="instagram" placeholder="Instagram"><input class="bf-add" data-compf="facebook" placeholder="Facebook"><input class="bf-add" data-compf="tiktok" placeholder="TikTok"><input class="bf-add" data-compf="linkedin" placeholder="LinkedIn"><input class="bf-add" data-compf="x" placeholder="X"><button type="button" class="attach-btn" data-compadd="${f.k}">+ Agregar competidor</button></div></div></div>`;}
     if(f.kind==='text'||f.kind==='long')
       return `<div class="bf"><label>${f.l}</label><div class="bf-val" contenteditable="true" data-save="${f.k}">${esc(v||'')}</div></div>`;
     if(f.kind==='list')
@@ -1132,7 +1176,7 @@
     if(f.kind==='logo'){const url=v||'';
       return `<div class="bf"><label>${f.l}</label>${url?`<div class="logo-row"><img src="${esc(url)}" class="logo-prev"><button type="button" class="qchip" data-logo="1">${ICONS.upload} Cambiar</button><button type="button" class="qchip" data-logodl="1">Descargar</button></div>`:`<button type="button" class="qchip empty" data-logo="1">${ICONS.upload} Subir logo (PNG/JPG)</button>`}</div>`;}
     if(f.kind==='links'){const arr=v||[];
-      return `<div class="bf"><label>${f.l}</label><div class="bf-links">${arr.map((it,i)=>`<a class="bchip linkchip" href="${esc(it.u)}" target="_blank" rel="noopener">${ICONS.link} <span>${esc(it.t||it.u)}</span><button type="button" data-rmlink="${f.k}|${i}" title="Quitar">×</button></a>`).join('')}<span class="link-add"><input class="bf-add lk-name" data-lkname="${f.k}" placeholder="Nombre (ej. Brochure)"><input class="bf-add lk-url" data-lkurl="${f.k}" placeholder="Pega el link y Enter"></span></div></div>`;}
+      return `<div class="bf"><label>${f.l}</label><div class="bf-links">${arr.map((it,i)=>`<a class="bchip linkchip" href="${esc(it.u)}" target="_blank" rel="noopener">${ICONS.link} <span>${esc(it.t||it.u)}</span><button type="button" data-rmlink="${f.k}|${i}" title="Quitar">×</button></a>`).join('')}<span class="link-add"><input class="bf-add lk-name" data-lkname="${f.k}" placeholder="Nombre"><input class="bf-add lk-url" data-lkurl="${f.k}" placeholder="Pega el link y Enter"></span></div></div>`;}
     return '';
   }
   function dosHTML(c,sec){const b=gb(c);
@@ -1190,9 +1234,16 @@
     const rcp=e.target.closest('[data-rmcomp]');
     if(rcp){const[k,i]=rcp.dataset.rmcomp.split('|');briefArr(curClient,k).splice(+i,1);renderBrief(curClient);return;}
     const ca=e.target.closest('[data-compadd]');
-    if(ca){const w=ca.closest('.comp-add');const g=s=>{const el2=w.querySelector(`[data-compf="${s}"]`);return el2?el2.value.trim():'';};const n=g('n');if(!n){toast('Pon al menos el nombre del competidor');return;}const norm=u=>u&&!/^https?:\/\//i.test(u)?'https://'+u:u;const o={n,loc:g('loc'),years:g('years'),d:''};['web','instagram','facebook','tiktok','linkedin','x','youtube'].forEach(k=>{const u=g(k);if(u)o[k]=norm(u);});briefArr(curClient,ca.dataset.compadd).push(o);renderBrief(curClient);return;}
+    if(ca){const w=ca.closest('.comp-add');const g=s=>{const el2=w.querySelector(`[data-compf="${s}"]`);return el2?el2.value.trim():'';};const n=g('n');if(!n){toast('Pon al menos el nombre del competidor');return;}const norm=u=>u&&!/^https?:\/\//i.test(u)?'https://'+u:u;const o={n,loc:g('loc'),d:''};['web','instagram','facebook','tiktok','linkedin','x','youtube'].forEach(k=>{const u=g(k);if(u)o[k]=norm(u);});briefArr(curClient,ca.dataset.compadd).push(o);renderBrief(curClient);return;}
     const ld=e.target.closest('[data-logodl]');
     if(ld){downloadLogo();return;}
+    const rmm=e.target.closest('[data-rmmedia]');if(rmm){const[k,i]=rmm.dataset.rmmedia.split('|');briefArr(curClient,k).splice(+i,1);renderBrief(curClient);return;}
+    const rmf=e.target.closest('[data-rmfile]');if(rmf){const[k,i]=rmf.dataset.rmfile.split('|');briefArr(curClient,k).splice(+i,1);renderBrief(curClient);return;}
+    const mu=e.target.closest('[data-mediaup]');if(mu){triggerUpload(mu.dataset.mediaup,'media','image/*');return;}
+    const fu=e.target.closest('[data-fileup]');if(fu){triggerUpload(fu.dataset.fileup,'file','');return;}
+    const idm=e.target.closest('[data-idman]');if(idm){gb(curClient).manual_has=idm.dataset.idman;renderBrief(curClient);return;}
+    const mup=e.target.closest('[data-manup]');if(mup){triggerUpload('__manual','manual','application/pdf');return;}
+    const mrm=e.target.closest('[data-manrm]');if(mrm){delete gb(curClient).manual_file;renderBrief(curClient);return;}
     const rm=e.target.closest('[data-rm]');
     if(rm){const[k,i]=rm.dataset.rm.split('|');briefArr(curClient,k).splice(+i,1);renderBrief(curClient);return;}
     const ch=e.target.closest('[data-ch]');
@@ -1213,10 +1264,14 @@
     if(e.key==='Enter'&&t.dataset&&t.dataset.add){e.preventDefault();const v=t.value.trim();if(v){briefArr(curClient,t.dataset.add).push(v);const k=t.dataset.add;renderBrief(curClient);const ni=document.querySelector(`[data-add="${k}"]`);if(ni)ni.focus();}}
     if(e.key==='Enter'&&t.dataset&&t.dataset.addcolor){e.preventDefault();let v=t.value.trim();if(v){if(v[0]!=='#'&&/^[0-9a-fA-F]{3,6}$/.test(v))v='#'+v;briefArr(curClient,t.dataset.addcolor).push(v);const k=t.dataset.addcolor;renderBrief(curClient);const ni=document.querySelector(`[data-addcolor="${k}"]`);if(ni)ni.focus();}}
     if(e.key==='Enter'&&t.dataset&&t.dataset.lkurl){e.preventDefault();let u=t.value.trim();if(u){if(!/^https?:\/\//i.test(u))u='https://'+u;const wrap=t.closest('.link-add');const ne=wrap&&wrap.querySelector('[data-lkname]');const nm=ne?ne.value.trim():'';const k=t.dataset.lkurl;briefArr(curClient,k).push({t:nm,u:u});renderBrief(curClient);const ni=document.querySelector(`[data-lkurl="${k}"]`);if(ni)ni.focus();}}
+    if(e.key==='Enter'&&t.dataset&&t.dataset.mediatxt){e.preventDefault();const v=t.value.trim();if(v){briefArr(curClient,t.dataset.mediatxt).push({img:'',txt:v});renderBrief(curClient);}}
+    if(e.key==='Enter'&&t.dataset&&t.dataset.furl){e.preventDefault();let u=t.value.trim();if(u){if(!/^https?:\/\//i.test(u))u='https://'+u;const w=t.closest('.comp-add');const ne=w&&w.querySelector('[data-fname]');briefArr(curClient,t.dataset.furl).push({t:ne?ne.value.trim():'',u:u});renderBrief(curClient);}}
+    if(e.key==='Enter'&&t.dataset&&t.dataset.manlink){e.preventDefault();gb(curClient).manual_link=t.value.trim();renderBrief(curClient);}
   }
   function onBriefBlur(e){
     if(!curClient)return;const t=e.target;
     if(t.dataset&&t.dataset.compdesc){const[k,i]=t.dataset.compdesc.split('|');const a=briefArr(curClient,k);if(a[i]){a[i].d=(t.isContentEditable?t.textContent:t.value).trim();persist();}return;}
+    if(t.dataset&&t.dataset.mediacap){const[k,i]=t.dataset.mediacap.split('|');const a=briefArr(curClient,k);if(a[i]){a[i].txt=(t.isContentEditable?t.textContent:t.value).trim();persist();}return;}
     if(t.dataset&&t.dataset.save!==undefined&&t.dataset.save!==''){const k=t.dataset.save;const val=(t.isContentEditable?t.textContent:t.value).trim();gb(curClient)[k]=val;persist();if(BRIEF_RERENDER_ON_SAVE.indexOf(k)>=0)renderBrief(curClient);}
   }
   // ===== Persistencia (localStorage) + exportar a Word =====
@@ -1503,6 +1558,7 @@
   briefRoot.addEventListener('keydown',onBriefKey);
   briefRoot.addEventListener('focusout',onBriefBlur);
   el('logoFileInput').addEventListener('change',handleLogoFile);
+  el('mediaFileInput').addEventListener('change',handleMediaFile);
   document.addEventListener('click',e=>{const j=e.target.closest('[data-jump]');if(j){jumpToSection(j.dataset.jump);return;}if(!e.target.closest('#briefMenuWrap'))closeBriefMenu();});
   window.addEventListener('scroll',updateBriefProgress,{passive:true});
   window.addEventListener('resize',updateBriefProgress);
