@@ -1561,7 +1561,7 @@
   }
   function saveBriefData(){persist();toast('Brief guardado ✓');}
   function downloadLogo(){const u=curClient&&gb(curClient).logo;if(!u){toast('No hay logo cargado');return;}try{const a=document.createElement('a');a.href=u;a.download=curClient.name.replace(/\s+/g,'_')+'-logo.png';document.body.appendChild(a);a.click();a.remove();}catch(e){toast('No se pudo descargar el logo');}}
-  function loadPersisted(){try{localStorage.removeItem('adsos_data');const s=JSON.parse(localStorage.getItem('adsos_v3')||'null');if(s&&Array.isArray(s.clients)&&s.clients.length){clients.length=0;s.clients.forEach(x=>clients.push(x));if(Array.isArray(s.prospects)){prospects.length=0;s.prospects.forEach(x=>prospects.push(x));}if(Array.isArray(s.acts)){acts.length=0;s.acts.forEach(x=>acts.push(x));}}}catch(e){}}
+  function loadPersisted(){try{localStorage.removeItem('adsos_data');const s=JSON.parse(localStorage.getItem('adsos_v3')||'null');if(s&&Array.isArray(s.clients)&&s.clients.length){const defs=[...clients];clients.length=0;s.clients.forEach(saved=>{const def=defs.find(c=>c.id===saved.id);if(def){const cb=def.brief||{};const sb=saved.brief||{};Object.keys(cb).forEach(k=>{if(sb[k]===undefined)sb[k]=cb[k];});saved.brief=sb;}clients.push(saved);});if(Array.isArray(s.prospects)){prospects.length=0;s.prospects.forEach(x=>prospects.push(x));}if(Array.isArray(s.acts)){acts.length=0;s.acts.forEach(x=>acts.push(x));}}}catch(e){}}
   function briefToHTML(c){
     const b=gb(c); let h=`<h1>Brief — ${esc(c.name)}</h1>`;
     const val=(f)=>{const v=b[f.k];
