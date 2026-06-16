@@ -81,10 +81,13 @@
   .comp-name{font-weight:700;font-size:14px;color:var(--ink)}
   .comp-rm{border:none;background:none;cursor:pointer;color:var(--muted);font-size:16px;line-height:1;padding:0}
   .comp-rm:hover{color:#e11d48}
+  .comp-meta{font-size:11.5px;color:var(--muted);font-weight:600;margin:2px 0 2px}
   .comp-links{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
-  .clink{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:600;text-decoration:none;color:var(--brand-deep);background:var(--brand-soft);border-radius:7px;padding:3px 8px}
-  .clink svg{width:12px;height:12px}
+  .clink{display:inline-flex;align-items:center;font-size:11.5px;font-weight:600;text-decoration:none;color:var(--brand-deep);background:var(--brand-soft);border-radius:7px;padding:3px 9px}
   .clink:hover{filter:brightness(.96)}
+  .logo-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .logo-prev{max-height:64px;max-width:180px;border:1px solid var(--line);border-radius:10px;padding:7px 10px;background:#fff}
+  .swatch em{font-size:9px;color:var(--muted);font-style:normal;margin-top:-3px}
   .comp-desc{font-size:12.5px;color:#4a4f5e;line-height:1.45;border:1px solid transparent;border-radius:8px;padding:5px 7px;outline:none;white-space:pre-wrap}
   .comp-desc:hover{background:#f2f2f8}
   .comp-desc:focus{background:#fff;border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
@@ -764,14 +767,16 @@
           {t:"LinkedIn",u:"https://www.linkedin.com/company/auren-méxico/"},
           {t:"TikTok",u:"https://www.tiktok.com/@aurenmexico"}
         ],
-        colores:["#DA291C","#262729","#FFFFFF"],
-        versiones:["Logo con claim","Logo sin claim","Logo a un color","Logo en negativo"],
+        colores:["#DA291C|Pantone 485 C","#262729|Pantone 426 C","#FFFFFF|Blanco"],
+        versiones:["Logo con claim","Logo sin claim","Logo a un color","Logo en negativo","Logo con servicios","Logo + Antea (alianza)"],
+        tipografia_apoyo:"Minion Pro · Verdana (digital)",
+        distintivos:"Óvalo rojo característico + “auren” en serif. Marca afiliada a la alianza internacional Antea (firmas independientes).",
         lineas_servicio:["Audit & Assurance","Accountancy","Tax","Legal","Litigio","IT Consulting","Marketing","BPO","Advisory"],
         competidores:[
-          {n:"BDO México",web:"https://www.bdomexico.com",li:"https://www.linkedin.com/company/bdo-castillo-miranda",x:"https://x.com/BDOMexico",d:"Red global de auditoría, impuestos y consultoría (en México como BDO Castillo Miranda desde 1943). Clientes: empresas medianas-grandes y corporativos con operación internacional. Sin Instagram MX (usa X)."},
-          {n:"Grant Thornton",web:"https://www.grantthornton.mx",li:"https://www.linkedin.com/company/grantthorntonmx",ig:"https://www.instagram.com/grantthorntonmexico/",d:"Red internacional enfocada en el middle market. Clientes: empresas en crecimiento, negocios familiares y corporativos."},
-          {n:"RSM México",web:"https://www.rsm.global/mexico",li:"https://www.linkedin.com/company/rsmglobalmx",ig:"https://www.instagram.com/rsmglobalmx/",d:"Red global líder del middle market. Clientes: organizaciones emprendedoras enfocadas en el crecimiento."},
-          {n:"Forvis Mazars",web:"https://www.forvismazars.com/mx/es",li:"https://www.linkedin.com/company/forvismazars-en-mexico",ig:"https://www.instagram.com/forvismazarsmx/",d:"Red internacional de auditoría, contabilidad y asesoría fiscal/de negocios en 100+ países (antes Mazars). Clientes: corporativos, multinacionales y sector financiero."}
+          {n:"BDO México",loc:"Ciudad de México",years:"1943",web:"https://www.bdomexico.com",linkedin:"https://www.linkedin.com/company/bdo-castillo-miranda",x:"https://x.com/BDOMexico",d:"Red global de auditoría, impuestos y consultoría (en México como BDO Castillo Miranda). Clientes: empresas medianas-grandes y corporativos con operación internacional. Sin Instagram MX (usa X)."},
+          {n:"Grant Thornton",loc:"Ciudad de México",years:"1979",web:"https://www.grantthornton.mx",linkedin:"https://www.linkedin.com/company/grantthorntonmx",instagram:"https://www.instagram.com/grantthorntonmexico/",d:"Firma local Salles, Sainz – Grant Thornton; red internacional enfocada en el middle market. Clientes: empresas en crecimiento, negocios familiares y corporativos."},
+          {n:"RSM México",loc:"Ciudad de México",web:"https://www.rsm.global/mexico",linkedin:"https://www.linkedin.com/company/rsmglobalmx",instagram:"https://www.instagram.com/rsmglobalmx/",d:"RSM México Bogarín; red global líder del middle market (+45 años en MX, año exacto no verificado). Clientes: organizaciones emprendedoras enfocadas en el crecimiento."},
+          {n:"Forvis Mazars",loc:"Ciudad de México",web:"https://www.forvismazars.com/mx/es",linkedin:"https://www.linkedin.com/company/forvismazars-en-mexico",instagram:"https://www.instagram.com/forvismazarsmx/",d:"Red internacional de auditoría, contabilidad y asesoría fiscal/de negocios en 100+ países (antes Mazars; año de entrada a MX no verificado). Clientes: corporativos, multinacionales y sector financiero."}
         ]
       },
       info:{"Qué hace":"Salud y bienestar para empresas.","Redes":"Instagram · LinkedIn · Facebook","Objetivo":"Agendas para CheckUp Empresarial.","Tono":"Cercano, claro, profesional. Nada alarmista.","Identidad":["Azul Auren","Poppins","Logo en fondo claro"],"Links":"Drive · Identidad · Parrilla"},
@@ -1014,6 +1019,7 @@
   // ===== BRIEF (schema-driven, editable, arranca en pendiente) =====
   function esc(s){return (s==null?'':String(s)).replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));}
   const CANALES=['Recomendación','Referidos','Google','Página web','WhatsApp','Llamadas','Eventos','Alianzas','Networking','Fuerza de ventas','Otros'];
+  const SOC=[['web','Sitio'],['linkedin','LinkedIn'],['instagram','Instagram'],['facebook','Facebook'],['tiktok','TikTok'],['x','X'],['youtube','YouTube']];
   const _sv=p=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
   const ICONS={
     doc:_sv('<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h3"/>'),
@@ -1072,12 +1078,14 @@
       {k:'canales',l:'Canales de captación (fuera de redes sociales)',kind:'channels'}]},
     {id:'identidad',n:'Identidad visual',ic:'image',fields:[
       {k:'logo',l:'Logo',kind:'logo'},
+      {k:'manual',l:'Manual de identidad (PDF) — ¿lo tiene? pega el link para descargar',kind:'links'},
       {k:'versiones',l:'Versiones permitidas del logo',kind:'list'},
       {k:'colores',l:'Colores institucionales',kind:'colors'},
-      {k:'tipografia',l:'Tipografía',kind:'type'},
-      {k:'distintivos',l:'Logotipo, curvas o elementos gráficos distintivos',kind:'long'},
+      {k:'tipografia',l:'Tipografía principal',kind:'type'},
+      {k:'tipografia_apoyo',l:'Tipografías de apoyo',kind:'text'},
+      {k:'distintivos',l:'Elementos gráficos distintivos',kind:'long'},
       {k:'referencias',l:'Referencias visuales',kind:'list'},
-      {k:'links_marca',l:'Links de marca (brandbook, manual, materiales)',kind:'links'},
+      {k:'links_marca',l:'Links de marca (brandbook, materiales)',kind:'links'},
       {k:'permitidos',l:'Elementos visuales permitidos',kind:'list'},
       {k:'nunca',l:'Elementos visuales que NUNCA se deben agregar',kind:'list'}]},
     {id:'tono',n:'Comunicación y tono de voz',ic:'chat',sub:'¿Si tu marca fuera una persona, cómo sería?',fields:[
@@ -1110,7 +1118,7 @@
     if(f.kind==='subhead')return `<div class="bf-subhead">${esc(f.l)}</div>`;
     const v=gb(c)[f.k];
     if(f.kind==='competitors'){const arr=v||[];
-      return `<div class="bf"><label>${f.l}</label><div class="comp-list">${arr.map((x,i)=>`<div class="comp-card"><div class="comp-head"><span class="comp-name">${esc(x.n)}</span><button type="button" class="comp-rm" data-rmcomp="${f.k}|${i}" title="Quitar">×</button></div><div class="comp-links">${x.web?`<a class="clink" href="${esc(x.web)}" target="_blank" rel="noopener">${ICONS.globe} Sitio</a>`:''}${x.li?`<a class="clink" href="${esc(x.li)}" target="_blank" rel="noopener">in LinkedIn</a>`:''}${x.ig?`<a class="clink" href="${esc(x.ig)}" target="_blank" rel="noopener">IG</a>`:''}${x.x?`<a class="clink" href="${esc(x.x)}" target="_blank" rel="noopener">X</a>`:''}</div><div class="comp-desc" contenteditable="true" data-compdesc="${f.k}|${i}">${esc(x.d||'')}</div></div>`).join('')}<div class="comp-add"><input class="bf-add" data-compf="n" placeholder="Nombre"><input class="bf-add" data-compf="web" placeholder="Sitio web"><input class="bf-add" data-compf="li" placeholder="LinkedIn (opcional)"><input class="bf-add" data-compf="ig" placeholder="Instagram (opcional)"><button type="button" class="attach-btn" data-compadd="${f.k}">+ Agregar competidor</button></div></div></div>`;}
+      return `<div class="bf"><label>${f.l}</label><div class="comp-list">${arr.map((x,i)=>`<div class="comp-card"><div class="comp-head"><span class="comp-name">${esc(x.n)}</span><button type="button" class="comp-rm" data-rmcomp="${f.k}|${i}" title="Quitar">×</button></div>${(x.loc||x.years)?`<div class="comp-meta">${[x.loc?esc(x.loc):'',x.years?'Desde '+esc(x.years):''].filter(Boolean).join(' · ')}</div>`:''}<div class="comp-links">${SOC.filter(s=>x[s[0]]).map(s=>`<a class="clink" href="${esc(x[s[0]])}" target="_blank" rel="noopener">${s[1]}</a>`).join('')}</div><div class="comp-desc" contenteditable="true" data-compdesc="${f.k}|${i}">${esc(x.d||'')}</div></div>`).join('')}<div class="comp-add"><input class="bf-add" data-compf="n" placeholder="Nombre"><input class="bf-add" data-compf="loc" placeholder="Localidad"><input class="bf-add" data-compf="years" placeholder="Desde (año)"><input class="bf-add" data-compf="web" placeholder="Sitio web"><input class="bf-add" data-compf="instagram" placeholder="Instagram"><input class="bf-add" data-compf="facebook" placeholder="Facebook"><input class="bf-add" data-compf="tiktok" placeholder="TikTok"><input class="bf-add" data-compf="linkedin" placeholder="LinkedIn"><input class="bf-add" data-compf="x" placeholder="X"><button type="button" class="attach-btn" data-compadd="${f.k}">+ Agregar competidor</button></div></div></div>`;}
     if(f.kind==='text'||f.kind==='long')
       return `<div class="bf"><label>${f.l}</label><div class="bf-val" contenteditable="true" data-save="${f.k}">${esc(v||'')}</div></div>`;
     if(f.kind==='list')
@@ -1118,11 +1126,11 @@
     if(f.kind==='channels'){const arr=v||[];
       return `<div class="bf"><label>${f.l}</label><div class="bf-chips">${CANALES.map(ch=>`<button type="button" class="ch-chip" data-ch="${f.k}|${esc(ch)}" aria-pressed="${arr.indexOf(ch)>=0}">${ch}</button>`).join('')}</div></div>`;}
     if(f.kind==='colors'){const arr=v||[];
-      return `<div class="bf"><label>${f.l}</label><div class="swatches">${arr.map((hex,i)=>`<span class="swatch"><i style="background:${esc(hex)}"></i><small>${esc(hex)}</small><button type="button" data-rmcolor="${f.k}|${i}">×</button></span>`).join('')}<input class="bf-add" data-addcolor="${f.k}" placeholder="#HEX y Enter"></div></div>`;}
+      return `<div class="bf"><label>${f.l}</label><div class="swatches">${arr.map((cv,i)=>{const pp=String(cv).split('|');const hex=pp[0],nm=pp[1];return `<span class="swatch"><i style="background:${esc(hex)}"></i><small>${esc(nm||hex)}</small>${nm?`<em>${esc(hex)}</em>`:''}<button type="button" data-rmcolor="${f.k}|${i}">×</button></span>`;}).join('')}<input class="bf-add" data-addcolor="${f.k}" placeholder="#HEX  o  #HEX|Nombre"></div></div>`;}
     if(f.kind==='type'){const font=v||'';const ff=font?`font-family:'${esc(font)}',sans-serif`:'';
       return `<div class="bf"><label>${f.l}</label><div class="type-prev"><div class="aa" style="${ff}">Aa</div><div class="sample" style="${ff}">ABCDabcd 0123 · El veloz murciélago</div><input class="bf-add" data-save="${f.k}" value="${esc(font)}" placeholder="Nombre de la tipografía" style="margin-top:10px;min-width:220px"></div></div>`;}
     if(f.kind==='logo'){const url=v||'';
-      return `<div class="bf"><label>${f.l}</label>${url?`<div style="display:flex;gap:12px;align-items:center"><img src="${esc(url)}" style="max-height:58px;border-radius:8px"><button type="button" class="qchip" data-logo="1">Cambiar</button></div>`:`<button type="button" class="qchip empty" data-logo="1">${ICONS.upload} Subir logo (PNG/JPG)</button>`}</div>`;}
+      return `<div class="bf"><label>${f.l}</label>${url?`<div class="logo-row"><img src="${esc(url)}" class="logo-prev"><button type="button" class="qchip" data-logo="1">${ICONS.upload} Cambiar</button><button type="button" class="qchip" data-logodl="1">Descargar</button></div>`:`<button type="button" class="qchip empty" data-logo="1">${ICONS.upload} Subir logo (PNG/JPG)</button>`}</div>`;}
     if(f.kind==='links'){const arr=v||[];
       return `<div class="bf"><label>${f.l}</label><div class="bf-links">${arr.map((it,i)=>`<a class="bchip linkchip" href="${esc(it.u)}" target="_blank" rel="noopener">${ICONS.link} <span>${esc(it.t||it.u)}</span><button type="button" data-rmlink="${f.k}|${i}" title="Quitar">×</button></a>`).join('')}<span class="link-add"><input class="bf-add lk-name" data-lkname="${f.k}" placeholder="Nombre (ej. Brochure)"><input class="bf-add lk-url" data-lkurl="${f.k}" placeholder="Pega el link y Enter"></span></div></div>`;}
     return '';
@@ -1182,7 +1190,9 @@
     const rcp=e.target.closest('[data-rmcomp]');
     if(rcp){const[k,i]=rcp.dataset.rmcomp.split('|');briefArr(curClient,k).splice(+i,1);renderBrief(curClient);return;}
     const ca=e.target.closest('[data-compadd]');
-    if(ca){const w=ca.closest('.comp-add');const g=s=>{const el2=w.querySelector(`[data-compf="${s}"]`);return el2?el2.value.trim():'';};const n=g('n');if(!n){toast('Pon al menos el nombre del competidor');return;}const norm=u=>u&&!/^https?:\/\//i.test(u)?'https://'+u:u;briefArr(curClient,ca.dataset.compadd).push({n,web:norm(g('web')),li:norm(g('li')),ig:norm(g('ig')),d:''});renderBrief(curClient);return;}
+    if(ca){const w=ca.closest('.comp-add');const g=s=>{const el2=w.querySelector(`[data-compf="${s}"]`);return el2?el2.value.trim():'';};const n=g('n');if(!n){toast('Pon al menos el nombre del competidor');return;}const norm=u=>u&&!/^https?:\/\//i.test(u)?'https://'+u:u;const o={n,loc:g('loc'),years:g('years'),d:''};['web','instagram','facebook','tiktok','linkedin','x','youtube'].forEach(k=>{const u=g(k);if(u)o[k]=norm(u);});briefArr(curClient,ca.dataset.compadd).push(o);renderBrief(curClient);return;}
+    const ld=e.target.closest('[data-logodl]');
+    if(ld){downloadLogo();return;}
     const rm=e.target.closest('[data-rm]');
     if(rm){const[k,i]=rm.dataset.rm.split('|');briefArr(curClient,k).splice(+i,1);renderBrief(curClient);return;}
     const ch=e.target.closest('[data-ch]');
@@ -1224,6 +1234,7 @@
     rd.readAsDataURL(f);e.target.value='';
   }
   function saveBriefData(){persist();toast('Brief guardado ✓');}
+  function downloadLogo(){const u=curClient&&gb(curClient).logo;if(!u){toast('No hay logo cargado');return;}try{const a=document.createElement('a');a.href=u;a.download=curClient.name.replace(/\s+/g,'_')+'-logo.png';document.body.appendChild(a);a.click();a.remove();}catch(e){toast('No se pudo descargar el logo');}}
   function loadPersisted(){try{const s=JSON.parse(localStorage.getItem('adsos_data')||'null');if(s&&Array.isArray(s.clients)&&s.clients.length){clients.length=0;s.clients.forEach(x=>clients.push(x));if(Array.isArray(s.prospects)){prospects.length=0;s.prospects.forEach(x=>prospects.push(x));}if(Array.isArray(s.acts)){acts.length=0;s.acts.forEach(x=>acts.push(x));}}}catch(e){}}
   function briefToHTML(c){
     const b=gb(c); let h=`<h1>Brief — ${esc(c.name)}</h1>`;
