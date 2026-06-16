@@ -4,26 +4,26 @@
 <style>
   @page { margin: 2.5cm 3cm; }
   body { font-family: Calibri, Arial, sans-serif; font-size: 11pt; color: #1a1a1a; line-height: 1.6; }
-  h1 { font-size: 22pt; font-weight: 700; color: #DA291C; margin: 0 0 4pt 0; letter-spacing: 1px; }
+  h1 { font-size: 22pt; font-weight: 700;  margin: 0 0 4pt 0; letter-spacing: 1px; }
   h2 { font-size: 13pt; font-weight: 700; color: #fff; background: #262729; padding: 6pt 10pt; margin: 22pt 0 8pt 0; page-break-after: avoid; }
-  h3 { font-size: 10.5pt; font-weight: 700; color: #DA291C; margin: 12pt 0 3pt 0; page-break-after: avoid; }
-  h4 { font-size: 10pt; font-weight: 700; color: #262729; margin: 10pt 0 2pt 0; border-left: 3pt solid #DA291C; padding-left: 6pt; }
+  h3 { font-size: 10.5pt; font-weight: 700;  margin: 12pt 0 3pt 0; page-break-after: avoid; }
+  h4 { font-size: 10pt; font-weight: 700; color: #262729; margin: 10pt 0 2pt 0; border-left: 3pt solid #1a1a1a; padding-left: 6pt; }
   p { margin: 2pt 0 6pt 0; }
   ul { margin: 3pt 0 8pt 18pt; padding: 0; }
   li { margin-bottom: 3pt; }
-  .header { border-bottom: 3pt solid #DA291C; padding-bottom: 10pt; margin-bottom: 14pt; }
+  .header { border-bottom: 3pt solid #1a1a1a; padding-bottom: 10pt; margin-bottom: 14pt; }
   .subtitle { font-size: 11pt; color: #666; margin: 2pt 0 0 0; }
-  .brand { color: #DA291C; font-weight: 700; }
-  .pending { color: #b45309; font-style: italic; }
+  .brand {  font-weight: 700; }
+  .pending { color: #1a1a1a; font-style: italic; }
   .field-label { font-weight: 700; color: #444; font-size: 10pt; }
   .section-intro { font-size: 10pt; color: #555; font-style: italic; margin-bottom: 8pt; }
   table { border-collapse: collapse; width: 100%; margin: 8pt 0 12pt 0; }
   td, th { border: 1px solid #ddd; padding: 5pt 8pt; font-size: 10pt; vertical-align: top; }
   th { background: #f4f4f4; font-weight: 700; color: #333; }
   .color-cell { width: 18pt; }
-  .dos-table th.do { background: #d4edda; color: #155724; }
-  .dos-table th.dont { background: #f8d7da; color: #721c24; }
-  .link { color: #8155ff; text-decoration: none; }
+  .dos-table th.do { background: #f4f4f4; color: #1a1a1a; }
+  .dos-table th.dont { background: #f4f4f4; color: #1a1a1a; }
+  .link { color: #1a1a1a; text-decoration: none; }
   .footer { margin-top: 30pt; border-top: 1pt solid #ddd; padding-top: 8pt; font-size: 9pt; color: #aaa; text-align: right; }
 </style>
 </head>
@@ -85,15 +85,15 @@
 <h3>Principales clientes / áreas de servicio</h3>
 <table>
   <tr><th>Nombre</th><th>Sitio web</th><th>Redes</th></tr>
-  <tr><td>Audit &amp; Assurance</td><td class="pending">⏳ Pendiente</td><td class="pending">⏳ Pendiente</td></tr>
-  <tr><td>Accountancy Services</td><td class="pending">⏳ Pendiente</td><td class="pending">⏳ Pendiente</td></tr>
-  <tr><td>Tax Services</td><td class="pending">⏳ Pendiente</td><td class="pending">⏳ Pendiente</td></tr>
-  <tr><td>Advisory</td><td class="pending">⏳ Pendiente</td><td class="pending">⏳ Pendiente</td></tr>
-  <tr><td>Legal</td><td class="pending">⏳ Pendiente</td><td class="pending">⏳ Pendiente</td></tr>
-  <tr><td>Litigio</td><td class="pending">⏳ Pendiente</td><td class="pending">⏳ Pendiente</td></tr>
-  <tr><td>IT Consulting</td><td class="pending">⏳ Pendiente</td><td class="pending">⏳ Pendiente</td></tr>
-  <tr><td>Mkt</td><td class="pending">⏳ Pendiente</td><td class="pending">⏳ Pendiente</td></tr>
-  <tr><td>BPO</td><td class="pending">⏳ Pendiente</td><td class="pending">⏳ Pendiente</td></tr>
+  <tr><td>Audit &amp; Assurance</td><td class="pending">Pendiente</td><td class="pending">Pendiente</td></tr>
+  <tr><td>Accountancy Services</td><td class="pending">Pendiente</td><td class="pending">Pendiente</td></tr>
+  <tr><td>Tax Services</td><td class="pending">Pendiente</td><td class="pending">Pendiente</td></tr>
+  <tr><td>Advisory</td><td class="pending">Pendiente</td><td class="pending">Pendiente</td></tr>
+  <tr><td>Legal</td><td class="pending">Pendiente</td><td class="pending">Pendiente</td></tr>
+  <tr><td>Litigio</td><td class="pending">Pendiente</td><td class="pending">Pendiente</td></tr>
+  <tr><td>IT Consulting</td><td class="pending">Pendiente</td><td class="pending">Pendiente</td></tr>
+  <tr><td>Mkt</td><td class="pending">Pendiente</td><td class="pending">Pendiente</td></tr>
+  <tr><td>BPO</td><td class="pending">Pendiente</td><td class="pending">Pendiente</td></tr>
 </table>
 
 <h3>Sector</h3>
@@ -104,10 +104,10 @@
 <p>Perfil de audiencia real (datos de plataformas): predominantemente hombres (25–54 años). Principales ciudades: Ciudad de México (la más relevante por amplísimo margen), seguida de Monterrey, León, Querétaro y Aguascalientes.</p>
 
 <h3>Tamaño</h3>
-<p class="pending">⏳ Pendiente (Charlie / cliente)</p>
+<p class="pending">Pendiente (Charlie / cliente)</p>
 
 <h3>Clientes ideales</h3>
-<p class="pending">⏳ Pendiente (Charlie / cliente)</p>
+<p class="pending">Pendiente (Charlie / cliente)</p>
 
 
 <!-- ══════════════════════════════════════════
@@ -122,16 +122,16 @@
 </ul>
 
 <h3>Diferenciadores principales</h3>
-<p class="pending">⏳ Pendiente (Charlie / cliente)</p>
+<p class="pending">Pendiente (Charlie / cliente)</p>
 
 <h3>Productos o servicios gancho</h3>
-<p class="pending">⏳ Pendiente (Charlie / cliente)</p>
+<p class="pending">Pendiente (Charlie / cliente)</p>
 
 <h3>Principales palabras clave (como hablan los clientes)</h3>
-<p class="pending">⏳ Pendiente (Charlie / cliente)</p>
+<p class="pending">Pendiente (Charlie / cliente)</p>
 
 <h3>Temporadas altas y bajas</h3>
-<p class="pending">⏳ Pendiente (Charlie / cliente)</p>
+<p class="pending">Pendiente (Charlie / cliente)</p>
 
 <h3>Competidores / referentes</h3>
 <table>
@@ -185,13 +185,13 @@
 <h2>3. Proceso comercial y captación</h2>
 
 <h3>Proceso de compra</h3>
-<p class="pending">⏳ Pendiente (Charlie / cliente)</p>
+<p class="pending">Pendiente (Charlie / cliente)</p>
 
 <h3>Tiempo promedio de decisión / compra</h3>
-<p class="pending">⏳ Pendiente (Charlie / cliente)</p>
+<p class="pending">Pendiente (Charlie / cliente)</p>
 
 <h3>Canales principales de captación (fuera de redes sociales)</h3>
-<p class="pending">⏳ Pendiente (Charlie / cliente)</p>
+<p class="pending">Pendiente (Charlie / cliente)</p>
 
 <h3>Objetivos de negocio</h3>
 <ul>
@@ -200,7 +200,7 @@
 </ul>
 
 <h3>Objetivo de comunicación</h3>
-<p class="pending">⏳ Pendiente (Charlie / cliente)</p>
+<p class="pending">Pendiente (Charlie / cliente)</p>
 
 <h3>KPIs / Métricas de seguimiento</h3>
 <ul>
@@ -219,7 +219,7 @@
 <h2>4. Identidad visual</h2>
 
 <h3>Logo</h3>
-<p>Archivo disponible en el panel AdsOS (subido por el equipo). <span class="pending">⏳ Pendiente adjuntar aquí.</span></p>
+<p>Archivo disponible en el panel AdsOS (subido por el equipo). <span class="pending">Pendiente adjuntar aquí.</span></p>
 
 <h3>Manual de identidad</h3>
 <p>Auren cuenta con manual de identidad corporativa. Archivo PDF disponible en el panel AdsOS.</p>
@@ -257,13 +257,13 @@
 </ul>
 
 <h3>Referencias visuales</h3>
-<p class="pending">⏳ Pendiente (Charlie / cliente)</p>
+<p class="pending">Pendiente (Charlie / cliente)</p>
 
 <h3>Elementos visuales permitidos</h3>
-<p class="pending">⏳ Pendiente (Charlie / cliente)</p>
+<p class="pending">Pendiente (Charlie / cliente)</p>
 
 <h3>Elementos visuales que NUNCA se deben agregar</h3>
-<p class="pending">⏳ Pendiente (Charlie / cliente)</p>
+<p class="pending">Pendiente (Charlie / cliente)</p>
 
 
 <!-- ══════════════════════════════════════════
@@ -398,7 +398,7 @@
 <p>Contenido de valor que posicione a Auren como referencia técnica (explicar, aclarar, dar contexto), por encima del contenido promocional.</p>
 
 <h3>Frecuencia sugerida</h3>
-<p class="pending">⏳ Pendiente (Charlie / cliente)</p>
+<p class="pending">Pendiente (Charlie / cliente)</p>
 
 <h3>Contenido que mejor ha funcionado</h3>
 <ul>
@@ -579,7 +579,7 @@
 <p>Goretti Olmos — revisa y aprueba el contenido antes de publicar.</p>
 
 <h3>Tiempos de respuesta / disponibilidad</h3>
-<p class="pending">⏳ Pendiente (Charlie / cliente)</p>
+<p class="pending">Pendiente (Charlie / cliente)</p>
 
 
 <!-- footer -->
