@@ -111,6 +111,22 @@
   .idman-no{font-size:12.5px;color:var(--muted);font-style:italic}
   .filelink{text-decoration:none;color:var(--brand-deep);font-weight:500}
   .filelink:hover{text-decoration:underline}
+  .media-into{width:100%;height:96px;border:none;border-bottom:1px solid var(--line);background:#f7f7fb;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;color:var(--brand);font-size:11px;font-weight:500;font-family:inherit}
+  .media-into svg{width:18px;height:18px}
+  .media-into:hover{background:var(--brand-soft)}
+  .drive-head{font-size:11px;font-weight:600;color:var(--muted);display:flex;align-items:center;gap:6px;margin-bottom:9px}
+  .drive-head svg{width:13px;height:13px}
+  /* Tipografías en tarjetas */
+  .fonts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:11px}
+  .font-card{position:relative;border:1px solid var(--line);border-radius:12px;padding:13px 14px;background:#fafafe}
+  .font-aa{font-size:34px;line-height:1;color:var(--ink)}
+  .font-name{font-size:13.5px;font-weight:600;color:var(--ink);margin-top:7px;outline:none;border-radius:6px}
+  .font-name:focus{box-shadow:0 0 0 2px var(--brand-soft)}
+  .font-role{font-size:11.5px;color:var(--muted);margin-top:2px;outline:none;border-radius:6px}
+  .font-role:empty:before{content:'Uso…';color:var(--muted);font-style:italic}
+  .font-role:focus{box-shadow:0 0 0 2px var(--brand-soft)}
+  .font-add{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:7px;align-items:center;border:1px dashed var(--line);border-radius:12px;padding:10px 12px}
+  .font-add .bf-add{min-width:130px}
   .topbar-right{display:flex;flex-direction:column;align-items:stretch;gap:12px}
   .crumb{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
   .crumb b{color:var(--ink)}
@@ -297,8 +313,11 @@
   /* Adjuntos / links */
   .attach-row{display:flex;gap:8px;margin-top:8px;align-items:center}
   .link-input{flex:1;border:1px dashed var(--line)!important;border-radius:9px;padding:9px 12px;font-size:13px;font-family:inherit}
-  .attach-btn{flex-shrink:0;font-size:12.5px;font-weight:600;color:var(--brand);background:var(--brand-soft);border:none;border-radius:9px;padding:9px 14px;cursor:pointer;transition:.15s}
+  .attach-btn{flex-shrink:0;font-size:12px;font-weight:500;color:var(--brand);background:var(--brand-soft);border:none;border-radius:9px;padding:8px 13px;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:6px}
+  .attach-btn svg{width:13px;height:13px}
   .attach-btn:hover{filter:brightness(.97)}
+  .attach-btn.soft{background:#fff;border:1px solid var(--line);color:var(--brand);font-weight:500}
+  .attach-btn.soft:hover{border-color:var(--brand)}
   .chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
   .chip{font-size:12px;background:#f1f1f6;border:1px solid var(--line);border-radius:8px;padding:5px 10px;display:flex;align-items:center;gap:7px;max-width:100%}
   .chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:240px}
@@ -313,15 +332,16 @@
 
   /* ===== Brief ===== */
   .brief-snap{display:flex;gap:20px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px 24px;box-shadow:var(--shadow-sm);margin-bottom:18px;flex-wrap:wrap}
-  .brief-logo{width:72px;height:72px;border-radius:16px;background:var(--brand-soft);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--brand);font-size:24px;overflow:hidden;flex-shrink:0;cursor:pointer;border:1px dashed transparent}
+  .brief-logo{width:72px;height:72px;border-radius:16px;background:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--brand);font-size:24px;overflow:hidden;flex-shrink:0;cursor:pointer;border:1px solid var(--line)}
   .brief-logo:hover{border-color:var(--brand)}
+  .brief-logo img{padding:6px;box-sizing:border-box}
   .brief-logo img{width:100%;height:100%;object-fit:contain}
   .brief-snap .si{flex:1;min-width:220px}
   .brief-snap h2{margin:0;font-family:var(--font-head);font-size:22px;letter-spacing:-.01em}
   .brief-snap .giro{color:var(--brand);font-weight:600;font-size:13px;margin-top:3px}
   .brief-snap .desc{color:var(--muted);font-size:13.5px;margin-top:6px;max-width:60ch}
   .brief-quick{display:flex;gap:8px;flex-wrap:wrap}
-  .qchip{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;border:1px solid var(--line);background:#fafafe;border-radius:9px;padding:7px 12px;cursor:pointer;color:var(--ink);text-decoration:none;transition:.15s}
+  .qchip{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:500;border:1px solid var(--line);background:#fafafe;border-radius:9px;padding:7px 12px;cursor:pointer;color:var(--ink);text-decoration:none;transition:.15s}
   .qchip:hover{border-color:var(--brand);color:var(--brand)}
   .qchip.empty{color:#b8771a;border-style:dashed}
   .qchip svg{width:15px;height:15px}
@@ -778,19 +798,18 @@
         descripcion:"Auren es una firma de servicios profesionales que genera confianza a través de auditoría, consultoría y servicios legales y fiscales, con una asesoría 360° adaptada a cada organización.",
         servicios:["Auditoría","Consultoría","Legal","Impuestos"],
         sitio:"https://auren.com/mx/",
-        tipografia:"Bodoni MT",
         links_redes:[
           {t:"Facebook",u:"https://www.facebook.com/aurenmx/"},
           {t:"Instagram",u:"https://www.instagram.com/aurenmexico/"},
-          {t:"LinkedIn",u:"https://www.linkedin.com/company/auren-méxico/"},
-          {t:"TikTok",u:"https://www.tiktok.com/@aurenmexico"}
+          {t:"LinkedIn",u:"https://www.linkedin.com/company/aurenmexico"},
+          {t:"X (Twitter)",u:"https://x.com/auren_mexico"},
+          {t:"TikTok (sin verificar)",u:"https://www.tiktok.com/@aurenmexico"}
         ],
         colores:["#DA291C|Pantone 485 C","#262729|Pantone 426 C","#FFFFFF|Blanco"],
-        versiones:["Logo con claim","Logo sin claim","Logo a un color","Logo en negativo","Logo con servicios","Logo + Antea (alianza)"],
-        tipografia_sec:"Minion Pro",
-        tipografia_digital:"Verdana",
+        versiones:[{txt:"Logo con lema"},{txt:"Logo sin lema"},{txt:"Logo a un color"},{txt:"Logo en negativo"},{txt:"Logo con servicios"},{txt:"Logo + Antea (alianza)"}],
+        tipografias:[{name:"Bodoni MT",role:"Principal / display"},{name:"Minion Pro",role:"Secundaria / texto"},{name:"Verdana",role:"Digital / web"}],
         distintivos:"Óvalo rojo característico + “auren” en serif. Marca afiliada a la alianza internacional Antea (firmas independientes).",
-        cli_principales:["Audit & Assurance","Accountancy","Tax","Legal","Litigio","IT Consulting","Marketing","BPO","Advisory"],
+        cli_principales:["Audit & Assurance","Accountancy Services","Tax Services"],
         competidores:[
           {n:"BDO México",loc:"Ciudad de México",web:"https://www.bdomexico.com",linkedin:"https://www.linkedin.com/company/bdo-castillo-miranda",x:"https://x.com/BDOMexico",d:"Red global de auditoría, impuestos y consultoría (en México como BDO Castillo Miranda). Clientes: empresas medianas-grandes y corporativos con operación internacional. Sin Instagram MX (usa X)."},
           {n:"Grant Thornton",loc:"Ciudad de México",web:"https://www.grantthornton.mx",linkedin:"https://www.linkedin.com/company/grantthorntonmx",instagram:"https://www.instagram.com/grantthorntonmexico/",d:"Firma local Salles, Sainz – Grant Thornton; red internacional enfocada en el middle market. Clientes: empresas en crecimiento, negocios familiares y corporativos."},
@@ -1097,15 +1116,11 @@
       {k:'canales',l:'Canales de captación (fuera de redes sociales)',kind:'channels'}]},
     {id:'identidad',n:'Identidad visual',ic:'image',fields:[
       {k:'logo',l:'Logo principal',kind:'logo'},
-      {k:'logos_img',l:'Variaciones de logo (imágenes)',kind:'media'},
       {k:'manual',l:'¿El cliente tiene manual/PDF de identidad?',kind:'idmanual'},
-      {k:'versiones',l:'Versiones permitidas del logo',kind:'list'},
+      {k:'versiones',l:'Versiones / variaciones del logo (sube la imagen de cada una)',kind:'media'},
       {k:'colores',l:'Colores institucionales',kind:'colors'},
       {l:'Tipografías',kind:'subhead'},
-      {k:'tipografia',l:'Tipografía principal',kind:'type'},
-      {k:'tipografia_sec',l:'Tipografía secundaria',kind:'type'},
-      {k:'tipografia_digital',l:'Tipografía digital / web',kind:'text'},
-      {k:'tipografia_usos',l:'Uso de tipografías (jerarquías: títulos, cuerpo…)',kind:'long'},
+      {k:'tipografias',l:'Tipografías (principal, secundaria…)',kind:'fonts'},
       {l:'Estilo visual',kind:'subhead'},
       {k:'distintivos',l:'Elementos gráficos distintivos',kind:'long'},
       {k:'referencias',l:'Referencias visuales (texto e imágenes)',kind:'media'},
@@ -1141,7 +1156,9 @@
     return `<div class="bf-chips" data-list="${key}">${arr.map((x,i)=>`<span class="bchip">${esc(x)}<button type="button" data-rm="${key}|${i}">×</button></span>`).join('')}<input class="bf-add" data-add="${key}" placeholder="+ agregar y Enter"></div>`;
   }
   let _uploadCtx=null;
-  function mediaHTML(key,arr){arr=arr||[];return `<div class="media-grid">${arr.map((m,i)=>`<div class="media-card">${m.img?`<img src="${esc(m.img)}" class="media-img">`:''}<div class="media-cap" contenteditable="true" data-mediacap="${key}|${i}">${esc(m.txt||'')}</div><button type="button" class="media-rm" data-rmmedia="${key}|${i}" title="Quitar">×</button></div>`).join('')}</div><div class="media-add"><button type="button" class="attach-btn" data-mediaup="${key}">${ICONS.upload} Subir imagen</button><input class="bf-add" data-mediatxt="${key}" placeholder="+ nota o texto y Enter"></div>`;}
+  function linksHTML(key,arr){arr=arr||[];return `<div class="bf-links">${arr.map((it,i)=>`<a class="bchip linkchip" href="${esc(it.u)}" target="_blank" rel="noopener">${ICONS.link} <span>${esc(it.t||it.u)}</span><button type="button" data-rmlink="${key}|${i}" title="Quitar">×</button></a>`).join('')}<span class="link-add"><input class="bf-add lk-name" data-lkname="${key}" placeholder="Nombre"><input class="bf-add lk-url" data-lkurl="${key}" placeholder="Pega el link y Enter"></span></div>`;}
+  function mediaHTML(key,arr){arr=arr||[];return `<div class="media-grid">${arr.map((m,i)=>`<div class="media-card">${m.img?`<img src="${esc(m.img)}" class="media-img">`:`<button type="button" class="media-into" data-mediainto="${key}|${i}">${ICONS.upload}<span>Subir imagen</span></button>`}<div class="media-cap" contenteditable="true" data-mediacap="${key}|${i}">${esc(m.txt||'')}</div><button type="button" class="media-rm" data-rmmedia="${key}|${i}" title="Quitar">×</button></div>`).join('')}</div><div class="media-add"><button type="button" class="attach-btn soft" data-mediaup="${key}">${ICONS.upload} Agregar imagen</button><input class="bf-add" data-mediatxt="${key}" placeholder="+ nota o texto y Enter"></div>`;}
+  function fontsHTML(key,arr){arr=arr||[];return `<div class="fonts-grid">${arr.map((ft,i)=>`<div class="font-card"><button type="button" class="comp-rm" data-rmfont="${key}|${i}" title="Quitar">×</button><div class="font-aa" style="font-family:'${esc(ft.name)}',serif">Aa</div><div class="font-name" contenteditable="true" data-fontf2="${key}|${i}|name">${esc(ft.name||'')}</div><div class="font-role" contenteditable="true" data-fontf2="${key}|${i}|role">${esc(ft.role||'')}</div></div>`).join('')}<div class="font-add"><input class="bf-add" data-fontf="name" placeholder="Tipografía"><input class="bf-add" data-fontf="role" placeholder="Uso (ej. principal)"><button type="button" class="attach-btn soft" data-fontadd="${key}">+ Agregar</button></div></div>`;}
   function filesHTML(key,arr){arr=arr||[];return `<div class="bf-chips">${arr.map((m,i)=>`<span class="bchip">${m.u?`<a class="filelink" href="${esc(m.u)}" target="_blank" rel="noopener">${esc(m.t||m.u)}</a>`:`<a class="filelink" href="${esc(m.file)}" download="${esc(m.t||'archivo')}">${esc(m.t||'archivo')}</a>`}<button type="button" data-rmfile="${key}|${i}">×</button></span>`).join('')}</div><div class="comp-add"><input class="bf-add" data-fname="${key}" placeholder="Nombre"><input class="bf-add" data-furl="${key}" placeholder="Pega un link y Enter"><button type="button" class="attach-btn" data-fileup="${key}">${ICONS.upload} Subir archivo</button></div>`;}
   function idmanualHTML(c,f){const b=gb(c),has=b.manual_has;let inner='';
     if(has==='si')inner=`<div class="idman-area">${b.manual_file?`<a class="qchip" href="${esc(b.manual_file.file)}" download="${esc(b.manual_file.t||'manual.pdf')}">${ICONS.folder} ${esc(b.manual_file.t||'Descargar manual')}</a> <button type="button" class="qchip" data-manrm="1">Quitar</button>`:`<button type="button" class="qchip" data-manup="1">${ICONS.upload} Subir PDF</button>`}<input class="bf-add" data-manlink="1" value="${esc(b.manual_link||'')}" placeholder="…o pega el link de Drive y Enter">${b.manual_link?` <a class="qchip" href="${esc(b.manual_link)}" target="_blank" rel="noopener">${ICONS.globe} Abrir</a>`:''}</div>`;
@@ -1150,7 +1167,9 @@
   function duoHTML(c,f){const b=gb(c);return `<div class="bf"><label>${esc(f.l)}</label><div class="dos-grid"><div class="dos-col no"><h5>${esc(f.left[1])}</h5>${listHTML(f.left[0],b[f.left[0]])}</div><div class="dos-col yes"><h5>${esc(f.right[1])}</h5>${listHTML(f.right[0],b[f.right[0]])}</div></div></div>`;}
   function triggerUpload(key,type,accept){_uploadCtx={key:key,type:type};const inp=el('mediaFileInput');inp.accept=accept||'';inp.click();}
   function handleMediaFile(e){const f=e.target.files&&e.target.files[0];e.target.value='';if(!f||!curClient||!_uploadCtx)return;const ctx=_uploadCtx;_uploadCtx=null;const rd=new FileReader();
-    rd.onload=()=>{if(ctx.type==='media'){const img=new Image();img.onload=()=>{const max=480,s=Math.min(1,max/Math.max(img.width,img.height));const cv=document.createElement('canvas');cv.width=Math.round(img.width*s)||1;cv.height=Math.round(img.height*s)||1;let data;try{cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height);data=cv.toDataURL('image/jpeg',0.85);}catch(_){data=rd.result;}briefArr(curClient,ctx.key).push({img:data,txt:''});renderBrief(curClient);persist();toast('Imagen agregada ✓');};img.onerror=()=>{briefArr(curClient,ctx.key).push({img:rd.result,txt:f.name});renderBrief(curClient);persist();};img.src=rd.result;}
+    rd.onload=()=>{const asImg=cb=>{const img=new Image();img.onload=()=>{const max=480,s=Math.min(1,max/Math.max(img.width,img.height));const cv=document.createElement('canvas');cv.width=Math.round(img.width*s)||1;cv.height=Math.round(img.height*s)||1;let data;try{cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height);data=cv.toDataURL('image/jpeg',0.85);}catch(_){data=rd.result;}cb(data);};img.onerror=()=>cb(rd.result);img.src=rd.result;};
+      if(ctx.type==='media'){asImg(d=>{briefArr(curClient,ctx.key).push({img:d,txt:''});renderBrief(curClient);persist();toast('Imagen agregada ✓');});}
+      else if(ctx.type==='mediainto'){const[k,i]=ctx.key.split('|');asImg(d=>{const a=briefArr(curClient,k);if(a[+i])a[+i].img=d;renderBrief(curClient);persist();toast('Imagen agregada ✓');});}
       else if(ctx.type==='manual'){gb(curClient).manual_file={t:f.name,file:rd.result};renderBrief(curClient);persist();toast('Manual cargado ✓');}
       else{briefArr(curClient,ctx.key).push({t:f.name,file:rd.result});renderBrief(curClient);persist();toast('Archivo agregado ✓');}};
     rd.readAsDataURL(f);}
@@ -1161,6 +1180,7 @@
     const v=gb(c)[f.k];
     if(f.kind==='media')return `<div class="bf"><label>${esc(f.l)}</label>${mediaHTML(f.k,v)}</div>`;
     if(f.kind==='files')return `<div class="bf"><label>${esc(f.l)}</label>${filesHTML(f.k,v)}</div>`;
+    if(f.kind==='fonts')return `<div class="bf"><label>${esc(f.l)}</label>${fontsHTML(f.k,v)}</div>`;
     if(f.kind==='competitors'){const arr=v||[];
       return `<div class="bf"><label>${f.l}</label><div class="comp-list">${arr.map((x,i)=>`<div class="comp-card"><div class="comp-head"><span class="comp-name">${esc(x.n)}</span><button type="button" class="comp-rm" data-rmcomp="${f.k}|${i}" title="Quitar">×</button></div>${x.loc?`<div class="comp-meta">${esc(x.loc)}</div>`:''}<div class="comp-links">${SOC.filter(s=>x[s[0]]).map(s=>`<a class="clink" href="${esc(x[s[0]])}" target="_blank" rel="noopener">${s[1]}</a>`).join('')}</div><div class="comp-desc" contenteditable="true" data-compdesc="${f.k}|${i}">${esc(x.d||'')}</div></div>`).join('')}<div class="comp-add"><input class="bf-add" data-compf="n" placeholder="Nombre"><input class="bf-add" data-compf="loc" placeholder="Localidad"><input class="bf-add" data-compf="web" placeholder="Sitio web"><input class="bf-add" data-compf="instagram" placeholder="Instagram"><input class="bf-add" data-compf="facebook" placeholder="Facebook"><input class="bf-add" data-compf="tiktok" placeholder="TikTok"><input class="bf-add" data-compf="linkedin" placeholder="LinkedIn"><input class="bf-add" data-compf="x" placeholder="X"><button type="button" class="attach-btn" data-compadd="${f.k}">+ Agregar competidor</button></div></div></div>`;}
     if(f.kind==='text'||f.kind==='long')
@@ -1175,8 +1195,7 @@
       return `<div class="bf"><label>${f.l}</label><div class="type-prev"><div class="aa" style="${ff}">Aa</div><div class="sample" style="${ff}">ABCDabcd 0123 · El veloz murciélago</div><input class="bf-add" data-save="${f.k}" value="${esc(font)}" placeholder="Nombre de la tipografía" style="margin-top:10px;min-width:220px"></div></div>`;}
     if(f.kind==='logo'){const url=v||'';
       return `<div class="bf"><label>${f.l}</label>${url?`<div class="logo-row"><img src="${esc(url)}" class="logo-prev"><button type="button" class="qchip" data-logo="1">${ICONS.upload} Cambiar</button><button type="button" class="qchip" data-logodl="1">Descargar</button></div>`:`<button type="button" class="qchip empty" data-logo="1">${ICONS.upload} Subir logo (PNG/JPG)</button>`}</div>`;}
-    if(f.kind==='links'){const arr=v||[];
-      return `<div class="bf"><label>${f.l}</label><div class="bf-links">${arr.map((it,i)=>`<a class="bchip linkchip" href="${esc(it.u)}" target="_blank" rel="noopener">${ICONS.link} <span>${esc(it.t||it.u)}</span><button type="button" data-rmlink="${f.k}|${i}" title="Quitar">×</button></a>`).join('')}<span class="link-add"><input class="bf-add lk-name" data-lkname="${f.k}" placeholder="Nombre"><input class="bf-add lk-url" data-lkurl="${f.k}" placeholder="Pega el link y Enter"></span></div></div>`;}
+    if(f.kind==='links')return `<div class="bf"><label>${f.l}</label>${linksHTML(f.k,v)}</div>`;
     return '';
   }
   function dosHTML(c,sec){const b=gb(c);
@@ -1188,8 +1207,8 @@
     if(sec.kind==='dos')inner=dosHTML(c,sec);
     else if(sec.kind==='checklist')inner=checklistHTML(c,sec);
     else inner=sec.fields.map(f=>fieldHTML(c,f)).join('');
-    const drive=gb(c)['_drive_'+sec.id];
-    const driveRow=`<div class="drive-row">${drive?`<a class="qchip" href="${esc(drive)}" target="_blank" rel="noopener">${ICONS.folder} Carpeta en Drive</a> <button type="button" class="qchip" data-drive="${sec.id}">Cambiar</button>`:`<button type="button" class="qchip empty" data-drive="${sec.id}">${ICONS.folder} Agregar carpeta de Drive</button>`}</div>`;
+    const dk='_drive_'+sec.id;
+    const driveRow=`<div class="drive-row"><div class="drive-head">${ICONS.folder} Consultar más información — carpetas / Drive</div>${linksHTML(dk,gb(c)[dk])}</div>`;
     const open=briefOpen.has(sec.id);
     return `<div class="acc-item${open?' open':''}"><button type="button" class="acc-head" data-acc="${sec.id}"><span class="ic">${ICONS[sec.ic]||''}</span> ${sec.n}${sec.nuevo?' <span class="badge-new">NUEVO</span>':''}<span class="chev">▶</span></button><div class="acc-body">${sec.sub?`<div class="acc-sub">${sec.sub}</div>`:''}${inner}${driveRow}</div></div>`;
   }
@@ -1240,7 +1259,10 @@
     const rmm=e.target.closest('[data-rmmedia]');if(rmm){const[k,i]=rmm.dataset.rmmedia.split('|');briefArr(curClient,k).splice(+i,1);renderBrief(curClient);return;}
     const rmf=e.target.closest('[data-rmfile]');if(rmf){const[k,i]=rmf.dataset.rmfile.split('|');briefArr(curClient,k).splice(+i,1);renderBrief(curClient);return;}
     const mu=e.target.closest('[data-mediaup]');if(mu){triggerUpload(mu.dataset.mediaup,'media','image/*');return;}
+    const mi=e.target.closest('[data-mediainto]');if(mi){triggerUpload(mi.dataset.mediainto,'mediainto','image/*');return;}
     const fu=e.target.closest('[data-fileup]');if(fu){triggerUpload(fu.dataset.fileup,'file','');return;}
+    const fa=e.target.closest('[data-fontadd]');if(fa){const w=fa.closest('.font-add');const g=s=>{const e2=w.querySelector(`[data-fontf="${s}"]`);return e2?e2.value.trim():'';};const nm=g('name');if(!nm){toast('Pon el nombre de la tipografía');return;}briefArr(curClient,fa.dataset.fontadd).push({name:nm,role:g('role')});renderBrief(curClient);return;}
+    const rf=e.target.closest('[data-rmfont]');if(rf){const[k,i]=rf.dataset.rmfont.split('|');briefArr(curClient,k).splice(+i,1);renderBrief(curClient);return;}
     const idm=e.target.closest('[data-idman]');if(idm){gb(curClient).manual_has=idm.dataset.idman;renderBrief(curClient);return;}
     const mup=e.target.closest('[data-manup]');if(mup){triggerUpload('__manual','manual','application/pdf');return;}
     const mrm=e.target.closest('[data-manrm]');if(mrm){delete gb(curClient).manual_file;renderBrief(curClient);return;}
@@ -1252,8 +1274,6 @@
     if(rc){const[k,i]=rc.dataset.rmcolor.split('|');briefArr(curClient,k).splice(+i,1);renderBrief(curClient);return;}
     const vr=e.target.closest('[data-val]');
     if(vr){const i=vr.dataset.val;b._val=b._val||{};b._val[i]=!b._val[i];renderBrief(curClient);return;}
-    const dr=e.target.closest('[data-drive]');
-    if(dr){const cur=b['_drive_'+dr.dataset.drive]||'';const url=prompt('Pega el link de la carpeta de Drive:',cur);if(url!==null){b['_drive_'+dr.dataset.drive]=url.trim();renderBrief(curClient);}return;}
     const lg=e.target.closest('[data-logo]');
     if(lg){el('logoFileInput').click();return;}
     const sl=e.target.closest('[data-snaplink]');
@@ -1272,6 +1292,7 @@
     if(!curClient)return;const t=e.target;
     if(t.dataset&&t.dataset.compdesc){const[k,i]=t.dataset.compdesc.split('|');const a=briefArr(curClient,k);if(a[i]){a[i].d=(t.isContentEditable?t.textContent:t.value).trim();persist();}return;}
     if(t.dataset&&t.dataset.mediacap){const[k,i]=t.dataset.mediacap.split('|');const a=briefArr(curClient,k);if(a[i]){a[i].txt=(t.isContentEditable?t.textContent:t.value).trim();persist();}return;}
+    if(t.dataset&&t.dataset.fontf2){const p=t.dataset.fontf2.split('|');const a=briefArr(curClient,p[0]);if(a[+p[1]]){a[+p[1]][p[2]]=(t.isContentEditable?t.textContent:t.value).trim();persist();}return;}
     if(t.dataset&&t.dataset.save!==undefined&&t.dataset.save!==''){const k=t.dataset.save;const val=(t.isContentEditable?t.textContent:t.value).trim();gb(curClient)[k]=val;persist();if(BRIEF_RERENDER_ON_SAVE.indexOf(k)>=0)renderBrief(curClient);}
   }
   // ===== Persistencia (localStorage) + exportar a Word =====
