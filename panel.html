@@ -303,6 +303,17 @@
   .f{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
   .frow .f{margin-bottom:0}
   .f.full{grid-column:1 / -1}
+  /* Captura horizontal de actividad */
+  .modal-cap{width:980px}
+  .cap-context{display:flex;flex-wrap:wrap;gap:14px 30px;align-items:flex-end;margin-bottom:18px;padding-bottom:16px;border-bottom:1px solid var(--line)}
+  .cap-context .f{margin-bottom:0}
+  .cap-two{display:grid;grid-template-columns:1fr 1fr;gap:0 34px;align-items:start}
+  .cap-col{display:flex;flex-direction:column}
+  .cap-col .f:last-child{margin-bottom:0}
+  .cap-sub{display:grid;grid-template-columns:1fr 110px;gap:18px}
+  .cap-sub .f{margin-bottom:16px}
+  .cap-col-sep{position:relative}
+  .cap-col-sep::before{content:"";position:absolute;left:-17px;top:2px;bottom:2px;width:1px;background:var(--line)}
   .f label{font-size:12px;font-weight:600;color:#4a4f5e;display:flex;align-items:center;justify-content:space-between}
   .f input,.f select,.f textarea{border:1px solid var(--line);border-radius:10px;padding:11px 13px;font-size:14px;font-family:inherit;color:var(--ink);transition:border-color .15s,box-shadow .15s}
   .f input:focus,.f textarea:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
@@ -479,6 +490,7 @@
     .side .lbl,.side .navlabel,.side .nav a .ct{opacity:1}
     .toolbar .date{display:none}
     .split{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}.metrics{grid-template-columns:repeat(2,1fr)}.frow{grid-template-columns:1fr}
+    .cap-two{grid-template-columns:1fr}.cap-col-sep::before{display:none}
   }
   @media(max-width:620px){.cards{grid-template-columns:1fr}.searchbar{width:100%}}
 </style>
@@ -725,67 +737,73 @@
 
 <!-- Modal Nueva actividad -->
 <div class="overlay" id="ov-act">
-  <div class="modal modal-wide">
+  <div class="modal modal-cap">
     <button class="modal-close" onclick="closeModal('ov-act')" aria-label="Cerrar">×</button>
     <h3>+ Nueva actividad</h3>
-    <p class="msub">Si se pidió, se registra. En menos de un minuto.</p>
+    <p class="msub">Si se pidió, se registra. En menos de un minuto · guarda con ⌘/Ctrl + Enter.</p>
 
-    <div class="f full">
-      <label>¿Para quién es?</label>
-      <div class="seg" id="seg-cuenta">
-        <button type="button" class="seg-opt active" data-v="cliente">Cliente</button>
-        <button type="button" class="seg-opt" data-v="prospecto">Prospecto</button>
+    <!-- Contexto: a quién y qué tipo (horizontal) -->
+    <div class="cap-context">
+      <div class="f">
+        <label>¿Para quién es?</label>
+        <div class="seg" id="seg-cuenta">
+          <button type="button" class="seg-opt active" data-v="cliente">Cliente</button>
+          <button type="button" class="seg-opt" data-v="prospecto">Prospecto</button>
+        </div>
       </div>
-    </div>
-
-    <div class="f full">
-      <label>Nombre</label>
-      <input id="m-name" list="dl-names" placeholder="Escribe o busca…" autocomplete="off">
-      <datalist id="dl-names"></datalist>
-      <span class="fhint">Se guarda en MAYÚSCULAS y sin acentos para no duplicar.</span>
-    </div>
-
-    <div class="frow">
-      <div class="f"><label>Cantidad</label><input id="m-cant" type="number" value="1" min="1"></div>
-      <div class="f" id="f-tipo"><label>Tipo</label>
+      <div class="f" id="f-tipo">
+        <label>Tipo</label>
         <div class="seg" id="seg-tipo">
           <button type="button" class="seg-opt active" data-v="parrilla">Parrilla</button>
           <button type="button" class="seg-opt" data-v="extra">Extra</button>
         </div>
-        <span class="fhint">Primero lo contratado (parrilla); lo demás es extra.</span>
       </div>
     </div>
 
-    <div class="f full">
-      <label>Qué <button class="mic" type="button" data-target="m-que" title="Dictar por voz"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button></label>
-      <input id="m-que" list="dl-que" placeholder="Ej. ARTES PARRILLA JULIO" autocomplete="off">
-      <datalist id="dl-que"></datalist>
-    </div>
-
-    <div class="frow">
-      <div class="f"><label>Quién</label>
-        <input id="m-quien" list="dl-people" placeholder="Asignar persona…" autocomplete="off">
-        <datalist id="dl-people"></datalist>
-      </div>
-      <div class="f"><label>Para cuándo</label>
-        <div class="due-wrap">
-          <input id="m-due" placeholder="Ej. Viernes o elige fecha" autocomplete="off">
-          <button type="button" class="cal-btn" id="calBtn" title="Abrir calendario" aria-label="Calendario">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>
-          </button>
-          <input type="text" id="m-due-fp" style="position:absolute;width:0;height:0;opacity:0;pointer-events:none">
+    <!-- Dos columnas: izquierda QUÉ se hace · derecha QUIÉN / CUÁNDO / CÓMO -->
+    <div class="cap-two">
+      <div class="cap-col">
+        <div class="cap-sub">
+          <div class="f">
+            <label>Nombre</label>
+            <input id="m-name" list="dl-names" placeholder="Escribe o busca…" autocomplete="off">
+            <datalist id="dl-names"></datalist>
+            <span class="fhint">Se guarda en MAYÚSCULAS y sin acentos para no duplicar.</span>
+          </div>
+          <div class="f"><label>Cantidad</label><input id="m-cant" type="number" value="1" min="1"></div>
+        </div>
+        <div class="f">
+          <label>Qué <button class="mic" type="button" data-target="m-que" title="Dictar por voz"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button></label>
+          <input id="m-que" list="dl-que" placeholder="Ej. ARTES PARRILLA JULIO" autocomplete="off">
+          <datalist id="dl-que"></datalist>
+          <span class="fhint">Lo contratado va en parrilla; lo demás es extra.</span>
         </div>
       </div>
-    </div>
 
-    <div class="f full">
-      <label>Detalles <button class="mic" type="button" data-target="m-det" title="Dictar por voz"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button></label>
-      <textarea id="m-det" placeholder="Contexto, instrucciones, notas internas…"></textarea>
-      <div class="attach-row">
-        <input id="m-link-input" class="link-input" placeholder="Pega un link (Loom, Drive, carpeta) y Enter" autocomplete="off">
-        <label class="attach-btn">Adjuntar archivo<input type="file" id="m-files" multiple hidden></label>
+      <div class="cap-col cap-col-sep">
+        <div class="f"><label>Quién</label>
+          <input id="m-quien" list="dl-people" placeholder="Asignar persona…" autocomplete="off">
+          <datalist id="dl-people"></datalist>
+        </div>
+        <div class="f"><label>Para cuándo</label>
+          <div class="due-wrap">
+            <input id="m-due" placeholder="Ej. Viernes o elige fecha" autocomplete="off">
+            <button type="button" class="cal-btn" id="calBtn" title="Abrir calendario" aria-label="Calendario">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>
+            </button>
+            <input type="text" id="m-due-fp" style="position:absolute;width:0;height:0;opacity:0;pointer-events:none">
+          </div>
+        </div>
+        <div class="f">
+          <label>Detalles <button class="mic" type="button" data-target="m-det" title="Dictar por voz"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button></label>
+          <textarea id="m-det" placeholder="Contexto, instrucciones, notas internas…"></textarea>
+          <div class="attach-row">
+            <input id="m-link-input" class="link-input" placeholder="Pega un link (Loom, Drive, carpeta) y Enter" autocomplete="off">
+            <label class="attach-btn">Adjuntar archivo<input type="file" id="m-files" multiple hidden></label>
+          </div>
+          <div class="chips" id="det-chips"></div>
+        </div>
       </div>
-      <div class="chips" id="det-chips"></div>
     </div>
 
     <div class="modactions">
@@ -1889,6 +1907,7 @@
     el('m-name').value='';el('m-cant').value=1;el('m-que').value='';el('m-quien').value='';el('m-due').value='';el('m-det').value='';el('m-link-input').value='';
     modalLinks=[];modalFiles=[];renderDetChips();
     openModal('ov-act');
+    setTimeout(()=>{const n=el('m-name');if(n)n.focus();},60);
   }
   function openCliModal(){ openModal('ov-cli'); }
   function defaultClient(name){
@@ -1975,6 +1994,7 @@
   document.querySelectorAll('.mic').forEach(m=>m.addEventListener('click',()=>dictate(m.dataset.target,m)));
   el('m-link-input').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();const v=e.target.value.trim();if(v){modalLinks.push(v);e.target.value='';renderDetChips();}}});
   el('m-files').addEventListener('change',e=>{Array.from(e.target.files).forEach(f=>modalFiles.push(f.name));renderDetChips();e.target.value='';});
+  el('ov-act').addEventListener('keydown',e=>{if((e.metaKey||e.ctrlKey)&&e.key==='Enter'){e.preventDefault();saveActivity();}});
   initDuePicker();
   // Brief (edición en vivo)
   const briefRoot=el('brief-root');
