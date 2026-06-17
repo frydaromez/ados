@@ -357,6 +357,8 @@
   /* Adjuntos / links */
   .attach-row{display:flex;gap:8px;margin-top:8px;align-items:center}
   .link-input{flex:1;border:1px dashed var(--line)!important;border-radius:9px;padding:9px 12px;font-size:13px;font-family:inherit}
+  .link-add-btn{flex-shrink:0;font-size:12px;font-weight:600;color:var(--muted);background:none;border:1px dashed var(--line);border-radius:9px;padding:8px 12px;cursor:pointer;transition:.16s var(--ease)}
+  .link-add-btn:hover{color:var(--brand-deep);border-color:var(--brand);border-style:solid;background:var(--brand-soft)}
   .attach-btn{flex-shrink:0;font-size:12px;font-weight:500;color:var(--brand);background:var(--brand-soft);border:none;border-radius:9px;padding:8px 13px;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:6px}
   .attach-btn svg{width:13px;height:13px}
   .attach-btn:hover{filter:brightness(.97)}
@@ -823,9 +825,11 @@
         <label><span class="lbl-l"><span class="step">8</span> Información para trabajar</span> <button class="mic" type="button" data-target="m-det" title="Dictar por voz"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button></label>
         <textarea id="m-det" placeholder="Contexto, instrucciones, notas internas…"></textarea>
         <div class="attach-row">
-          <input id="m-link-input" class="link-input" placeholder="Pega links de Loom, Drive o carpeta y Enter" autocomplete="off">
+          <input id="m-link-input" class="link-input" placeholder="Pega un link de Loom, Drive o carpeta" autocomplete="off">
+          <button type="button" class="link-add-btn" id="addLinkBtn" title="Agregar este link">+ link</button>
           <label class="attach-btn">Adjuntar archivo<input type="file" id="m-files" multiple hidden></label>
         </div>
+        <span class="fhint">Puedes sumar varios links; aparecerán aquí abajo y se guardan en el detalle.</span>
         <div class="chips" id="det-chips"></div>
       </div>
     </div>
@@ -2016,7 +2020,9 @@
     if(seg.id==='seg-cuenta'){ populateNames(); syncTipoVisibility(); }
   }));
   document.querySelectorAll('.mic').forEach(m=>m.addEventListener('click',()=>dictate(m.dataset.target,m)));
-  el('m-link-input').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();const v=e.target.value.trim();if(v){modalLinks.push(v);e.target.value='';renderDetChips();}}});
+  function addModalLink(){const inp=el('m-link-input');const v=inp.value.trim();if(v){modalLinks.push(v);inp.value='';renderDetChips();}inp.focus();}
+  el('m-link-input').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();addModalLink();}});
+  el('addLinkBtn').addEventListener('click',addModalLink);
   el('m-files').addEventListener('change',e=>{Array.from(e.target.files).forEach(f=>modalFiles.push(f.name));renderDetChips();e.target.value='';});
   el('ov-act').addEventListener('keydown',e=>{if((e.metaKey||e.ctrlKey)&&e.key==='Enter'){e.preventDefault();saveActivity();}});
   initDuePicker();
