@@ -621,7 +621,7 @@
           <button class="fbtn" id="f-fin" data-on="0">Incluir finalizadas</button>
         </div>
         <div class="tablecard"><div class="tablewrap"><table>
-          <thead><tr><th>Cuenta</th><th>Tipo</th><th class="num">Cant.</th><th>Qué</th><th>Responsable</th><th>Para cuándo</th><th>Estado</th><th>Detalle</th></tr></thead>
+          <thead><tr><th>Cuenta</th><th>Tipo</th><th class="num">Cant.</th><th>Qué</th><th>Responsable</th><th>Para cuándo</th><th>Detalle</th><th>Estado</th></tr></thead>
           <tbody id="madre-rows"></tbody>
         </table></div></div>
       </section>
@@ -635,7 +635,7 @@
           <select class="fsel" id="pros-periodo"><option value="">Todo el periodo</option></select>
         </div>
         <div class="tablecard"><div class="tablewrap"><table>
-          <thead><tr><th>Prospecto</th><th class="num">Cant.</th><th>Qué</th><th>Responsable</th><th>Para cuándo</th><th>Estado</th><th>Detalle</th></tr></thead>
+          <thead><tr><th>Prospecto</th><th class="num">Cant.</th><th>Qué</th><th>Responsable</th><th>Para cuándo</th><th>Detalle</th><th>Estado</th></tr></thead>
           <tbody id="pros-rows"></tbody>
         </table></div></div>
       </section>
@@ -716,7 +716,7 @@
             <button class="fbtn" data-cf="review">Por revisar</button>
           </div>
           <div class="tablecard"><div class="tablewrap"><table>
-            <thead><tr><th>Tipo</th><th class="num">Cant.</th><th>Qué</th><th>Responsable</th><th>Para cuándo</th><th>Estado</th><th>Detalle</th></tr></thead>
+            <thead><tr><th>Tipo</th><th class="num">Cant.</th><th>Qué</th><th>Responsable</th><th>Para cuándo</th><th>Detalle</th><th>Estado</th></tr></thead>
             <tbody id="cli-rows"></tbody>
           </table></div></div>
         </div>
@@ -730,14 +730,14 @@
 
         <div class="ptab" id="pt-parrilla">
           <div class="tablecard"><div class="tablewrap"><table>
-            <thead><tr><th class="num">Cant.</th><th>Qué</th><th>Formato</th><th>Plataforma</th><th>Publica</th><th>Responsable</th><th>Estado</th><th>Detalle</th></tr></thead>
+            <thead><tr><th class="num">Cant.</th><th>Qué</th><th>Formato</th><th>Plataforma</th><th>Publica</th><th>Responsable</th><th>Detalle</th><th>Estado</th></tr></thead>
             <tbody id="cli-parrilla-rows"></tbody>
           </table></div></div>
         </div>
 
         <div class="ptab" id="pt-extras">
           <div class="tablecard"><div class="tablewrap"><table>
-            <thead><tr><th class="num">Cant.</th><th>Qué</th><th>Responsable</th><th>Para cuándo</th><th>Estado</th><th>Detalle</th></tr></thead>
+            <thead><tr><th class="num">Cant.</th><th>Qué</th><th>Responsable</th><th>Para cuándo</th><th>Detalle</th><th>Estado</th></tr></thead>
             <tbody id="cli-extras-rows"></tbody>
           </table></div></div>
         </div>
@@ -759,7 +759,7 @@
         <div class="detail-head" id="pros-head"></div>
         <div class="section-title"><span class="dot"></span> Actividades del prospecto</div>
         <div class="tablecard"><div class="tablewrap"><table>
-          <thead><tr><th class="num">Cant.</th><th>Qué</th><th>Responsable</th><th>Para cuándo</th><th>Estado</th><th>Detalle</th></tr></thead>
+          <thead><tr><th class="num">Cant.</th><th>Qué</th><th>Responsable</th><th>Para cuándo</th><th>Detalle</th><th>Estado</th></tr></thead>
           <tbody id="pros-detail-rows"></tbody>
         </table></div></div>
       </section>
@@ -788,7 +788,6 @@
         <label><span class="lbl-l"><span class="step">2</span> Nombre</span></label>
         <input id="m-name" list="dl-names" placeholder="Escribe o busca…" autocomplete="off">
         <datalist id="dl-names"></datalist>
-        <span class="fhint">Evita duplicados automáticamente.</span>
       </div>
     </div>
 
@@ -1283,29 +1282,29 @@
   let _uid=0; function uid(){return 'a'+(++_uid);}
   let acts = [
     // Auren parrilla
-    a("cliente","auren","parrilla",1,"Arte aniversario","Post","Instagram",3,"DG","Mar 2","review","Carpeta julio","y"),
-    a("cliente","auren","parrilla",1,"Reel tip de salud","Reel","Instagram",7,"SF","Jue 4","proc","Guion listo","n"),
-    a("cliente","auren","parrilla",3,"Carrusel beneficios","Carrusel","Instagram",11,"DG","Vie 5","todo","",""),
-    a("cliente","auren","parrilla",1,"Post testimonio","Post","Facebook",16,"SF","Mar 9","cambios","Cambiar foto","y"),
-    a("cliente","auren","parrilla",1,"Arte cierre de mes","Post","Instagram",29,"DG","Lun 22","todo","",""),
+    a("cliente","auren","parrilla",1,"Arte aniversario","Post","Instagram",3,"DG","Jue, 2 de julio de 2026","review","Carpeta julio","y"),
+    a("cliente","auren","parrilla",1,"Reel tip de salud","Reel","Instagram",7,"SF","Sáb, 4 de julio de 2026","proc","Guion listo","n"),
+    a("cliente","auren","parrilla",3,"Carrusel beneficios","Carrusel","Instagram",11,"DG","Dom, 5 de julio de 2026","todo","",""),
+    a("cliente","auren","parrilla",1,"Post testimonio","Post","Facebook",16,"SF","Jue, 9 de julio de 2026","cambios","Cambiar foto","y"),
+    a("cliente","auren","parrilla",1,"Arte cierre de mes","Post","Instagram",29,"DG","Mié, 22 de julio de 2026","todo","",""),
     // Auren extra
     a("cliente","auren","extra",1,"Brief CheckUp Empresarial","","",0,"DG","Hoy","todo","Insumos del cliente",""),
-    a("cliente","auren","extra",1,"Investigación salud laboral","","",0,"MR","Mar","review","Fuentes recabadas","y"),
+    a("cliente","auren","extra",1,"Investigación salud laboral","","",0,"MR","Mar, 16 de junio de 2026","review","Fuentes recabadas","y"),
     // UTNG parrilla
-    a("cliente","utng","parrilla",5,"Artes inscripciones","Post","Instagram",4,"SF","Vie 5","review","Parrilla julio","y"),
-    a("cliente","utng","parrilla",1,"Reel testimonial","Reel","TikTok",9,"SF","Mié 8","proc","Grabado, falta edición","n"),
-    a("cliente","utng","parrilla",2,"Stories campus","Story","Instagram",14,"MR","Lun 11","todo","",""),
-    a("cliente","utng","parrilla",1,"Post fechas clave","Post","Facebook",21,"SF","Lun 18","publicar","Aprobado por cliente","y"),
+    a("cliente","utng","parrilla",5,"Artes inscripciones","Post","Instagram",4,"SF","Dom, 5 de julio de 2026","review","Parrilla julio","y"),
+    a("cliente","utng","parrilla",1,"Reel testimonial","Reel","TikTok",9,"SF","Mié, 8 de julio de 2026","proc","Grabado, falta edición","n"),
+    a("cliente","utng","parrilla",2,"Stories campus","Story","Instagram",14,"MR","Sáb, 11 de julio de 2026","todo","",""),
+    a("cliente","utng","parrilla",1,"Post fechas clave","Post","Facebook",21,"SF","Sáb, 18 de julio de 2026","publicar","Aprobado por cliente","y"),
     // UTNG extra
-    a("cliente","utng","extra",1,"Reporte quincenal","","",0,"LP","Lun","review","Datos de pauta","y"),
+    a("cliente","utng","extra",1,"Reporte quincenal","","",0,"LP","Lun, 15 de junio de 2026","review","Datos de pauta","y"),
     // Verde parrilla
-    a("cliente","verde","parrilla",3,"Copies lanzamiento","Copy","Instagram",6,"MR","Jue 4","review","Tono honesto","y"),
-    a("cliente","verde","parrilla",2,"Artes producto","Post","Instagram",12,"MR","Vie 5","todo","Sesión pendiente",""),
-    a("cliente","verde","parrilla",1,"Post receta","Post","Facebook",24,"MR","Mié 20","proc","Foto lista","n"),
+    a("cliente","verde","parrilla",3,"Copies lanzamiento","Copy","Instagram",6,"MR","Sáb, 4 de julio de 2026","review","Tono honesto","y"),
+    a("cliente","verde","parrilla",2,"Artes producto","Post","Instagram",12,"MR","Dom, 5 de julio de 2026","todo","Sesión pendiente",""),
+    a("cliente","verde","parrilla",1,"Post receta","Post","Facebook",24,"MR","Lun, 20 de julio de 2026","proc","Foto lista","n"),
     // Nexa parrilla
-    a("cliente","nexa","parrilla",1,"Render torre norte","Post","Instagram",8,"LP","Mar 7","publicado","Publicado","y"),
-    a("cliente","nexa","parrilla",3,"Artes preventa","Post","Facebook",15,"LP","Vie 12","todo","",""),
-    a("cliente","nexa","extra",2,"Ajustes fichas","","",0,"DG","Mié","review","Precios actualizados","y"),
+    a("cliente","nexa","parrilla",1,"Render torre norte","Post","Instagram",8,"LP","Mar, 7 de julio de 2026","publicado","Publicado","y"),
+    a("cliente","nexa","parrilla",3,"Artes preventa","Post","Facebook",15,"LP","Dom, 12 de julio de 2026","todo","",""),
+    a("cliente","nexa","extra",2,"Ajustes fichas","","",0,"DG","Mié, 17 de junio de 2026","review","Precios actualizados","y"),
     af("cliente","nexa","extra",1,"Reporte mensual junio","LP","y","DG"),
     // Prospectos
     a("prospecto","lumo","prospecto",1,"Propuesta comercial","","",0,"AN","Jue, 5 de junio de 2026","proc","Borrador v2","n"),
@@ -1420,7 +1419,7 @@
     el('madre-rows').innerHTML = rows.length? rows.map(a=>`<tr>
       <td><span class="clilink" onclick="openAcc('${a.acc}','${a.cuenta}')">${accName(a.acc)}</span></td>
       <td>${tipoTag(a.tipo)}</td><td class="num">${a.cant}</td><td>${a.que}</td>
-      <td>${who(a.quien)}</td><td>${a.due}</td><td>${pill(a.estado)}</td><td>${detCell(a)}</td></tr>`).join('')
+      <td>${who(a.quien)}</td><td>${a.due}</td><td>${detCell(a)}</td><td>${pill(a.estado)}</td></tr>`).join('')
       : '<tr><td colspan="8"><div class="empty">Sin actividades con esos filtros.</div></td></tr>';
   }
   function fillAccFilter(){
@@ -1455,7 +1454,7 @@
       if(q){const hay=(accName(a.acc)+' '+a.que).toLowerCase();if(hay.indexOf(q)<0)return false;}
       return true;
     });
-    el('pros-rows').innerHTML=rows.length?rows.map(a=>`<tr><td>${accName(a.acc)}</td><td class="num">${a.cant}</td><td>${a.que}</td><td>${who(a.quien)}</td><td>${a.due}</td><td>${pill(a.estado)}</td><td>${detCell(a)}</td></tr>`).join(''):'<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:22px">Sin actividades para este filtro.</td></tr>';
+    el('pros-rows').innerHTML=rows.length?rows.map(a=>`<tr><td>${accName(a.acc)}</td><td class="num">${a.cant}</td><td>${a.que}</td><td>${who(a.quien)}</td><td>${a.due}</td><td>${detCell(a)}</td><td>${pill(a.estado)}</td></tr>`).join(''):'<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:22px">Sin actividades para este filtro.</td></tr>';
   }
 
   // ===== EQUIPO =====
@@ -1463,9 +1462,9 @@
     el('equipo-blocks').innerHTML=Object.keys(people).map(code=>{
       const mine=acts.filter(a=>a.quien===code&&!a.fin);
       if(!mine.length)return '';
-      const rows=mine.map(a=>`<tr><td>${accName(a.acc)}</td><td>${tipoTag(a.tipo)}</td><td class="num">${a.cant}</td><td>${a.que}</td><td>${a.due}</td><td>${pill(a.estado)}</td><td>${detCell(a)}</td></tr>`).join('');
+      const rows=mine.map(a=>`<tr><td>${accName(a.acc)}</td><td>${tipoTag(a.tipo)}</td><td class="num">${a.cant}</td><td>${a.que}</td><td>${a.due}</td><td>${detCell(a)}</td><td>${pill(a.estado)}</td></tr>`).join('');
       return `<div style="margin-bottom:6px"><div class="section-title" style="font-size:14px"><span class="a" style="background:${people[code].c};width:22px;height:22px;border-radius:6px;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center">${code}</span> ${people[code].n} <span class="hint">${mine.length} activas</span></div>
-        <div class="tablecard" style="margin-bottom:18px"><div class="tablewrap"><table><thead><tr><th>Cuenta</th><th>Tipo</th><th class="num">Cant.</th><th>Qué</th><th>Para cuándo</th><th>Estado</th><th>Detalle</th></tr></thead><tbody>${rows}</tbody></table></div></div></div>`;
+        <div class="tablecard" style="margin-bottom:18px"><div class="tablewrap"><table><thead><tr><th>Cuenta</th><th>Tipo</th><th class="num">Cant.</th><th>Qué</th><th>Para cuándo</th><th>Detalle</th><th>Estado</th></tr></thead><tbody>${rows}</tbody></table></div></div></div>`;
     }).join('');
   }
 
@@ -1838,7 +1837,7 @@
         <div><div class="v" style="color:#1d4ed8">${pr}</div><div class="l">En proceso</div></div>
         <div><div class="v" style="color:#b8771a">${r}</div><div class="l">Por revisar</div></div>
       </div>`;
-    el('pros-detail-rows').innerHTML=mine.length?mine.map(a=>`<tr><td class="num">${a.cant}</td><td>${a.que}</td><td>${who(a.quien)}</td><td>${a.due}</td><td>${pill(a.estado)}</td><td>${detCell(a)}</td></tr>`).join(''):'<tr><td colspan="6"><div class="empty">Sin actividades registradas.</div></td></tr>';
+    el('pros-detail-rows').innerHTML=mine.length?mine.map(a=>`<tr><td class="num">${a.cant}</td><td>${a.que}</td><td>${who(a.quien)}</td><td>${a.due}</td><td>${detCell(a)}</td><td>${pill(a.estado)}</td></tr>`).join(''):'<tr><td colspan="6"><div class="empty">Sin actividades registradas.</div></td></tr>';
     showView('prospecto',p.name);
   }
   function openAcc(id,cuenta){
@@ -1860,10 +1859,10 @@
     renderCliEntregables();
     // parrilla del cliente
     const par=acts.filter(a=>a.acc===id&&a.tipo==='parrilla'&&!a.fin);
-    el('cli-parrilla-rows').innerHTML=par.length?par.map(a=>`<tr><td class="num">${a.cant}</td><td>${a.que}</td><td>${a.formato}</td><td>${a.plat}</td><td>Jul ${a.pub}</td><td>${who(a.quien)}</td><td>${pill(a.estado)}</td><td>${detCell(a)}</td></tr>`).join(''):'<tr><td colspan="8"><div class="empty">Sin parrilla cargada.</div></td></tr>';
+    el('cli-parrilla-rows').innerHTML=par.length?par.map(a=>`<tr><td class="num">${a.cant}</td><td>${a.que}</td><td>${a.formato}</td><td>${a.plat}</td><td>Jul ${a.pub}</td><td>${who(a.quien)}</td><td>${detCell(a)}</td><td>${pill(a.estado)}</td></tr>`).join(''):'<tr><td colspan="8"><div class="empty">Sin parrilla cargada.</div></td></tr>';
     // extras
     const ex=acts.filter(a=>a.acc===id&&a.tipo==='extra'&&!a.fin);
-    el('cli-extras-rows').innerHTML=ex.length?ex.map(a=>`<tr><td class="num">${a.cant}</td><td>${a.que}</td><td>${who(a.quien)}</td><td>${a.due}</td><td>${pill(a.estado)}</td><td>${detCell(a)}</td></tr>`).join(''):'<tr><td colspan="6"><div class="empty">Sin extras.</div></td></tr>';
+    el('cli-extras-rows').innerHTML=ex.length?ex.map(a=>`<tr><td class="num">${a.cant}</td><td>${a.que}</td><td>${who(a.quien)}</td><td>${a.due}</td><td>${detCell(a)}</td><td>${pill(a.estado)}</td></tr>`).join(''):'<tr><td colspan="6"><div class="empty">Sin extras.</div></td></tr>';
     // gantt cliente
     el('cli-gantt').innerHTML=ganttRows(par.filter(a=>a.pub>0).sort((x,y)=>x.pub-y.pub));
     // finalizados cliente
@@ -1878,7 +1877,7 @@
     if(cliFilter==='parrilla')mine=mine.filter(a=>a.tipo==='parrilla');
     else if(cliFilter==='extra')mine=mine.filter(a=>a.tipo==='extra');
     else if(['todo','proc','review'].includes(cliFilter))mine=mine.filter(a=>bucket(a.estado)===cliFilter);
-    el('cli-rows').innerHTML=mine.length?mine.map(a=>`<tr><td>${tipoTag(a.tipo)}</td><td class="num">${a.cant}</td><td>${a.que}</td><td>${who(a.quien)}</td><td>${a.due}</td><td>${pill(a.estado)}</td><td>${detCell(a)}</td></tr>`).join(''):'<tr><td colspan="7"><div class="empty">Sin actividades con ese filtro.</div></td></tr>';
+    el('cli-rows').innerHTML=mine.length?mine.map(a=>`<tr><td>${tipoTag(a.tipo)}</td><td class="num">${a.cant}</td><td>${a.que}</td><td>${who(a.quien)}</td><td>${a.due}</td><td>${detCell(a)}</td><td>${pill(a.estado)}</td></tr>`).join(''):'<tr><td colspan="7"><div class="empty">Sin actividades con ese filtro.</div></td></tr>';
   }
   function setPtab(name){
     document.querySelectorAll('#ptabs .tab').forEach(t=>t.classList.toggle('active',t.dataset.pt===name));
