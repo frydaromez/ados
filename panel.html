@@ -585,7 +585,8 @@
       <section class="view hidden" id="view-prospectos">
         <div class="section-title"><span class="dot"></span> Actividades de prospectos</div>
         <div class="filters">
-          <input class="fsearch" id="pros-search" type="text" placeholder="Buscar prospecto, actividad o responsable…">
+          <input class="fsearch" id="pros-search" type="text" placeholder="Buscar prospecto o actividad…">
+          <select class="fsel" id="pros-quien"><option value="">Todo responsable</option></select>
           <select class="fsel" id="pros-periodo"><option value="">Todo el periodo</option></select>
         </div>
         <div class="tablecard"><div class="tablewrap"><table>
@@ -1117,9 +1118,9 @@
     a("cliente","nexa","extra",2,"Ajustes fichas","","",0,"DG","Mié","review","Precios actualizados","y"),
     af("cliente","nexa","extra",1,"Reporte mensual junio","LP","y","DG"),
     // Prospectos
-    a("prospecto","lumo","prospecto",1,"Propuesta comercial","","",0,"AN","Jue","proc","Borrador v2","n"),
-    a("prospecto","lumo","prospecto",1,"Investigación de mercado","","",0,"MR","Lun","review","Benchmark listo","y"),
-    a("prospecto","sierra","prospecto",1,"Presentación de servicios","","",0,"AN","Vie","todo","",""),
+    a("prospecto","lumo","prospecto",1,"Propuesta comercial","","",0,"AN","Jue, 5 de junio de 2026","proc","Borrador v2","n"),
+    a("prospecto","lumo","prospecto",1,"Investigación de mercado","","",0,"MR","Lun, 2 de junio de 2026","review","Benchmark listo","y"),
+    a("prospecto","sierra","prospecto",1,"Presentación de servicios","","",0,"AN","Vie, 6 de junio de 2026","todo","",""),
     // una finalizada de cliente
     af("cliente","verde","extra",1,"Brief sesión de producto","MR","y","SF")
   ];
@@ -1230,16 +1231,23 @@
   function mesLabel(key){const p=key.split('-');return p.length===2?MESES[+p[1]-1]+' '+p[0]:key;}
   function renderProspectos(){
     const base=acts.filter(a=>a.cuenta==='prospecto'&&!a.fin);
-    // poblar selector de meses con los periodos disponibles
-    const sel=el('pros-periodo');const prev=sel.value;
+    // poblar responsables
+    const sq=el('pros-quien');const prevQ=sq.value;
+    const quienes=[...new Set(base.map(a=>a.quien).filter(Boolean))];
+    sq.innerHTML='<option value="">Todo responsable</option>'+quienes.map(c=>`<option value="${c}">${people[c]?people[c].n:c}</option>`).join('');
+    if(quienes.indexOf(prevQ)>=0)sq.value=prevQ;
+    // poblar meses
+    const sp=el('pros-periodo');const prevP=sp.value;
     const keys=[...new Set(base.map(a=>mesKey(a.reg)).filter(Boolean))].sort().reverse();
-    sel.innerHTML='<option value="">Todo el periodo</option>'+keys.map(k=>`<option value="${k}">${mesLabel(k)}</option>`).join('');
-    if(keys.indexOf(prev)>=0)sel.value=prev;
+    sp.innerHTML='<option value="">Todo el periodo</option>'+keys.map(k=>`<option value="${k}">${mesLabel(k)}</option>`).join('');
+    if(keys.indexOf(prevP)>=0)sp.value=prevP;
+    // filtrar
     const q=(el('pros-search').value||'').trim().toLowerCase();
-    const per=sel.value;
+    const per=sp.value;const quien=sq.value;
     const rows=base.filter(a=>{
       if(per&&mesKey(a.reg)!==per)return false;
-      if(q){const hay=(accName(a.acc)+' '+a.que+' '+(people[a.quien]?people[a.quien].n:a.quien)).toLowerCase();if(hay.indexOf(q)<0)return false;}
+      if(quien&&a.quien!==quien)return false;
+      if(q){const hay=(accName(a.acc)+' '+a.que).toLowerCase();if(hay.indexOf(q)<0)return false;}
       return true;
     });
     el('pros-rows').innerHTML=rows.length?rows.map(a=>`<tr><td>${accName(a.acc)}</td><td class="num">${a.cant}</td><td>${a.que}</td><td>${who(a.quien)}</td><td>${a.due}</td><td>${pill(a.estado)}</td><td>${linkCell(a.link)}</td></tr>`).join(''):'<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:22px">Sin actividades para este filtro.</td></tr>';
@@ -1798,7 +1806,7 @@
   function initDuePicker(){
     el('calBtn').addEventListener('click',()=>{ if(fpInst)fpInst.open(); else toast('Calendario no disponible (revisa tu conexión)'); });
     if(typeof flatpickr!=='undefined'){
-      fpInst=flatpickr(el('m-due-fp'),{locale:(flatpickr.l10ns&&flatpickr.l10ns.es)?'es':'default',dateFormat:'j \\d\\e F',positionElement:el('m-due'),onChange:(d,s)=>{el('m-due').value=s;}});
+      fpInst=flatpickr(el('m-due-fp'),{locale:(flatpickr.l10ns&&flatpickr.l10ns.es)?'es':'default',dateFormat:'D, j \\d\\e F \\d\\e Y',positionElement:el('m-due'),onChange:(d,s)=>{el('m-due').value=s;}});
     }
   }
   function saveClient(){
@@ -1835,6 +1843,7 @@
   el('sideOverlay').addEventListener('click',closeSide);
   el('client-search').addEventListener('input',e=>{cardSearch=e.target.value.trim().toLowerCase();renderCards();});
   el('pros-search').addEventListener('input',renderProspectos);
+  el('pros-quien').addEventListener('change',renderProspectos);
   el('pros-periodo').addEventListener('change',renderProspectos);
   document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeSide();document.querySelectorAll('.overlay.open').forEach(o=>o.classList.remove('open'));}});
   // Captura de actividad
