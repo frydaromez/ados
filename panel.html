@@ -368,6 +368,18 @@
   .chip{font-size:12px;background:#f1f1f6;border:1px solid var(--line);border-radius:8px;padding:5px 10px;display:flex;align-items:center;gap:7px;max-width:100%}
   .chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:240px}
   .chip button{border:none;background:none;cursor:pointer;color:var(--muted);font-size:14px;line-height:1;padding:0}
+  /* Visor de detalle de actividad */
+  .det-modal{width:600px}
+  .det-body{display:flex;flex-direction:column;gap:18px;margin-bottom:4px}
+  .det-sec h5{margin:0 0 7px;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+  .det-sec p{margin:0;font-size:14px;line-height:1.55;color:var(--ink);white-space:pre-line}
+  .det-empty{color:var(--muted)!important}
+  .det-links{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+  .det-link{display:inline-flex;align-items:center;gap:8px;max-width:100%;font-size:13px;font-weight:600;color:var(--brand-deep);background:var(--brand-soft);border-radius:9px;padding:8px 12px;text-decoration:none;transition:.15s var(--ease)}
+  .det-link:hover{background:#e6dcff}
+  .det-link svg{width:15px;height:15px;flex-shrink:0}
+  .det-link span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .det-file{font-size:13px;font-weight:500;color:var(--ink);background:#f1f1f6;border:1px solid var(--line);border-radius:9px;padding:7px 12px}
   .chip button:hover{color:#e11d48}
   .modactions{display:flex;justify-content:flex-end;gap:10px;margin-top:14px}
   .mbtn{border:none;border-radius:11px;padding:11px 20px;font-size:13.5px;font-weight:600;cursor:pointer;transition:.15s}
@@ -609,7 +621,7 @@
           <button class="fbtn" id="f-fin" data-on="0">Incluir finalizadas</button>
         </div>
         <div class="tablecard"><div class="tablewrap"><table>
-          <thead><tr><th>Cuenta</th><th>Tipo</th><th class="num">Cant.</th><th>Qué</th><th>Responsable</th><th>Para cuándo</th><th>Estado</th><th>Link</th></tr></thead>
+          <thead><tr><th>Cuenta</th><th>Tipo</th><th class="num">Cant.</th><th>Qué</th><th>Responsable</th><th>Para cuándo</th><th>Estado</th><th>Detalle</th></tr></thead>
           <tbody id="madre-rows"></tbody>
         </table></div></div>
       </section>
@@ -623,7 +635,7 @@
           <select class="fsel" id="pros-periodo"><option value="">Todo el periodo</option></select>
         </div>
         <div class="tablecard"><div class="tablewrap"><table>
-          <thead><tr><th>Prospecto</th><th class="num">Cant.</th><th>Qué</th><th>Responsable</th><th>Para cuándo</th><th>Estado</th><th>Link</th></tr></thead>
+          <thead><tr><th>Prospecto</th><th class="num">Cant.</th><th>Qué</th><th>Responsable</th><th>Para cuándo</th><th>Estado</th><th>Detalle</th></tr></thead>
           <tbody id="pros-rows"></tbody>
         </table></div></div>
       </section>
@@ -638,7 +650,7 @@
       <section class="view hidden" id="view-revision">
         <div class="section-title"><span class="dot"></span> Por revisar antes de enviar al cliente</div>
         <div class="tablecard"><div class="tablewrap"><table>
-          <thead><tr><th>Cuenta</th><th>Tipo</th><th class="num">Cant.</th><th>Qué</th><th>Responsable</th><th>Para cuándo</th><th>Link</th></tr></thead>
+          <thead><tr><th>Cuenta</th><th>Tipo</th><th class="num">Cant.</th><th>Qué</th><th>Responsable</th><th>Para cuándo</th><th>Detalle</th></tr></thead>
           <tbody id="rev-rows"></tbody>
         </table></div></div>
       </section>
@@ -677,7 +689,7 @@
       <section class="view hidden" id="view-finalizados">
         <div class="section-title"><span class="dot"></span> Histórico · nada se pierde</div>
         <div class="tablecard"><div class="tablewrap"><table>
-          <thead><tr><th>Cuenta</th><th>Tipo</th><th class="num">Cant.</th><th>Qué</th><th>Responsable</th><th>Finalizó</th><th>Link</th></tr></thead>
+          <thead><tr><th>Cuenta</th><th>Tipo</th><th class="num">Cant.</th><th>Qué</th><th>Responsable</th><th>Finalizó</th><th>Detalle</th></tr></thead>
           <tbody id="fin-rows"></tbody>
         </table></div></div>
       </section>
@@ -704,7 +716,7 @@
             <button class="fbtn" data-cf="review">Por revisar</button>
           </div>
           <div class="tablecard"><div class="tablewrap"><table>
-            <thead><tr><th>Tipo</th><th class="num">Cant.</th><th>Qué</th><th>Responsable</th><th>Para cuándo</th><th>Estado</th><th>Link</th></tr></thead>
+            <thead><tr><th>Tipo</th><th class="num">Cant.</th><th>Qué</th><th>Responsable</th><th>Para cuándo</th><th>Estado</th><th>Detalle</th></tr></thead>
             <tbody id="cli-rows"></tbody>
           </table></div></div>
         </div>
@@ -718,14 +730,14 @@
 
         <div class="ptab" id="pt-parrilla">
           <div class="tablecard"><div class="tablewrap"><table>
-            <thead><tr><th class="num">Cant.</th><th>Qué</th><th>Formato</th><th>Plataforma</th><th>Publica</th><th>Responsable</th><th>Estado</th><th>Link</th></tr></thead>
+            <thead><tr><th class="num">Cant.</th><th>Qué</th><th>Formato</th><th>Plataforma</th><th>Publica</th><th>Responsable</th><th>Estado</th><th>Detalle</th></tr></thead>
             <tbody id="cli-parrilla-rows"></tbody>
           </table></div></div>
         </div>
 
         <div class="ptab" id="pt-extras">
           <div class="tablecard"><div class="tablewrap"><table>
-            <thead><tr><th class="num">Cant.</th><th>Qué</th><th>Responsable</th><th>Para cuándo</th><th>Estado</th><th>Link</th></tr></thead>
+            <thead><tr><th class="num">Cant.</th><th>Qué</th><th>Responsable</th><th>Para cuándo</th><th>Estado</th><th>Detalle</th></tr></thead>
             <tbody id="cli-extras-rows"></tbody>
           </table></div></div>
         </div>
@@ -736,7 +748,7 @@
 
         <div class="ptab" id="pt-finalizados">
           <div class="tablecard"><div class="tablewrap"><table>
-            <thead><tr><th>Tipo</th><th class="num">Cant.</th><th>Qué</th><th>Responsable</th><th>Finalizó</th><th>Link</th></tr></thead>
+            <thead><tr><th>Tipo</th><th class="num">Cant.</th><th>Qué</th><th>Responsable</th><th>Finalizó</th><th>Detalle</th></tr></thead>
             <tbody id="cli-fin-rows"></tbody>
           </table></div></div>
         </div>
@@ -747,7 +759,7 @@
         <div class="detail-head" id="pros-head"></div>
         <div class="section-title"><span class="dot"></span> Actividades del prospecto</div>
         <div class="tablecard"><div class="tablewrap"><table>
-          <thead><tr><th class="num">Cant.</th><th>Qué</th><th>Responsable</th><th>Para cuándo</th><th>Estado</th><th>Link</th></tr></thead>
+          <thead><tr><th class="num">Cant.</th><th>Qué</th><th>Responsable</th><th>Para cuándo</th><th>Estado</th><th>Detalle</th></tr></thead>
           <tbody id="pros-detail-rows"></tbody>
         </table></div></div>
       </section>
@@ -829,7 +841,6 @@
           <label class="attach-btn">Adjuntar archivo<input type="file" id="m-files" multiple hidden></label>
           <button type="button" class="link-add-btn" id="addLinkBtn" title="Agregar otro link">+</button>
         </div>
-        <span class="fhint">Puedes sumar varios links; aparecerán aquí abajo y se guardan en el detalle.</span>
         <div class="chips" id="det-chips"></div>
       </div>
     </div>
@@ -837,6 +848,19 @@
     <div class="modactions">
       <button class="mbtn cancel" onclick="closeModal('ov-act')">Cancelar</button>
       <button class="mbtn save" onclick="saveActivity()">Registrar actividad</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Ver detalle de actividad -->
+<div class="overlay" id="ov-det">
+  <div class="modal det-modal">
+    <button class="modal-close" onclick="closeModal('ov-det')" aria-label="Cerrar">×</button>
+    <h3 id="det-view-title">Detalle</h3>
+    <p class="msub">Información para trabajar de esta actividad.</p>
+    <div id="det-view-body" class="det-body"></div>
+    <div class="modactions">
+      <button class="mbtn save" onclick="closeModal('ov-det')">Cerrar</button>
     </div>
   </div>
 </div>
@@ -1310,6 +1334,21 @@
   const pill=s=>`<span class="pill ${EST[s][1]}">${EST[s][0]}</span>`;
   const tipoTag=t=>`<span class="tipo ${t}">${TIPO[t]}</span>`;
   const linkCell=h=>h?'<a class="lk" href="#">Link</a>':'<span class="dash">—</span>';
+  function hasDet(a){return !!(a&&((a.det&&String(a.det).trim())||(a.links&&a.links.length)||(a.files&&a.files.length)||a.link));}
+  function detCell(a){return hasDet(a)?`<a class="lk" href="#" onclick="verDetalle('${a.id}');return false;">Ver</a>`:'<span class="dash">—</span>';}
+  function verDetalle(id){
+    const a=acts.find(x=>x.id===id);if(!a)return;
+    const links=(a.links||[]).map(l=>{const u=/^https?:\/\//i.test(l)?l:'https://'+l;return `<a class="det-link" href="${esc(u)}" target="_blank" rel="noopener">${ICONS.link}<span>${esc(l)}</span></a>`;}).join('');
+    const files=(a.files||[]).map(f=>`<span class="det-file">📎 ${esc(f)}</span>`).join('');
+    const detTxt=a.det&&String(a.det).trim();
+    el('det-view-title').textContent=a.que||'Detalle';
+    el('det-view-body').innerHTML=
+      (detTxt?`<div class="det-sec"><h5>Información para trabajar</h5><p>${esc(a.det).replace(/\n/g,'<br>')}</p></div>`:'')
+      +(links?`<div class="det-sec"><h5>Links</h5><div class="det-links">${links}</div></div>`:'')
+      +(files?`<div class="det-sec"><h5>Archivos</h5><div class="det-links">${files}</div></div>`:'')
+      +(!detTxt&&!links&&!files&&a.link?`<div class="det-sec"><p class="det-empty">Esta actividad tiene un enlace registrado.</p></div>`:'');
+    openModal('ov-det');
+  }
   const bucket=s=>s==='todo'?'todo':s==='proc'?'proc':(s==='review'||s==='cambios'||s==='publicar')?'review':null;
 
   // ===== KPIs + counters =====
@@ -1381,7 +1420,7 @@
     el('madre-rows').innerHTML = rows.length? rows.map(a=>`<tr>
       <td><span class="clilink" onclick="openAcc('${a.acc}','${a.cuenta}')">${accName(a.acc)}</span></td>
       <td>${tipoTag(a.tipo)}</td><td class="num">${a.cant}</td><td>${a.que}</td>
-      <td>${who(a.quien)}</td><td>${a.due}</td><td>${pill(a.estado)}</td><td>${linkCell(a.link)}</td></tr>`).join('')
+      <td>${who(a.quien)}</td><td>${a.due}</td><td>${pill(a.estado)}</td><td>${detCell(a)}</td></tr>`).join('')
       : '<tr><td colspan="8"><div class="empty">Sin actividades con esos filtros.</div></td></tr>';
   }
   function fillAccFilter(){
@@ -1416,7 +1455,7 @@
       if(q){const hay=(accName(a.acc)+' '+a.que).toLowerCase();if(hay.indexOf(q)<0)return false;}
       return true;
     });
-    el('pros-rows').innerHTML=rows.length?rows.map(a=>`<tr><td>${accName(a.acc)}</td><td class="num">${a.cant}</td><td>${a.que}</td><td>${who(a.quien)}</td><td>${a.due}</td><td>${pill(a.estado)}</td><td>${linkCell(a.link)}</td></tr>`).join(''):'<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:22px">Sin actividades para este filtro.</td></tr>';
+    el('pros-rows').innerHTML=rows.length?rows.map(a=>`<tr><td>${accName(a.acc)}</td><td class="num">${a.cant}</td><td>${a.que}</td><td>${who(a.quien)}</td><td>${a.due}</td><td>${pill(a.estado)}</td><td>${detCell(a)}</td></tr>`).join(''):'<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:22px">Sin actividades para este filtro.</td></tr>';
   }
 
   // ===== EQUIPO =====
@@ -1424,16 +1463,16 @@
     el('equipo-blocks').innerHTML=Object.keys(people).map(code=>{
       const mine=acts.filter(a=>a.quien===code&&!a.fin);
       if(!mine.length)return '';
-      const rows=mine.map(a=>`<tr><td>${accName(a.acc)}</td><td>${tipoTag(a.tipo)}</td><td class="num">${a.cant}</td><td>${a.que}</td><td>${a.due}</td><td>${pill(a.estado)}</td><td>${linkCell(a.link)}</td></tr>`).join('');
+      const rows=mine.map(a=>`<tr><td>${accName(a.acc)}</td><td>${tipoTag(a.tipo)}</td><td class="num">${a.cant}</td><td>${a.que}</td><td>${a.due}</td><td>${pill(a.estado)}</td><td>${detCell(a)}</td></tr>`).join('');
       return `<div style="margin-bottom:6px"><div class="section-title" style="font-size:14px"><span class="a" style="background:${people[code].c};width:22px;height:22px;border-radius:6px;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center">${code}</span> ${people[code].n} <span class="hint">${mine.length} activas</span></div>
-        <div class="tablecard" style="margin-bottom:18px"><div class="tablewrap"><table><thead><tr><th>Cuenta</th><th>Tipo</th><th class="num">Cant.</th><th>Qué</th><th>Para cuándo</th><th>Estado</th><th>Link</th></tr></thead><tbody>${rows}</tbody></table></div></div></div>`;
+        <div class="tablecard" style="margin-bottom:18px"><div class="tablewrap"><table><thead><tr><th>Cuenta</th><th>Tipo</th><th class="num">Cant.</th><th>Qué</th><th>Para cuándo</th><th>Estado</th><th>Detalle</th></tr></thead><tbody>${rows}</tbody></table></div></div></div>`;
     }).join('');
   }
 
   // ===== REVISIÓN =====
   function renderRevision(){
     const rows=acts.filter(a=>a.estado==='review'&&!a.fin);
-    el('rev-rows').innerHTML=rows.length?rows.map(a=>`<tr><td><span class="clilink" onclick="openAcc('${a.acc}','${a.cuenta}')">${accName(a.acc)}</span></td><td>${tipoTag(a.tipo)}</td><td class="num">${a.cant}</td><td>${a.que}</td><td>${who(a.quien)}</td><td>${a.due}</td><td>${linkCell(a.link)}</td></tr>`).join('')
+    el('rev-rows').innerHTML=rows.length?rows.map(a=>`<tr><td><span class="clilink" onclick="openAcc('${a.acc}','${a.cuenta}')">${accName(a.acc)}</span></td><td>${tipoTag(a.tipo)}</td><td class="num">${a.cant}</td><td>${a.que}</td><td>${who(a.quien)}</td><td>${a.due}</td><td>${detCell(a)}</td></tr>`).join('')
       :'<tr><td colspan="7"><div class="empty">Nada por revisar ahora mismo.</div></td></tr>';
   }
 
@@ -1476,7 +1515,7 @@
   // ===== FINALIZADOS =====
   function renderFinalizados(){
     const rows=acts.filter(a=>a.fin);
-    el('fin-rows').innerHTML=rows.length?rows.map(a=>`<tr><td>${accName(a.acc)}</td><td>${tipoTag(a.tipo)}</td><td class="num">${a.cant}</td><td>${a.que}</td><td>${who(a.quien)}</td><td>${a.finPor?people[a.finPor].n:'—'} · ${a.finFecha||''}</td><td>${linkCell(a.link)}</td></tr>`).join('')
+    el('fin-rows').innerHTML=rows.length?rows.map(a=>`<tr><td>${accName(a.acc)}</td><td>${tipoTag(a.tipo)}</td><td class="num">${a.cant}</td><td>${a.que}</td><td>${who(a.quien)}</td><td>${a.finPor?people[a.finPor].n:'—'} · ${a.finFecha||''}</td><td>${detCell(a)}</td></tr>`).join('')
       :'<tr><td colspan="7"><div class="empty">Todavía no hay finalizadas.</div></td></tr>';
   }
 
@@ -1799,7 +1838,7 @@
         <div><div class="v" style="color:#1d4ed8">${pr}</div><div class="l">En proceso</div></div>
         <div><div class="v" style="color:#b8771a">${r}</div><div class="l">Por revisar</div></div>
       </div>`;
-    el('pros-detail-rows').innerHTML=mine.length?mine.map(a=>`<tr><td class="num">${a.cant}</td><td>${a.que}</td><td>${who(a.quien)}</td><td>${a.due}</td><td>${pill(a.estado)}</td><td>${linkCell(a.link)}</td></tr>`).join(''):'<tr><td colspan="6"><div class="empty">Sin actividades registradas.</div></td></tr>';
+    el('pros-detail-rows').innerHTML=mine.length?mine.map(a=>`<tr><td class="num">${a.cant}</td><td>${a.que}</td><td>${who(a.quien)}</td><td>${a.due}</td><td>${pill(a.estado)}</td><td>${detCell(a)}</td></tr>`).join(''):'<tr><td colspan="6"><div class="empty">Sin actividades registradas.</div></td></tr>';
     showView('prospecto',p.name);
   }
   function openAcc(id,cuenta){
@@ -1821,15 +1860,15 @@
     renderCliEntregables();
     // parrilla del cliente
     const par=acts.filter(a=>a.acc===id&&a.tipo==='parrilla'&&!a.fin);
-    el('cli-parrilla-rows').innerHTML=par.length?par.map(a=>`<tr><td class="num">${a.cant}</td><td>${a.que}</td><td>${a.formato}</td><td>${a.plat}</td><td>Jul ${a.pub}</td><td>${who(a.quien)}</td><td>${pill(a.estado)}</td><td>${linkCell(a.link)}</td></tr>`).join(''):'<tr><td colspan="8"><div class="empty">Sin parrilla cargada.</div></td></tr>';
+    el('cli-parrilla-rows').innerHTML=par.length?par.map(a=>`<tr><td class="num">${a.cant}</td><td>${a.que}</td><td>${a.formato}</td><td>${a.plat}</td><td>Jul ${a.pub}</td><td>${who(a.quien)}</td><td>${pill(a.estado)}</td><td>${detCell(a)}</td></tr>`).join(''):'<tr><td colspan="8"><div class="empty">Sin parrilla cargada.</div></td></tr>';
     // extras
     const ex=acts.filter(a=>a.acc===id&&a.tipo==='extra'&&!a.fin);
-    el('cli-extras-rows').innerHTML=ex.length?ex.map(a=>`<tr><td class="num">${a.cant}</td><td>${a.que}</td><td>${who(a.quien)}</td><td>${a.due}</td><td>${pill(a.estado)}</td><td>${linkCell(a.link)}</td></tr>`).join(''):'<tr><td colspan="6"><div class="empty">Sin extras.</div></td></tr>';
+    el('cli-extras-rows').innerHTML=ex.length?ex.map(a=>`<tr><td class="num">${a.cant}</td><td>${a.que}</td><td>${who(a.quien)}</td><td>${a.due}</td><td>${pill(a.estado)}</td><td>${detCell(a)}</td></tr>`).join(''):'<tr><td colspan="6"><div class="empty">Sin extras.</div></td></tr>';
     // gantt cliente
     el('cli-gantt').innerHTML=ganttRows(par.filter(a=>a.pub>0).sort((x,y)=>x.pub-y.pub));
     // finalizados cliente
     const fin=acts.filter(a=>a.acc===id&&a.fin);
-    el('cli-fin-rows').innerHTML=fin.length?fin.map(a=>`<tr><td>${tipoTag(a.tipo)}</td><td class="num">${a.cant}</td><td>${a.que}</td><td>${who(a.quien)}</td><td>${a.finPor?people[a.finPor].n:'—'} · ${a.finFecha||''}</td><td>${linkCell(a.link)}</td></tr>`).join(''):'<tr><td colspan="6"><div class="empty">Sin histórico todavía.</div></td></tr>';
+    el('cli-fin-rows').innerHTML=fin.length?fin.map(a=>`<tr><td>${tipoTag(a.tipo)}</td><td class="num">${a.cant}</td><td>${a.que}</td><td>${who(a.quien)}</td><td>${a.finPor?people[a.finPor].n:'—'} · ${a.finFecha||''}</td><td>${detCell(a)}</td></tr>`).join(''):'<tr><td colspan="6"><div class="empty">Sin histórico todavía.</div></td></tr>';
     setPtab('entregables');
     showView('cliente',c.name);
   }
@@ -1839,7 +1878,7 @@
     if(cliFilter==='parrilla')mine=mine.filter(a=>a.tipo==='parrilla');
     else if(cliFilter==='extra')mine=mine.filter(a=>a.tipo==='extra');
     else if(['todo','proc','review'].includes(cliFilter))mine=mine.filter(a=>bucket(a.estado)===cliFilter);
-    el('cli-rows').innerHTML=mine.length?mine.map(a=>`<tr><td>${tipoTag(a.tipo)}</td><td class="num">${a.cant}</td><td>${a.que}</td><td>${who(a.quien)}</td><td>${a.due}</td><td>${pill(a.estado)}</td><td>${linkCell(a.link)}</td></tr>`).join(''):'<tr><td colspan="7"><div class="empty">Sin actividades con ese filtro.</div></td></tr>';
+    el('cli-rows').innerHTML=mine.length?mine.map(a=>`<tr><td>${tipoTag(a.tipo)}</td><td class="num">${a.cant}</td><td>${a.que}</td><td>${who(a.quien)}</td><td>${a.due}</td><td>${pill(a.estado)}</td><td>${detCell(a)}</td></tr>`).join(''):'<tr><td colspan="7"><div class="empty">Sin actividades con ese filtro.</div></td></tr>';
   }
   function setPtab(name){
     document.querySelectorAll('#ptabs .tab').forEach(t=>t.classList.toggle('active',t.dataset.pt===name));
