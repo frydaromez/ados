@@ -585,31 +585,41 @@
   .brandmark .bm-ic{width:34px;height:34px;border-radius:10px;background:#fff;border:1px solid #ece8fb;display:flex;align-items:center;justify-content:center}
   .brandmark .bm-ic svg{width:26px;height:26px}
 
-  /* Lockup de marca en el Welcome */
-  .homebrand{display:none;align-items:center;gap:11px;margin-bottom:12px}
-  .homebrand .hb-ic{width:42px;height:42px;border-radius:12px;background:#fff;border:1px solid #ece8fb;
-    display:flex;align-items:center;justify-content:center;box-shadow:0 8px 20px -10px rgba(129,85,255,.5);flex-shrink:0;
-    transition:transform .5s var(--ease-spring),box-shadow .4s var(--ease)}
-  .homebrand .hb-ic:hover{transform:rotate(-4deg) scale(1.05);box-shadow:0 12px 26px -8px var(--glow)}
-  .homebrand .hb-ic svg{width:32px;height:32px}
-  .homebrand .hb-txt{display:flex;flex-direction:column;line-height:1;font-family:var(--font-head);letter-spacing:.02em}
-  .homebrand .hb-txt b{font-weight:800;font-size:15px;color:var(--ink)}
-  .homebrand .hb-txt i{font-style:normal;font-weight:600;font-size:11px;letter-spacing:.34em;color:var(--brand-deep);margin:2px 0}
-  .homebrand .hb-txt b:last-child{font-size:13px;letter-spacing:.16em}
-
-  /* Fondo del panel de tarjetas: aurora sutil (Apple) */
+  /* Fondo del panel de tarjetas: aurora viva y jovial (visible) */
   .content.home-bg{
     background:
-      radial-gradient(46% 38% at 8% 2%, rgba(129,85,255,.13), transparent 60%),
-      radial-gradient(42% 36% at 100% 4%, rgba(90,140,255,.10), transparent 58%),
-      radial-gradient(50% 45% at 88% 100%, rgba(176,120,255,.10), transparent 60%),
-      radial-gradient(40% 40% at 0% 100%, rgba(129,85,255,.07), transparent 60%);
+      radial-gradient(40% 36% at 4% -2%, rgba(129,85,255,.30), transparent 60%),
+      radial-gradient(36% 32% at 99% 0%, rgba(72,148,255,.26), transparent 58%),
+      radial-gradient(42% 40% at 96% 102%, rgba(236,104,196,.20), transparent 62%),
+      radial-gradient(40% 38% at -2% 104%, rgba(60,206,184,.18), transparent 62%),
+      linear-gradient(180deg,#f4f2fc 0%,#eceaf7 100%);
     background-attachment:fixed;
   }
 
-  /* Topbar: hairline luminoso bajo el glass */
+  /* Barra del Welcome al estilo X / Apple: glass oscuro premium
+     (solo en vistas no-cliente; las de cliente conservan la barra clara) */
   .topbar{border-bottom-color:transparent;box-shadow:0 1px 0 rgba(40,25,90,.06)}
-  .topbar::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:linear-gradient(90deg,transparent,rgba(129,85,255,.25),transparent)}
+  .topbar:not(.compact){
+    background:linear-gradient(120deg,rgba(17,13,28,.92),rgba(27,20,48,.9) 58%,rgba(35,24,64,.9));
+    backdrop-filter:saturate(160%) blur(16px);
+    box-shadow:0 16px 40px -22px rgba(40,18,100,.7);
+    border-bottom:1px solid rgba(149,108,255,.18)}
+  .topbar:not(.compact)::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;background:linear-gradient(90deg,transparent,rgba(160,120,255,.6),transparent)}
+  .topbar:not(.compact) #title{color:#fff}
+  .topbar:not(.compact) .crumb{color:#b6b0cf}
+  .topbar:not(.compact) .crumb b,.topbar:not(.compact) .crumb .home{color:#fff}
+  .topbar:not(.compact) .sub,.topbar:not(.compact) .todaybig{color:#c3bddb}
+  .topbar:not(.compact) .demo{background:rgba(149,108,255,.24);color:#d6c9ff}
+  /* Botones sobre la barra oscura */
+  .topbar:not(.compact) #toolbar .tbtn{background:rgba(255,255,255,.07);border-color:rgba(168,140,255,.45);color:#efeaff;box-shadow:none}
+  .topbar:not(.compact) #toolbar .tbtn .plus{color:#c9b8ff}
+  .topbar:not(.compact) #toolbar .tbtn:hover{background:rgba(168,140,255,.18);border-color:rgba(185,163,255,.8)}
+  .topbar:not(.compact) #toolbar .tbtn.primary{background:linear-gradient(135deg,var(--brand-2),var(--brand-deep));border-color:transparent;color:#fff}
+  .topbar:not(.compact) .searchbar input{background:rgba(255,255,255,.08);border:1px solid rgba(168,140,255,.3);color:#fff;box-shadow:none}
+  .topbar:not(.compact) .searchbar input::placeholder{color:#a9a3c4}
+  .topbar:not(.compact) .searchbar input:focus{border-color:var(--brand-2);box-shadow:0 0 0 3px rgba(129,85,255,.25)}
+  .topbar:not(.compact) .searchbar .lupa{color:#b7afd6}
+  .topbar:not(.compact) .menu-btn{background:rgba(255,255,255,.1);border-color:rgba(168,140,255,.4);color:#fff}
 
   /* Modales: material y entrada con resorte */
   @keyframes modalIn{from{opacity:0;transform:translateY(18px) scale(.97)}to{opacity:1;transform:none}}
@@ -662,10 +672,6 @@
           </div>
           <div>
             <div class="crumb" id="crumb"></div>
-            <div class="homebrand" id="homeBrand">
-              <span class="hb-ic"><svg viewBox="0 0 64 64" fill="none"><defs><linearGradient id="adsg3" x1="8" y1="56" x2="54" y2="12" gradientUnits="userSpaceOnUse"><stop stop-color="#3a1f9e"/><stop offset=".55" stop-color="#7a52e6"/><stop offset="1" stop-color="#c5b4ff"/></linearGradient></defs><g stroke="url(#adsg3)" stroke-width="3.2" stroke-linecap="round"><line x1="21" y1="16" x2="12" y2="31"/><line x1="21" y1="16" x2="29" y2="33"/><line x1="12" y1="31" x2="29" y2="33"/><line x1="29" y1="33" x2="25" y2="49"/><line x1="25" y1="49" x2="42" y2="45"/><line x1="29" y1="33" x2="42" y2="45"/><line x1="42" y1="45" x2="46" y2="23"/><line x1="46" y1="23" x2="53" y2="34"/></g><g fill="url(#adsg3)"><circle cx="12" cy="31" r="6"/><circle cx="29" cy="33" r="7"/><circle cx="42" cy="45" r="6"/></g><g fill="#fff" stroke="url(#adsg3)" stroke-width="3.2"><circle cx="21" cy="16" r="5.5"/><circle cx="25" cy="49" r="5.5"/><circle cx="46" cy="23" r="4.6"/></g><circle cx="53" cy="34" r="4.6" fill="#fff" stroke="url(#adsg3)" stroke-width="3.2" opacity=".55"/></svg></span>
-              <span class="hb-txt"><b>ADS</b><i>PROJECT</i><b>MEDIA</b></span>
-            </div>
             <h1 id="title" class="big">Welcome!</h1>
           </div>
           <div class="sub" id="subtitle"></div>
@@ -2023,7 +2029,6 @@
     const inAcc = view==='cliente'||view==='prospecto';
     document.querySelector('.topbar').classList.toggle('compact', inAcc);
     el('brandmark').style.display = inAcc ? '' : 'none';
-    el('homeBrand').style.display = view==='inicio' ? 'flex' : 'none';
     el('content').classList.toggle('home-bg', view==='inicio');
     el('content').classList.toggle('tight-top', inAcc);
     el('toolbar').style.display = inAcc ? 'none' : '';
