@@ -243,11 +243,21 @@
 
   /* Detail / portal */
   .detail-head{display:flex;align-items:center;gap:16px;background:#fff;border:1px solid var(--line);border-radius:15px;padding:18px 22px;margin-bottom:8px}
-  .detail-head .avatar{width:52px;height:52px;border-radius:14px;font-size:19px}
+  .detail-head .avatar{width:52px;height:52px;border-radius:14px;font-size:19px;flex-shrink:0}
   .detail-head h2{margin:0;font-size:21px}
-  .detail-head .role{color:var(--muted);font-size:13px}
-  .detail-head .right{margin-left:auto;display:flex;gap:16px;text-align:center}
-  .detail-head .right .v{font-size:19px;font-weight:700}.detail-head .right .l{font-size:11px;color:var(--muted)}
+  .detail-head .dh-meta{min-width:0}
+  .detail-head .role{color:var(--muted);font-size:13px;margin-top:3px}
+  .detail-head .right{margin-left:auto;display:flex;gap:10px}
+  /* Tarjetas de status (colores del panel: gris/azul/ámbar) */
+  .dstat{min-width:78px;text-align:center;border-radius:12px;padding:9px 14px;transition:transform .2s var(--ease)}
+  .dstat:hover{transform:translateY(-2px)}
+  .dstat .v{font-family:var(--font-head);font-size:22px;font-weight:800;line-height:1}
+  .dstat .l{font-size:10px;text-transform:uppercase;letter-spacing:.04em;font-weight:600;margin-top:5px}
+  .dstat.todo{background:#eef1f6;color:#475569}
+  .dstat.proc{background:#e2ecfd;color:#1d4ed8}
+  .dstat.review{background:#fef3da;color:#9a6400}
+  /* Finalizados: descripción a la derecha, centrada */
+  .detail-head .dh-desc{margin-left:auto;max-width:46%;text-align:right;color:var(--muted);font-size:14px;line-height:1.5}
   .tabs{display:flex;gap:5px;margin:2px 0 16px;flex-wrap:wrap;border-bottom:1px solid var(--line)}
   .tab{background:none;border:none;border-bottom:2px solid transparent;color:#5a5f6e;padding:9px 13px;font-size:13.5px;cursor:pointer;font-weight:600;margin-bottom:-1px}
   .tab.active{color:var(--brand);border-color:var(--brand)}
@@ -1001,7 +1011,7 @@
   };
   // ===== Cuentas =====
   let clients = [
-    {id:"auren",name:"Auren",role:"Servicios profesionales",color:"#8155ff",ini:"AU",
+    {id:"auren",name:"Auren",role:"Servicios profesionales",desc:"Firma de servicios profesionales: auditoría, consultoría, legal e impuestos (B2B).",color:"#8155ff",ini:"AU",
       brief:{
         giro:"Servicios profesionales B2B (firma multidisciplinaria de auditoría, contabilidad, fiscal, legal y consultoría).",
         descripcion:"Firma de servicios profesionales con respaldo internacional (red ANTEA, 60+ países; miembro del Forum of Firms de IFAC) y presencia local en 9 ciudades de México. Atiende a empresas que requieren asesoría de calidad, personalizada y cercana. Venta consultiva B2B: el cliente es el tomador de decisiones empresarial.",
@@ -1946,6 +1956,24 @@
 
   // ===== PORTAL DEL CLIENTE =====
   let curClient=null, cliFilter='all';
+  function renderDetailHead(ptab){
+    const c=curClient; if(!c)return;
+    const desc=c.desc||c.role||'';
+    const av=`<div class="avatar" style="background:${c.color}">${c.ini}</div>`;
+    if(ptab==='finalizados'){
+      el('detail-head').innerHTML=`${av}<div><h2>${c.name}</h2></div><div class="dh-desc">${esc(desc)}</div>`;
+      return;
+    }
+    const mine=acts.filter(a=>a.acc===c.id&&!a.fin&&a.estado!=='publicado');
+    const t=mine.filter(a=>bucket(a.estado)==='todo').length,p=mine.filter(a=>bucket(a.estado)==='proc').length,r=mine.filter(a=>bucket(a.estado)==='review').length;
+    el('detail-head').innerHTML=`${av}
+      <div class="dh-meta"><h2>${c.name}</h2><div class="role">${esc(desc)}</div></div>
+      <div class="right">
+        <div class="dstat todo"><div class="v">${t}</div><div class="l">Por hacer</div></div>
+        <div class="dstat proc"><div class="v">${p}</div><div class="l">En proceso</div></div>
+        <div class="dstat review"><div class="v">${r}</div><div class="l">Por revisar</div></div>
+      </div>`;
+  }
   function openClient(id){ openAcc(id,'cliente'); }
   function openProspect(id){
     const p=prospects.find(x=>x.id===id); if(!p)return;
@@ -1966,15 +1994,7 @@
     if(cuenta==='prospecto'){ openProspect(id); return; }
     const c=clients.find(x=>x.id===id); if(!c)return;
     curClient=c; cliFilter='all';
-    const mine=acts.filter(a=>a.acc===id&&!a.fin&&a.estado!=='publicado');
-    const t=mine.filter(a=>bucket(a.estado)==='todo').length,p=mine.filter(a=>bucket(a.estado)==='proc').length,r=mine.filter(a=>bucket(a.estado)==='review').length;
-    el('detail-head').innerHTML=`<div class="avatar" style="background:${c.color}">${c.ini}</div>
-      <div><h2>${c.name}</h2><div class="role">${c.role}</div></div>
-      <div class="right">
-        <div><div class="v" style="color:#475569">${t}</div><div class="l">Por hacer</div></div>
-        <div><div class="v" style="color:#1d4ed8">${p}</div><div class="l">En proceso</div></div>
-        <div><div class="v" style="color:#b8771a">${r}</div><div class="l">Por revisar</div></div>
-      </div>`;
+    renderDetailHead('entregables');
     // brief
     try{renderBrief(c);}catch(err){console.error('brief',err);try{el('brief-root').innerHTML='<div class="empty">No se pudo cargar el brief. Recarga la página.</div>';}catch(_){}}
     renderCliEntregables();
@@ -2004,6 +2024,7 @@
     document.querySelectorAll('#ptabs .tab').forEach(t=>t.classList.toggle('active',t.dataset.pt===name));
     document.querySelectorAll('.ptab').forEach(p=>p.classList.toggle('active',p.id==='pt-'+name));
     el('detail-head').style.display = name==='brief' ? 'none' : '';
+    if(name!=='brief') renderDetailHead(name);
     el('briefTools').style.display = name==='brief' ? '' : 'none';
     if(name!=='brief')closeBriefMenu();
     if(name==='brief'){window.scrollTo(0,0);setTimeout(updateBriefProgress,40);}
