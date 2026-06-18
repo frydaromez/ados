@@ -635,6 +635,36 @@
   .topbar .menu-btn{background:rgba(255,255,255,.1);border-color:rgba(168,140,255,.4);color:#fff}
   .topbar #saveBtn svg,.topbar #wordBtn svg,.topbar .home-btn svg{color:#c9b8ff}
 
+  /* Parrilla · vistas Tabla / Calendario / Trello */
+  .pview-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+  .pview-nav{display:flex;align-items:center;gap:10px}
+  .pnav-btn{width:34px;height:34px;border:1px solid var(--line);background:#fff;border-radius:10px;cursor:pointer;font-size:18px;line-height:1;color:var(--ink);display:flex;align-items:center;justify-content:center;transition:transform .2s var(--ease-spring),border-color .18s var(--ease),color .18s var(--ease)}
+  .pnav-btn:hover{border-color:var(--brand);color:var(--brand);transform:translateY(-1px)}
+  .pnav-btn:active{transform:scale(.92)}
+  .pnav-label{font-family:var(--font-head);font-weight:700;font-size:15px;min-width:140px;text-align:center;text-transform:capitalize}
+  .pview-panel:not(.hidden){animation:pvIn .34s var(--ease-out)}
+  @keyframes pvIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .pcal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;background:#fff;border:1px solid var(--line);border-radius:15px;padding:14px;box-shadow:0 1px 2px rgba(24,20,50,.04),0 14px 38px -22px rgba(40,25,90,.18)}
+  .pcal-dow{text-align:center;font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);padding-bottom:4px}
+  .pcal-cell{min-height:94px;border:1px solid var(--line);border-radius:12px;padding:7px 7px 6px;background:#fcfcff;display:flex;flex-direction:column;gap:4px;transition:border-color .2s var(--ease),box-shadow .2s var(--ease),transform .2s var(--ease)}
+  .pcal-cell.empty{background:transparent;border:none}
+  .pcal-cell:not(.empty):hover{border-color:#d8d4ea;box-shadow:0 8px 20px -12px rgba(40,25,90,.35);transform:translateY(-2px)}
+  .pcal-cell.today{border-color:var(--brand);box-shadow:0 0 0 1px var(--brand) inset}
+  .pcal-d{font-size:12px;font-weight:700;color:var(--ink-2);margin-bottom:1px}
+  .pcal-cell.today .pcal-d{color:var(--brand-deep)}
+  .pcal-ev{font-size:11px;font-weight:600;padding:3px 7px;border-radius:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;transition:transform .15s var(--ease)}
+  .pcal-ev:hover{transform:translateX(2px)}
+  .pcal-ev.todo{background:#eef1f6;color:#475569}
+  .pcal-ev.proc{background:#e2ecfd;color:#1d4ed8}
+  .pcal-ev.review{background:#fef3da;color:#9a6400}
+  .pcal-ev.chg{background:#fde2e7;color:#be123c}
+  .pcal-ev.pub{background:#e8f0e2;color:#3f6212}
+  .pcal-ev.published{background:#16151c;color:#fff}
+  .pcal-ev.done{background:#dcf5ea;color:#047857}
+  #cli-kanban .kcard{cursor:pointer;transition:transform .2s var(--ease-spring),box-shadow .2s var(--ease)}
+  #cli-kanban .kcard:hover{transform:translateY(-2px);box-shadow:0 12px 24px -12px rgba(40,25,90,.4)}
+  @media(max-width:760px){.pcal{gap:5px;padding:9px}.pcal-cell{min-height:74px}.pcal-ev{font-size:10px;padding:2px 5px}}
+
   /* Modales: material y entrada con resorte */
   @keyframes modalIn{from{opacity:0;transform:translateY(18px) scale(.97)}to{opacity:1;transform:none}}
   .overlay.open .modal{animation:modalIn .42s var(--ease-spring) both}
@@ -843,10 +873,30 @@
         </div>
 
         <div class="ptab" id="pt-parrilla">
-          <div class="tablecard"><div class="tablewrap"><table>
-            <thead><tr><th class="num">Cant.</th><th>Qué</th><th>Formato</th><th>Plataforma</th><th>Publica</th><th>Responsable</th><th>Detalle</th><th>Estado</th></tr></thead>
-            <tbody id="cli-parrilla-rows"></tbody>
-          </table></div></div>
+          <div class="pview-bar">
+            <div class="seg" id="pview-seg">
+              <button type="button" class="seg-opt active" data-pv="tabla">Tabla</button>
+              <button type="button" class="seg-opt" data-pv="cal">Calendario</button>
+              <button type="button" class="seg-opt" data-pv="trello">Trello</button>
+            </div>
+            <div class="pview-nav" id="pview-nav" style="display:none">
+              <button type="button" class="pnav-btn" id="pcal-prev" aria-label="Mes anterior">‹</button>
+              <span class="pnav-label" id="pcal-label"></span>
+              <button type="button" class="pnav-btn" id="pcal-next" aria-label="Mes siguiente">›</button>
+            </div>
+          </div>
+          <div class="pview-panel" id="pv-tabla">
+            <div class="tablecard"><div class="tablewrap"><table>
+              <thead><tr><th class="num">Cant.</th><th>Qué</th><th>Formato</th><th>Plataforma</th><th>Publica</th><th>Responsable</th><th>Detalle</th><th>Estado</th></tr></thead>
+              <tbody id="cli-parrilla-rows"></tbody>
+            </table></div></div>
+          </div>
+          <div class="pview-panel hidden" id="pv-cal">
+            <div class="pcal" id="pcal"></div>
+          </div>
+          <div class="pview-panel hidden" id="pv-trello">
+            <div class="kanban" id="cli-kanban"></div>
+          </div>
         </div>
 
         <div class="ptab" id="pt-extras">
@@ -2020,6 +2070,47 @@
     else if(['todo','proc','review'].includes(cliFilter))mine=mine.filter(a=>bucket(a.estado)===cliFilter);
     el('cli-rows').innerHTML=mine.length?mine.map(a=>`<tr><td>${tipoTag(a.tipo)}</td><td class="num">${a.cant}</td><td>${a.que}</td><td>${who(a.quien)}</td><td>${a.due}</td><td>${detCell(a)}</td><td>${pill(a.estado)}</td></tr>`).join(''):'<tr><td colspan="7"><div class="empty">Sin actividades con ese filtro.</div></td></tr>';
   }
+  // ===== Parrilla: vistas Tabla / Calendario / Trello (tipo Notion) =====
+  const DOW_MIN=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
+  let pView='tabla', pCalY=2026, pCalM=6; // julio 2026 (donde vive la parrilla demo)
+  function cliParrillaItems(){return curClient?acts.filter(a=>a.acc===curClient.id&&a.tipo==='parrilla'&&!a.fin):[];}
+  function setPView(v){
+    pView=v;
+    document.querySelectorAll('#pview-seg .seg-opt').forEach(o=>o.classList.toggle('active',o.dataset.pv===v));
+    el('pv-tabla').classList.toggle('hidden',v!=='tabla');
+    el('pv-cal').classList.toggle('hidden',v!=='cal');
+    el('pv-trello').classList.toggle('hidden',v!=='trello');
+    el('pview-nav').style.display = v==='cal' ? '' : 'none';
+    if(v==='cal')renderCliCal();
+    if(v==='trello')renderCliTrello();
+  }
+  function renderCliCal(){
+    const host=el('pcal'); if(!host||!curClient)return;
+    el('pcal-label').textContent=MESES[pCalM]+' '+pCalY;
+    const byDay={};
+    // la parrilla demo publica en julio 2026 (campo pub = día)
+    if(pCalY===2026&&pCalM===6){ cliParrillaItems().forEach(a=>{ if(a.pub>0){(byDay[a.pub]=byDay[a.pub]||[]).push(a);} }); }
+    const startDow=(new Date(pCalY,pCalM,1).getDay()+6)%7;
+    const dim=new Date(pCalY,pCalM+1,0).getDate();
+    const today=new Date(), isThisMonth=today.getFullYear()===pCalY&&today.getMonth()===pCalM;
+    let h=DOW_MIN.map(d=>`<div class="pcal-dow">${d}</div>`).join('');
+    for(let i=0;i<startDow;i++)h+='<div class="pcal-cell empty"></div>';
+    for(let d=1;d<=dim;d++){
+      const evs=byDay[d]||[];
+      const chips=evs.map(a=>`<div class="pcal-ev ${EST[a.estado][1]}" title="${esc(a.que)} · ${EST[a.estado][0]}" onclick="verDetalle('${a.id}')">${a.cant>1?a.cant+' ':''}${esc(a.que)}</div>`).join('');
+      h+=`<div class="pcal-cell${isThisMonth&&d===today.getDate()?' today':''}"><div class="pcal-d">${d}</div>${chips}</div>`;
+    }
+    host.innerHTML=h;
+  }
+  function renderCliTrello(){
+    const host=el('cli-kanban'); if(!host||!curClient)return;
+    const items=cliParrillaItems();
+    host.innerHTML=KCOLS.map(s=>{
+      const col=items.filter(a=>a.estado===s);
+      const cards=col.map(a=>`<div class="kcard" onclick="verDetalle('${a.id}')"><div class="ttl">${a.cant>1?a.cant+' ':''}${esc(a.que)}</div><div class="ft"><span>${esc(a.formato||'')}${a.plat?' · '+esc(a.plat):''}</span><span class="who"><span class="a" style="background:${people[a.quien].c}">${a.quien}</span></span></div></div>`).join('')||'<div style="font-size:12px;color:#b8bac6;padding:6px 4px">—</div>';
+      return `<div class="kcol"><h4>${EST[s][0]} <span class="c">${col.length}</span></h4>${cards}</div>`;
+    }).join('');
+  }
   function setPtab(name){
     document.querySelectorAll('#ptabs .tab').forEach(t=>t.classList.toggle('active',t.dataset.pt===name));
     document.querySelectorAll('.ptab').forEach(p=>p.classList.toggle('active',p.id==='pt-'+name));
@@ -2027,6 +2118,7 @@
     if(name!=='brief') renderDetailHead(name);
     el('briefTools').style.display = name==='brief' ? '' : 'none';
     if(name!=='brief')closeBriefMenu();
+    if(name==='parrilla')setPView(pView);
     if(name==='brief'){window.scrollTo(0,0);setTimeout(updateBriefProgress,40);}
   }
 
@@ -2181,6 +2273,9 @@
   }
 
   // ===== Listeners =====
+  el('pview-seg').addEventListener('click',e=>{const b=e.target.closest('.seg-opt');if(b)setPView(b.dataset.pv);});
+  el('pcal-prev').addEventListener('click',()=>{pCalM--;if(pCalM<0){pCalM=11;pCalY--;}renderCliCal();});
+  el('pcal-next').addEventListener('click',()=>{pCalM++;if(pCalM>11){pCalM=0;pCalY++;}renderCliCal();});
   document.querySelectorAll('#nav a, #nav2 a').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();showView(a.dataset.view);}));
   ['f-cuenta','f-acc','f-tipo','f-quien','f-estado'].forEach(id=>el(id).addEventListener('change',renderMadre));
   el('f-fin').addEventListener('click',function(){madreFin=!madreFin;this.classList.toggle('active',madreFin);this.textContent=madreFin?'Ocultar finalizadas':'Incluir finalizadas';renderMadre();});
