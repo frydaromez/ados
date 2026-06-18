@@ -2145,7 +2145,7 @@
     const na={id:uid(),cuenta,acc:accId,tipo,cant:parseInt(el('m-cant').value)||1,que,formato:'',plat:'',pub:0,
       quien:personCode(el('m-quien').value),due:el('m-due').value.trim()||'Por definir',estado:'todo',
       det:el('m-det').value.trim(),link:modalLinks.length>0,links:modalLinks.slice(),files:modalFiles.slice(),
-      comentarios:[],fin:false,reg:'2026-06-15',regPor:'AN'};
+      comentarios:[],fin:false,reg:new Date().toISOString().slice(0,10),regPor:'AN'};
     acts.unshift(na);
     closeModal('ov-act');
     renderAll(); fillAccFilter(); fillParrillaCli();
@@ -2222,7 +2222,7 @@
 
   // ===== Init =====
   if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches) document.body.classList.add('anim');
-  todayStr=new Date(2026,5,14).toLocaleDateString('es-MX',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).replace(/^\w/,c=>c.toUpperCase());
+  todayStr=new Date().toLocaleDateString('es-MX',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).replace(/^\w/,c=>c.toUpperCase());
   loadPersisted();
   fillAccFilter(); fillParrillaCli(); renderAll(); showView('inicio');
 </script>
