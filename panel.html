@@ -1011,7 +1011,7 @@
   };
   // ===== Cuentas =====
   let clients = [
-    {id:"auren",name:"Auren",role:"Servicios profesionales",desc:"Firma de servicios profesionales: auditoría, consultoría, legal e impuestos (B2B).",color:"#8155ff",ini:"AU",
+    {id:"auren",name:"Auren",role:"Firma mundial de abogados (B2B).",desc:"Firma mundial de abogados (B2B).",color:"#8155ff",ini:"AU",
       brief:{
         giro:"Servicios profesionales B2B (firma multidisciplinaria de auditoría, contabilidad, fiscal, legal y consultoría).",
         descripcion:"Firma de servicios profesionales con respaldo internacional (red ANTEA, 60+ países; miembro del Forum of Firms de IFAC) y presencia local en 9 ciudades de México. Atiende a empresas que requieren asesoría de calidad, personalizada y cercana. Venta consultiva B2B: el cliente es el tomador de decisiones empresarial.",
@@ -1926,7 +1926,7 @@
   }
   function saveBriefData(){persist();toast('Brief guardado ✓');}
   function downloadLogo(){const u=curClient&&gb(curClient).logo;if(!u){toast('No hay logo cargado');return;}try{const a=document.createElement('a');a.href=u;a.download=curClient.name.replace(/\s+/g,'_')+'-logo.png';document.body.appendChild(a);a.click();a.remove();}catch(e){toast('No se pudo descargar el logo');}}
-  function loadPersisted(){try{localStorage.removeItem('adsos_data');const s=JSON.parse(localStorage.getItem('adsos_v3')||'null');if(s&&Array.isArray(s.clients)&&s.clients.length){const defs=[...clients];clients.length=0;s.clients.forEach(saved=>{const def=defs.find(c=>c.id===saved.id);if(def){const cb=def.brief||{};const sb=saved.brief||{};Object.keys(cb).forEach(k=>{if(sb[k]===undefined)sb[k]=cb[k];});saved.brief=sb;}clients.push(saved);});if(Array.isArray(s.prospects)){prospects.length=0;s.prospects.forEach(x=>prospects.push(x));}if(Array.isArray(s.acts)){acts.length=0;s.acts.forEach(x=>acts.push(x));}}}catch(e){}}
+  function loadPersisted(){try{localStorage.removeItem('adsos_data');const s=JSON.parse(localStorage.getItem('adsos_v3')||'null');if(s&&Array.isArray(s.clients)&&s.clients.length){const defs=[...clients];clients.length=0;s.clients.forEach(saved=>{const def=defs.find(c=>c.id===saved.id);if(def){const cb=def.brief||{};const sb=saved.brief||{};Object.keys(cb).forEach(k=>{if(sb[k]===undefined)sb[k]=cb[k];});saved.brief=sb;saved.name=def.name;saved.role=def.role;saved.desc=def.desc;saved.color=def.color;saved.ini=def.ini;}clients.push(saved);});if(Array.isArray(s.prospects)){prospects.length=0;s.prospects.forEach(x=>prospects.push(x));}if(Array.isArray(s.acts)){acts.length=0;s.acts.forEach(x=>acts.push(x));}}}catch(e){}}
   function briefToHTML(c){
     const b=gb(c); let h=`<h1>Brief — ${esc(c.name)}</h1>`;
     const val=(f)=>{const v=b[f.k];
