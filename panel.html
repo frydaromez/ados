@@ -1896,9 +1896,7 @@
   function renderBrief(c){
     const b=gb(c);
     const snap=`<div class="brief-snap"><div class="brief-logo" data-logo="1">${b.logo?`<img src="${esc(b.logo)}">`:esc(c.ini)}</div><div class="si"><h2>${esc(c.name)}</h2><div class="giro">${b.giro?esc(b.giro):'Giro pendiente'}</div></div><div class="brief-quick">${b.sitio?`<a class="qchip" href="${esc(b.sitio)}" target="_blank" rel="noopener">${ICONS.globe} Sitio</a>`:`<button type="button" class="qchip empty" data-snaplink="sitio">${ICONS.globe} Sitio</button>`}</div></div>`;
-    const st=briefStats(c);
-    const prog=`<div class="brief-prog"><div class="bp-top"><span class="bp-pct">${st.pct}%</span><div class="bp-meta"><div class="bp-lbl">Brief completo</div><div class="bp-bar"><i style="width:${st.pct}%"></i></div></div><span class="bp-count">${st.full}/${st.total} secciones</span></div>${st.pend.length?`<div class="bp-pend"><span class="bp-pend-l">Falta llenar:</span>${st.pend.map(p=>`<button type="button" class="bp-chip" data-jump="${p.id}">${esc(p.n)}</button>`).join('')}</div>`:`<div class="bp-pend"><span class="bp-done">Brief completo 🎉</span></div>`}</div>`;
-    el('brief-root').innerHTML=snap+prog+BRIEF_SCHEMA.map(s=>sectionHTML(c,s)).join('');
+    el('brief-root').innerHTML=snap+BRIEF_SCHEMA.map(s=>sectionHTML(c,s)).join('');
     renderBriefIndex(); renderBriefRail(); updateBriefProgress(); persist();
   }
   // Índice / navegador del brief
