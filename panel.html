@@ -715,11 +715,13 @@
   .pcal-legend .lg.todo{background:#64748b}.pcal-legend .lg.proc{background:#3b82f6}.pcal-legend .lg.review{background:#f59e0b}.pcal-legend .lg.chg{background:#e11d48}.pcal-legend .lg.pub{background:#65a30d}.pcal-legend .lg.published{background:#16151c}.pcal-legend .lg.venc{background:#e11d48;box-shadow:0 0 0 3px #fde2e7}
   /* Gantt real (deadline interno -> envío a cliente, línea de HOY) */
   .g2{position:relative}
-  .g2-row{display:flex;align-items:center;height:34px}
+  .g2-row{display:flex;align-items:center;height:44px}
   .g2-row.g2-head{height:26px;margin-bottom:2px}
-  .g2-label{flex:0 0 230px;padding:0 12px 0 4px;overflow:hidden;cursor:pointer}
-  .g2-label b{display:block;font-size:12.5px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .g2-label small{font-size:10.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+  .g2-label{flex:0 0 250px;padding:0 12px 0 4px;overflow:hidden;cursor:pointer}
+  .g2-name{display:flex;align-items:center;gap:7px}
+  .g2-name b{font-size:12.5px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .g2-pill{flex-shrink:0;font-size:9.5px;padding:1px 7px}
+  .g2-label small{font-size:10.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;margin-top:2px}
   .g2-track{position:relative;flex:1;height:100%;border-left:1px solid var(--line)}
   .g2-row:not(.g2-head) .g2-track{background:linear-gradient(#f7f7fc,#f7f7fc) ;border-radius:6px}
   .g2-row:not(.g2-head):nth-child(even) .g2-track{background:#fafafe}
@@ -727,7 +729,7 @@
   .g2-fri{position:absolute;top:0;bottom:0;background:rgba(129,85,255,.05)}
   .g2-today{position:absolute;top:0;bottom:0;width:2px;background:#e11d48;z-index:3}
   .g2-head .g2-today{top:0;bottom:-1000px;height:auto}
-  .g2-bar{position:absolute;top:8px;height:18px;border-radius:9px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;padding:0 3px;box-shadow:0 2px 6px -2px rgba(40,25,90,.3);transition:transform .15s var(--ease)}
+  .g2-bar{position:absolute;top:13px;height:18px;border-radius:9px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;padding:0 3px;box-shadow:0 2px 6px -2px rgba(40,25,90,.3);transition:transform .15s var(--ease)}
   .g2-bar:hover{transform:scaleY(1.12)}
   .g2-bar.todo{background:#cbd5e1}.g2-bar.proc{background:#93c5fd}.g2-bar.review{background:#fcd9a0}.g2-bar.chg{background:#f9a8c0}.g2-bar.pub{background:#bbe0a0}.g2-bar.published{background:#3a3a44}
   .g2-bar.venc{outline:2px solid #e11d48;outline-offset:1px}
@@ -737,6 +739,8 @@
   .g2-legend{display:flex;flex-wrap:wrap;gap:16px;margin-top:12px;padding:10px 14px;background:#fff;border:1px solid var(--line);border-radius:12px;font-size:11.5px;font-weight:600;color:var(--ink-2)}
   .g2-legend span{display:inline-flex;align-items:center;gap:6px}
   .g2-legend .g2-cap{box-shadow:none}.g2-legend .g2-tl{width:3px;height:13px;background:#e11d48;border-radius:2px}.g2-legend .g2-frihint{width:11px;height:11px;border-radius:3px;background:rgba(129,85,255,.12)}
+  .g2-legend .lgp{width:14px;height:9px;border-radius:5px;display:inline-block}
+  .g2-legend .lgp.todo{background:#cbd5e1}.g2-legend .lgp.proc{background:#93c5fd}.g2-legend .lgp.review{background:#fcd9a0}.g2-legend .lgp.chg{background:#f9a8c0}.g2-legend .lgp.pub{background:#bbe0a0}.g2-legend .lgp.published{background:#3a3a44}
   /* Fechas y estados súper visibles en tablas */
   .col-fecha{white-space:nowrap}
   td.col-fecha .fecha{font-weight:600;color:var(--ink)}
@@ -1935,10 +1939,10 @@
       const left=pct(lo), width=Math.max(pct(hi)-pct(lo)+(100/span),100/span);
       const overdue=isOverdue(x.a);
       const lbl=`${showCli?esc(accName(x.a.acc))+' · ':''}${esc(x.a.que)}`;
-      return `<div class="g2-row"><div class="g2-label" onclick="verDetalle('${x.a.id}')" title="${lbl}"><b>${esc(x.a.que)}</b><small>${showCli?esc(accName(x.a.acc))+' · ':''}${tipoLabel(x.a.tipo)} · ${x.a.quien}</small></div><div class="g2-track">${todayLine}<div class="g2-bar ${EST[x.a.estado][1]}${overdue?' venc':''}" style="left:${left}%;width:${width}%" onclick="verDetalle('${x.a.id}')" title="Entrega interna: ${x.a.entrega?sinAnio(x.a.entrega):'—'}  →  A cliente: ${x.a.due?sinAnio(x.a.due):'—'}">${x.e!=null?'<span class="g2-cap e"></span>':''}${x.c!=null?'<span class="g2-cap c"></span>':''}</div></div></div>`;
+      return `<div class="g2-row"><div class="g2-label" onclick="verDetalle('${x.a.id}')" title="${lbl}"><div class="g2-name"><b>${esc(x.a.que)}</b><span class="pill ${EST[x.a.estado][1]} g2-pill">${overdue?'⚠ ':''}${EST[x.a.estado][0]}</span></div><small>${showCli?esc(accName(x.a.acc))+' · ':''}${tipoLabel(x.a.tipo)} · ${x.a.quien}</small></div><div class="g2-track">${todayLine}<div class="g2-bar ${EST[x.a.estado][1]}${overdue?' venc':''}" style="left:${left}%;width:${width}%" onclick="verDetalle('${x.a.id}')" title="${EST[x.a.estado][0]} · Entrega interna: ${x.a.entrega?sinAnio(x.a.entrega):'—'}  →  A cliente: ${x.a.due?sinAnio(x.a.due):'—'}">${x.e!=null?'<span class="g2-cap e"></span>':''}${x.c!=null?'<span class="g2-cap c"></span>':''}</div></div></div>`;
     }).join('');
     host.innerHTML=`<div class="g2" style="min-width:${Math.max(span*cellW+230,640)}px"><div class="g2-row g2-head"><div class="g2-label"></div><div class="g2-track">${axis}${todayLine}</div></div>${rows}</div>
-      <div class="g2-legend"><span><i class="g2-cap e"></i>Entrega interna</span><span><i class="g2-cap c"></i>Envío a cliente</span><span><i class="g2-tl"></i>Hoy</span><span><i class="g2-frihint"></i>Viernes</span></div>`;
+      <div class="g2-legend"><b>Hitos:</b><span><i class="g2-cap e"></i>Entrega interna</span><span><i class="g2-cap c"></i>Envío a cliente</span><span><i class="g2-tl"></i>Hoy</span><span><i class="g2-frihint"></i>Viernes</span><b style="margin-left:8px">Fase:</b><span><i class="lgp todo"></i>Por hacer</span><span><i class="lgp proc"></i>En proceso</span><span><i class="lgp review"></i>Por revisar</span><span><i class="lgp chg"></i>Cambios</span><span><i class="lgp pub"></i>Aprobado</span><span><i class="lgp published"></i>Publicado</span></div>`;
   }
 
   // ===== FINALIZADOS =====
