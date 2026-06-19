@@ -789,7 +789,7 @@
           <select class="fsel" id="f-acc"></select>
           <select class="fsel" id="f-tipo"><option value="">Todo tipo</option><option value="parrilla">Parrilla mensual</option><option value="extra">Extra</option><option value="prospecto">Prospecto</option></select>
           <select class="fsel" id="f-quien"></select>
-          <select class="fsel" id="f-estado"><option value="">Todo estado</option><option value="todo">Por hacer</option><option value="proc">En proceso</option><option value="review">Por revisar</option><option value="cambios">Cambios</option><option value="publicar">Por publicar</option><option value="publicado">Publicado</option></select>
+          <select class="fsel" id="f-estado"><option value="">Todo estado</option><option value="todo">Por hacer</option><option value="proc">En proceso</option><option value="review">En revisión</option><option value="cambios">Cambios</option><option value="publicar">Aprobado</option><option value="publicado">Publicado</option></select>
           <div class="fspacer"></div>
           <button class="fbtn" id="f-fin" data-on="0">Incluir finalizadas</button>
         </div>
@@ -851,9 +851,9 @@
           Leyenda:
           <span class="pill todo">Por hacer</span>
           <span class="pill proc">En proceso</span>
-          <span class="pill review">Por revisar</span>
+          <span class="pill review">En revisión</span>
           <span class="pill chg">Cambios</span>
-          <span class="pill pub">Por publicar</span>
+          <span class="pill pub">Aprobado</span>
           <span class="pill published">Publicado</span>
         </div>
       </section>
@@ -886,7 +886,7 @@
             <button class="fbtn" data-cf="extra">Extras</button>
             <button class="fbtn" data-cf="todo">Por hacer</button>
             <button class="fbtn" data-cf="proc">En proceso</button>
-            <button class="fbtn" data-cf="review">Por revisar</button>
+            <button class="fbtn" data-cf="review">En revisión</button>
           </div>
           <div class="tablecard"><div class="tablewrap"><table>
             <thead><tr><th>Tipo</th><th class="num">Cant.</th><th>Qué</th><th>Responsable</th><th>Para cuándo</th><th>Detalle</th><th>Estado</th></tr></thead>
@@ -1517,7 +1517,7 @@
   }
 
   // ===== Estados =====
-  const EST={todo:["Por hacer","todo"],proc:["En proceso","proc"],review:["Por revisar","review"],cambios:["Cambios","chg"],publicar:["Por publicar","pub"],publicado:["Publicado","published"],done:["Finalizado","done"]};
+  const EST={todo:["Por hacer","todo"],proc:["En proceso","proc"],review:["En revisión","review"],cambios:["Cambios","chg"],publicar:["Aprobado","pub"],publicado:["Publicado","published"],done:["Finalizado","done"]};
   const TIPO={parrilla:"Parrilla mensual",extra:"Extra",prospecto:"Prospecto"};
   // estados que cuentan como "activo" en tarjetas (no finalizado ni publicado)
   const ACTIVE=["todo","proc","review","cambios","publicar"];
