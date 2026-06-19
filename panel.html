@@ -713,6 +713,20 @@
   .pcal-legend span{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink-2);font-weight:600}
   .pcal-legend .lg{width:9px;height:9px;border-radius:50%;display:inline-block}
   .pcal-legend .lg.todo{background:#64748b}.pcal-legend .lg.proc{background:#3b82f6}.pcal-legend .lg.review{background:#f59e0b}.pcal-legend .lg.chg{background:#e11d48}.pcal-legend .lg.pub{background:#65a30d}.pcal-legend .lg.published{background:#16151c}.pcal-legend .lg.venc{background:#e11d48;box-shadow:0 0 0 3px #fde2e7}
+  /* Fechas y estados súper visibles en tablas */
+  .col-fecha{white-space:nowrap}
+  td.col-fecha .fecha{font-weight:600;color:var(--ink)}
+  td.col-fecha .fecha.venc{color:#be123c;font-weight:700}
+  th.col-fecha{color:var(--brand-deep)}
+  tbody tr.st-cambios{background:#fff5f7}
+  tbody tr.st-cambios:hover{background:#ffe9ee}
+  tbody tr.st-proc{background:#f4f8ff}
+  tbody tr.st-proc:hover{background:#e9f1ff}
+  /* Fechas en tarjetas del tablero */
+  .kdates{display:flex;gap:8px;margin:6px 0 8px;flex-wrap:wrap}
+  .kd{font-size:11px;font-weight:600;color:#475569;background:#f1f1f6;border-radius:6px;padding:2px 7px}
+  .kd.out{color:#1d4ed8;background:#e8eefc}
+  .kd.venc{color:#be123c;background:#fde2e7}
   /* Carga del equipo (Equipo) */
   .eq-person{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px 18px;margin-bottom:16px;box-shadow:0 1px 2px rgba(24,20,50,.03),0 12px 32px -24px rgba(40,25,90,.18)}
   .eq-head{display:flex;align-items:center;gap:10px;margin-bottom:14px}
@@ -824,7 +838,7 @@
           <select class="fsel" id="f-acc"></select>
           <select class="fsel" id="f-tipo"><option value="">Todo tipo</option><option value="parrilla">Parrilla mensual</option><option value="extra">Extra</option><option value="prospecto">Prospecto</option></select>
           <select class="fsel" id="f-quien"></select>
-          <select class="fsel" id="f-estado"><option value="">Todo estado</option><option value="todo">Por hacer</option><option value="proc">En proceso</option><option value="review">Por revisar</option><option value="publicar">Aprobado</option><option value="publicado">Publicado</option></select>
+          <select class="fsel" id="f-estado"><option value="">Todo estado</option><option value="todo">Por hacer</option><option value="proc">En proceso</option><option value="review">Por revisar</option><option value="cambios">Cambios</option><option value="publicar">Aprobado</option><option value="publicado">Publicado</option></select>
           <div class="fspacer"></div>
           <button class="fbtn" id="f-fin" data-on="0">Incluir finalizadas</button>
         </div>
@@ -832,7 +846,6 @@
           <div class="seg" id="madre-seg">
             <button type="button" class="seg-opt active" data-mv="tabla">Tabla</button>
             <button type="button" class="seg-opt" data-mv="board">Tablero</button>
-            <button type="button" class="seg-opt" data-mv="cal">Calendario</button>
           </div>
           <div class="pview-nav" id="madre-nav" style="display:none">
             <button type="button" class="pnav-btn" id="madre-prev" aria-label="Mes anterior">‹</button>
@@ -842,7 +855,7 @@
         </div>
         <div class="pview-panel" id="mv-tabla">
           <div class="tablecard"><div class="tablewrap"><table>
-            <thead><tr><th>Cuenta</th><th>Tipo</th><th>Qué</th><th>Formato</th><th>Responsable</th><th>Para cuándo</th><th>Detalle</th><th>Estado</th></tr></thead>
+            <thead><tr><th>Cuenta</th><th>Tipo</th><th>Qué</th><th>Responsable</th><th class="col-fecha">Entrega interna</th><th class="col-fecha">A cliente</th><th>Detalle</th><th>Estado</th></tr></thead>
             <tbody id="madre-rows"></tbody>
           </table></div></div>
         </div>
@@ -956,13 +969,12 @@
           <div class="pview-bar">
             <div class="seg" id="pview-seg">
               <button type="button" class="seg-opt active" data-pv="tabla">Tabla</button>
-              <button type="button" class="seg-opt" data-pv="cal">Calendario</button>
               <button type="button" class="seg-opt" data-pv="trello">Tablero</button>
               <button type="button" class="seg-opt" data-pv="gantt">Gantt</button>
             </div>
             <select class="fsel" id="pview-tipo"><option value="">Todo tipo</option><option value="parrilla">Parrilla</option><option value="extra">Extras</option></select>
             <select class="fsel" id="pview-resp"><option value="">Todo responsable</option></select>
-            <select class="fsel" id="pview-estado"><option value="">Todo estado</option><option value="todo">Por hacer</option><option value="proc">En proceso</option><option value="review">Por revisar</option><option value="publicar">Aprobado</option><option value="publicado">Publicado</option></select>
+            <select class="fsel" id="pview-estado"><option value="">Todo estado</option><option value="todo">Por hacer</option><option value="proc">En proceso</option><option value="review">Por revisar</option><option value="cambios">Cambios</option><option value="publicar">Aprobado</option><option value="publicado">Publicado</option></select>
             <button type="button" class="tbtn imp-btn" onclick="openImport()"><span class="plus">↑</span> Importar parrilla</button>
             <div class="seg" id="pcal-mode" style="display:none">
               <button type="button" class="seg-opt active" data-cm="pub">Publicación</button>
@@ -976,7 +988,7 @@
           </div>
           <div class="pview-panel" id="pv-tabla">
             <div class="tablecard"><div class="tablewrap"><table>
-              <thead><tr><th>Tipo</th><th>Qué</th><th>Formato</th><th>Responsable</th><th>Entrega interna</th><th>Para cuándo</th><th>Detalle</th><th>Estado</th></tr></thead>
+              <thead><tr><th>Tipo</th><th>Qué</th><th>Responsable</th><th class="col-fecha">Entrega interna</th><th class="col-fecha">A cliente</th><th>Detalle</th><th>Estado</th></tr></thead>
               <tbody id="cli-parrilla-rows"></tbody>
             </table></div></div>
           </div>
@@ -1565,7 +1577,7 @@
     a("cliente","auren","parrilla",1,"Arte aniversario","Post","Instagram",3,"DG","Jueves, 2 de julio de 2026","review","Carpeta julio","y","Lunes, 29 de junio de 2026"),
     a("cliente","auren","parrilla",1,"Reel tip de salud","Reel","Instagram",7,"SF","Sábado, 4 de julio de 2026","proc","Guion listo","n","Miércoles, 1 de julio de 2026"),
     a("cliente","auren","parrilla",3,"Carrusel beneficios","Carrusel","Instagram",11,"DG","Domingo, 5 de julio de 2026","todo","","","Jueves, 2 de julio de 2026"),
-    a("cliente","auren","parrilla",1,"Post testimonio","Post","Facebook",16,"SF","Jueves, 9 de julio de 2026","review","Cambiar foto","y","Lunes, 6 de julio de 2026","La foto se ve oscura, ¿pueden usar otra más clara? Y subir un poco el logo."),
+    a("cliente","auren","parrilla",1,"Post testimonio","Post","Facebook",16,"SF","Jueves, 9 de julio de 2026","cambios","Cambiar foto","y","Lunes, 6 de julio de 2026","La foto se ve oscura, ¿pueden usar otra más clara? Y subir un poco el logo."),
     a("cliente","auren","parrilla",1,"Arte cierre de mes","Post","Instagram",29,"DG","Miércoles, 22 de julio de 2026","todo","","","Jueves, 16 de julio de 2026"),
     // Auren extra
     a("cliente","auren","extra",1,"Brief CheckUp Empresarial","","",0,"DG","Jueves, 18 de junio de 2026","todo","Insumos del cliente",""),
@@ -1604,7 +1616,7 @@
   const EST={todo:["Por hacer","todo"],proc:["En proceso","proc"],review:["Por revisar","review"],cambios:["Cambios","chg"],publicar:["Aprobado","pub"],publicado:["Publicado","published"],done:["Finalizado","done"]};
   const TIPO={parrilla:"Parrilla mensual",extra:"Extra",prospecto:"Prospecto"};
   // estados que cuentan como "activo" en tarjetas (no finalizado ni publicado)
-  const ACTIVE=["todo","proc","review","publicar"];
+  const ACTIVE=["todo","proc","review","cambios","publicar"];
 
   const el=id=>document.getElementById(id);
   const accName=id=>{const c=clients.find(x=>x.id===id);if(c)return c.name;const p=prospects.find(x=>x.id===id);return p?p.name:id;};
@@ -1721,10 +1733,10 @@
     if(madreView==='board'){renderMadreBoard();return;}
     if(madreView==='cal'){renderMadreCal();return;}
     const rows=madreItems();
-    el('madre-rows').innerHTML = rows.length? rows.map(a=>`<tr>
+    el('madre-rows').innerHTML = rows.length? rows.map(a=>`<tr class="st-${a.estado}">
       <td><span class="clilink" onclick="openAcc('${a.acc}','${a.cuenta}')">${accName(a.acc)}</span></td>
-      <td>${tipoTag(a.tipo)}</td><td>${a.que}</td><td>${a.formato?esc(a.formato):'<span class="dash">—</span>'}</td>
-      <td>${who(a.quien)}</td><td>${esc(a.due||'')}</td><td>${detCell(a)}</td><td>${pill(a.estado)}</td></tr>`).join('')
+      <td>${tipoTag(a.tipo)}</td><td>${esc(a.que)}</td>
+      <td>${who(a.quien)}</td><td class="col-fecha">${fechaCell(a.entrega,isOverdue(a))}</td><td class="col-fecha">${fechaCell(a.due,false)}</td><td>${detCell(a)}</td><td>${pill(a.estado)}</td></tr>`).join('')
       : '<tr><td colspan="8"><div class="empty">Sin actividades con esos filtros.</div></td></tr>';
   }
   function setMadreView(v){
@@ -1740,7 +1752,7 @@
     const items=madreItems();
     el('madre-board').innerHTML=KCOLS.map(s=>{
       const col=items.filter(a=>a.estado===s);
-      const cards=col.map(a=>`<div class="kcard" onclick="verDetalle('${a.id}')"><div class="cli">${accName(a.acc)}</div><div class="ttl">${a.cant>1?a.cant+' ':''}${esc(a.que)}</div><div class="ft"><span>${esc(a.formato||a.tipo||'')}${a.plat?' · '+esc(a.plat):''}</span><span class="who"><span class="a" style="background:${people[a.quien]?people[a.quien].c:'#888'}">${a.quien}</span></span></div></div>`).join('')||'<div style="font-size:12px;color:#b8bac6;padding:6px 4px">—</div>';
+      const cards=col.map(a=>`<div class="kcard" onclick="verDetalle('${a.id}')"><div class="cli">${accName(a.acc)}</div><div class="ttl">${a.cant>1?a.cant+' ':''}${esc(a.que)}</div>${kdates(a)}<div class="ft"><span>${esc(a.formato||tipoLabel(a.tipo))}</span><span class="who"><span class="a" style="background:${people[a.quien]?people[a.quien].c:'#888'}">${a.quien}</span></span></div></div>`).join('')||'<div style="font-size:12px;color:#b8bac6;padding:6px 4px">—</div>';
       return `<div class="kcol"><h4>${EST[s][0]} <span class="c">${col.length}</span></h4>${cards}</div>`;
     }).join('');
   }
@@ -1842,7 +1854,7 @@
   }
 
   // ===== PARRILLA (kanban) =====
-  const KCOLS=["todo","proc","review","publicar","publicado"];
+  const KCOLS=["todo","proc","review","cambios","publicar","publicado"];
   function fillParrillaCli(){
     el('p-cli').innerHTML='<option value="">Todos los clientes</option>'+clients.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
     el('g-cli').innerHTML='<option value="">Todos los clientes</option>'+clients.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
@@ -2274,7 +2286,11 @@
   let pView='tabla', pCalY=2026, pCalM=6, pResp='', pTipo='', pEstado='', pCalMode='pub'; // julio 2026 (donde vive la parrilla demo)
   function cliParrillaItems(all){if(!curClient)return [];let r=acts.filter(a=>a.acc===curClient.id&&(a.tipo==='parrilla'||a.tipo==='extra')&&!a.fin);if(!all){if(pTipo)r=r.filter(a=>a.tipo===pTipo);if(pResp)r=r.filter(a=>a.quien===pResp);if(pEstado)r=r.filter(a=>a.estado===pEstado);}return r;}
   function populatePResp(){const s=el('pview-resp');if(!s)return;const prev=s.value;const codes=[...new Set(cliParrillaItems(true).map(a=>a.quien).filter(Boolean))];s.innerHTML='<option value="">Todo responsable</option>'+codes.map(c=>`<option value="${c}">${people[c]?people[c].n:c}</option>`).join('');s.value=codes.indexOf(prev)>=0?prev:'';}
-  function renderCliParrillaTable(){const par=cliParrillaItems();el('cli-parrilla-rows').innerHTML=par.length?par.map(a=>`<tr><td>${tipoTag(a.tipo)}</td><td>${esc(a.que)}</td><td>${a.formato?esc(a.formato):'<span class="dash">—</span>'}</td><td>${who(a.quien)}</td><td>${a.entrega?esc(a.entrega):'<span class="dash">—</span>'}</td><td>${esc(a.due||'')}</td><td>${detCell(a)}</td><td>${pill(a.estado)}</td></tr>`).join(''):'<tr><td colspan="8"><div class="empty">Sin piezas para este filtro.</div></td></tr>';}
+  function fechaCell(str,overdue){return str?`<span class="fecha${overdue?' venc':''}">${overdue?'⚠ ':''}${esc(str)}</span>`:'<span class="dash">—</span>';}
+  function shortFecha(s){const dt=parseFecha(s);return dt?dt.d+' '+MES_LC[dt.m].slice(0,3):(s||'—');}
+  function kdates(a){return `<div class="kdates"><span class="kd${isOverdue(a)?' venc':''}" title="Entrega interna">↳ ${a.entrega?shortFecha(a.entrega):'—'}</span><span class="kd out" title="A cliente">→ ${a.due?shortFecha(a.due):'—'}</span></div>`;}
+  function isOverdue(a){const dt=parseFecha(a.entrega);if(!dt)return false;const t=new Date();return dt.y*10000+dt.m*100+dt.d < t.getFullYear()*10000+t.getMonth()*100+t.getDate() && a.estado!=='publicar' && a.estado!=='publicado';}
+  function renderCliParrillaTable(){const par=cliParrillaItems();el('cli-parrilla-rows').innerHTML=par.length?par.map(a=>`<tr class="st-${a.estado}"><td>${tipoTag(a.tipo)}</td><td>${esc(a.que)}</td><td>${who(a.quien)}</td><td class="col-fecha">${fechaCell(a.entrega,isOverdue(a))}</td><td class="col-fecha">${fechaCell(a.due,false)}</td><td>${detCell(a)}</td><td>${pill(a.estado)}</td></tr>`).join(''):'<tr><td colspan="7"><div class="empty">Sin piezas para este filtro.</div></td></tr>';}
   function setPView(v){
     pView=v;
     document.querySelectorAll('#pview-seg .seg-opt').forEach(o=>o.classList.toggle('active',o.dataset.pv===v));
@@ -2320,7 +2336,7 @@
     const items=cliParrillaItems();
     host.innerHTML=KCOLS.map(s=>{
       const col=items.filter(a=>a.estado===s);
-      const cards=col.map(a=>`<div class="kcard" onclick="verDetalle('${a.id}')"><div class="ttl">${a.cant>1?a.cant+' ':''}${esc(a.que)}</div><div class="ft"><span>${esc(a.formato||'')}${a.plat?' · '+esc(a.plat):''}</span><span class="who"><span class="a" style="background:${people[a.quien].c}">${a.quien}</span></span></div></div>`).join('')||'<div style="font-size:12px;color:#b8bac6;padding:6px 4px">—</div>';
+      const cards=col.map(a=>`<div class="kcard" onclick="verDetalle('${a.id}')"><div class="ttl">${a.cant>1?a.cant+' ':''}${esc(a.que)}</div>${kdates(a)}<div class="ft"><span>${esc(a.formato||tipoLabel(a.tipo))}</span><span class="who"><span class="a" style="background:${people[a.quien]?people[a.quien].c:'#888'}">${a.quien}</span></span></div></div>`).join('')||'<div style="font-size:12px;color:#b8bac6;padding:6px 4px">—</div>';
       return `<div class="kcol"><h4>${EST[s][0]} <span class="c">${col.length}</span></h4>${cards}</div>`;
     }).join('');
   }
