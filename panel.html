@@ -706,8 +706,8 @@
   .pcal-legend span{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--muted);font-weight:600}
   .pcal-legend .lg{width:11px;height:11px;border-radius:4px;display:inline-block}
   .pcal-legend .lg.todo{background:#eef1f6;border:1px solid #cdd3df}.pcal-legend .lg.proc{background:#e2ecfd}.pcal-legend .lg.review{background:#fef3da}.pcal-legend .lg.chg{background:#fde2e7}.pcal-legend .lg.pub{background:#e8f0e2}.pcal-legend .lg.published{background:#16151c}.pcal-legend .lg.venc{background:#fde2e7;box-shadow:inset 3px 0 0 #e11d48}
-  #cli-kanban .kcard{cursor:pointer;transition:transform .2s var(--ease-spring),box-shadow .2s var(--ease)}
-  #cli-kanban .kcard:hover{transform:translateY(-2px);box-shadow:0 12px 24px -12px rgba(40,25,90,.4)}
+  .kanban .kcard{cursor:pointer;transition:transform .2s var(--ease-spring),box-shadow .2s var(--ease)}
+  .kanban .kcard:hover{transform:translateY(-2px);box-shadow:0 12px 24px -12px rgba(40,25,90,.4)}
   @media(max-width:760px){.pcal{gap:5px;padding:9px}.pcal-cell{min-height:74px}.pcal-ev{font-size:10px;padding:2px 5px}}
 
   /* Modales: material y entrada con resorte */
@@ -1780,7 +1780,7 @@
     const items=acts.filter(a=>a.tipo==='parrilla'&&!a.fin&&(!cli||a.acc===cli));
     el('kanban').innerHTML=KCOLS.map(s=>{
       const col=items.filter(a=>a.estado===s);
-      const cards=col.map(a=>`<div class="kcard"><div class="cli">${accName(a.acc)}</div><div class="ttl">${a.cant>1?a.cant+' ':''}${a.que}</div><div class="ft"><span>${a.formato} · ${a.plat}</span><span class="who"><span class="a" style="background:${people[a.quien].c}">${a.quien}</span></span></div></div>`).join('')||'<div style="font-size:12px;color:#b8bac6;padding:6px 4px">—</div>';
+      const cards=col.map(a=>`<div class="kcard" onclick="verDetalle('${a.id}')"><div class="cli">${accName(a.acc)}</div><div class="ttl">${a.cant>1?a.cant+' ':''}${esc(a.que)}</div><div class="ft"><span>${esc(a.formato||'')}${a.plat?' · '+esc(a.plat):''}</span><span class="who"><span class="a" style="background:${people[a.quien]?people[a.quien].c:'#888'}">${a.quien}</span></span></div></div>`).join('')||'<div style="font-size:12px;color:#b8bac6;padding:6px 4px">—</div>';
       return `<div class="kcol"><h4>${EST[s][0]} <span class="c">${col.length}</span></h4>${cards}</div>`;
     }).join('');
   }
