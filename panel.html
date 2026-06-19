@@ -887,11 +887,8 @@
       <!-- PORTAL DEL CLIENTE -->
       <section class="view hidden" id="view-cliente">
         <div class="tabs" id="ptabs">
-          <button class="tab active" data-pt="entregables">Entregables</button>
+          <button class="tab active" data-pt="parrilla">Operación</button>
           <button class="tab" data-pt="brief">Brief</button>
-          <button class="tab" data-pt="parrilla">Parrilla</button>
-          <button class="tab" data-pt="extras">Extras</button>
-          <button class="tab" data-pt="gantt">Gantt</button>
           <button class="tab" data-pt="finalizados">Finalizados</button>
         </div>
         <div class="detail-head" id="detail-head"></div>
@@ -923,9 +920,11 @@
             <div class="seg" id="pview-seg">
               <button type="button" class="seg-opt active" data-pv="tabla">Tabla</button>
               <button type="button" class="seg-opt" data-pv="cal">Calendario</button>
-              <button type="button" class="seg-opt" data-pv="trello">Trello</button>
+              <button type="button" class="seg-opt" data-pv="trello">Tablero</button>
             </div>
+            <select class="fsel" id="pview-tipo"><option value="">Todo tipo</option><option value="parrilla">Parrilla</option><option value="extra">Extras</option></select>
             <select class="fsel" id="pview-resp"><option value="">Todo responsable</option></select>
+            <select class="fsel" id="pview-estado"><option value="">Todo estado</option><option value="todo">Por hacer</option><option value="proc">En proceso</option><option value="review">En revisión</option><option value="cambios">Cambios</option><option value="publicar">Aprobado</option><option value="publicado">Publicado</option></select>
             <div class="pview-nav" id="pview-nav" style="display:none">
               <button type="button" class="pnav-btn" id="pcal-prev" aria-label="Mes anterior">‹</button>
               <span class="pnav-label" id="pcal-label"></span>
@@ -934,7 +933,7 @@
           </div>
           <div class="pview-panel" id="pv-tabla">
             <div class="tablecard"><div class="tablewrap"><table>
-              <thead><tr><th class="num">Cant.</th><th>Qué</th><th>Formato</th><th>Plataforma</th><th>Entrega interna</th><th>Publica</th><th>Responsable</th><th>Detalle</th><th>Estado</th></tr></thead>
+              <thead><tr><th>Tipo</th><th>Qué</th><th>Formato</th><th>Responsable</th><th>Entrega interna</th><th>Para cuándo</th><th>Detalle</th><th>Estado</th></tr></thead>
               <tbody id="cli-parrilla-rows"></tbody>
             </table></div></div>
           </div>
@@ -2163,7 +2162,7 @@
     renderCliEntregables();
     // parrilla del cliente
     const par=acts.filter(a=>a.acc===id&&a.tipo==='parrilla'&&!a.fin);
-    pResp=''; populatePResp(); renderCliParrillaTable();
+    pResp='';pTipo='';pEstado='';if(el('pview-tipo'))el('pview-tipo').value='';if(el('pview-estado'))el('pview-estado').value=''; populatePResp(); renderCliParrillaTable();
     // extras
     const ex=acts.filter(a=>a.acc===id&&a.tipo==='extra'&&!a.fin);
     el('cli-extras-rows').innerHTML=ex.length?ex.map(a=>`<tr><td class="num">${a.cant}</td><td>${a.que}</td><td>${who(a.quien)}</td><td>${a.due}</td><td>${detCell(a)}</td><td>${pill(a.estado)}</td></tr>`).join(''):'<tr><td colspan="6"><div class="empty">Sin extras.</div></td></tr>';
@@ -2172,7 +2171,7 @@
     // finalizados cliente
     const fin=acts.filter(a=>a.acc===id&&a.fin);
     el('cli-fin-rows').innerHTML=fin.length?fin.map(a=>`<tr><td>${tipoTag(a.tipo)}</td><td class="num">${a.cant}</td><td>${a.que}</td><td>${who(a.quien)}</td><td>${a.finPor?people[a.finPor].n:'—'} · ${a.finFecha||''}</td><td>${detCell(a)}</td></tr>`).join(''):'<tr><td colspan="6"><div class="empty">Sin histórico todavía.</div></td></tr>';
-    setPtab('entregables');
+    setPtab('parrilla');
     showView('cliente',c.name);
   }
   function renderCliEntregables(){
@@ -2185,10 +2184,10 @@
   }
   // ===== Parrilla: vistas Tabla / Calendario / Trello (tipo Notion) =====
   const DOW_MIN=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
-  let pView='tabla', pCalY=2026, pCalM=6, pResp=''; // julio 2026 (donde vive la parrilla demo)
-  function cliParrillaItems(all){if(!curClient)return [];let r=acts.filter(a=>a.acc===curClient.id&&a.tipo==='parrilla'&&!a.fin);if(!all&&pResp)r=r.filter(a=>a.quien===pResp);return r;}
+  let pView='tabla', pCalY=2026, pCalM=6, pResp='', pTipo='', pEstado=''; // julio 2026 (donde vive la parrilla demo)
+  function cliParrillaItems(all){if(!curClient)return [];let r=acts.filter(a=>a.acc===curClient.id&&(a.tipo==='parrilla'||a.tipo==='extra')&&!a.fin);if(!all){if(pTipo)r=r.filter(a=>a.tipo===pTipo);if(pResp)r=r.filter(a=>a.quien===pResp);if(pEstado)r=r.filter(a=>a.estado===pEstado);}return r;}
   function populatePResp(){const s=el('pview-resp');if(!s)return;const prev=s.value;const codes=[...new Set(cliParrillaItems(true).map(a=>a.quien).filter(Boolean))];s.innerHTML='<option value="">Todo responsable</option>'+codes.map(c=>`<option value="${c}">${people[c]?people[c].n:c}</option>`).join('');s.value=codes.indexOf(prev)>=0?prev:'';}
-  function renderCliParrillaTable(){const par=cliParrillaItems();el('cli-parrilla-rows').innerHTML=par.length?par.map(a=>`<tr><td class="num">${a.cant}</td><td>${a.que}</td><td>${a.formato}</td><td>${a.plat}</td><td>${a.entrega?esc(a.entrega):'<span class="dash">—</span>'}</td><td>Jul ${a.pub}</td><td>${who(a.quien)}</td><td>${detCell(a)}</td><td>${pill(a.estado)}</td></tr>`).join(''):'<tr><td colspan="9"><div class="empty">Sin piezas para este filtro.</div></td></tr>';}
+  function renderCliParrillaTable(){const par=cliParrillaItems();el('cli-parrilla-rows').innerHTML=par.length?par.map(a=>`<tr><td>${tipoTag(a.tipo)}</td><td>${esc(a.que)}</td><td>${a.formato?esc(a.formato):'<span class="dash">—</span>'}</td><td>${who(a.quien)}</td><td>${a.entrega?esc(a.entrega):'<span class="dash">—</span>'}</td><td>${esc(a.due||'')}</td><td>${detCell(a)}</td><td>${pill(a.estado)}</td></tr>`).join(''):'<tr><td colspan="8"><div class="empty">Sin piezas para este filtro.</div></td></tr>';}
   function setPView(v){
     pView=v;
     document.querySelectorAll('#pview-seg .seg-opt').forEach(o=>o.classList.toggle('active',o.dataset.pv===v));
@@ -2204,8 +2203,7 @@
     const host=el('pcal'); if(!host||!curClient)return;
     el('pcal-label').textContent=MESES[pCalM]+' '+pCalY;
     const byDay={};
-    // la parrilla demo publica en julio 2026 (campo pub = día)
-    if(pCalY===2026&&pCalM===6){ cliParrillaItems().forEach(a=>{ if(a.pub>0){(byDay[a.pub]=byDay[a.pub]||[]).push(a);} }); }
+    cliParrillaItems().forEach(a=>{const dt=itemDate(a);if(dt&&dt.y===pCalY&&dt.m===pCalM){(byDay[dt.d]=byDay[dt.d]||[]).push(a);}});
     const startDow=(new Date(pCalY,pCalM,1).getDay()+6)%7;
     const dim=new Date(pCalY,pCalM+1,0).getDate();
     const today=new Date(), isThisMonth=today.getFullYear()===pCalY&&today.getMonth()===pCalM;
@@ -2391,6 +2389,8 @@
   // ===== Listeners =====
   el('pview-seg').addEventListener('click',e=>{const b=e.target.closest('.seg-opt');if(b)setPView(b.dataset.pv);});
   el('pview-resp').addEventListener('change',()=>{pResp=el('pview-resp').value;setPView(pView);});
+  el('pview-tipo').addEventListener('change',()=>{pTipo=el('pview-tipo').value;populatePResp();setPView(pView);});
+  el('pview-estado').addEventListener('change',()=>{pEstado=el('pview-estado').value;setPView(pView);});
   el('pcal-prev').addEventListener('click',()=>{pCalM--;if(pCalM<0){pCalM=11;pCalY--;}renderCliCal();});
   el('pcal-next').addEventListener('click',()=>{pCalM++;if(pCalM>11){pCalM=0;pCalY++;}renderCliCal();});
   document.querySelectorAll('#nav a, #nav2 a').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();showView(a.dataset.view);}));
