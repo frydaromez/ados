@@ -385,6 +385,7 @@
   .det-sec h5{margin:0 0 7px;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
   .det-sec p{margin:0;font-size:14px;line-height:1.55;color:var(--ink);white-space:pre-line}
   .det-empty{color:var(--muted)!important}
+  .det-cli{background:#fff7ec;border:1px solid #f6e2bf;border-left:3px solid #e0a93c;border-radius:10px;padding:11px 13px;color:#7a5a1e;font-size:13.5px;line-height:1.55}
   .det-links{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
   .det-link{display:inline-flex;align-items:center;gap:8px;max-width:100%;font-size:13px;font-weight:600;color:var(--brand-deep);background:var(--brand-soft);border-radius:9px;padding:8px 12px;text-decoration:none;transition:.15s var(--ease)}
   .det-link:hover{background:#e6dcff}
@@ -1482,7 +1483,7 @@
     a("cliente","auren","parrilla",1,"Arte aniversario","Post","Instagram",3,"DG","Jueves, 2 de julio de 2026","review","Carpeta julio","y","Lunes, 29 de junio de 2026"),
     a("cliente","auren","parrilla",1,"Reel tip de salud","Reel","Instagram",7,"SF","Sábado, 4 de julio de 2026","proc","Guion listo","n","Miércoles, 1 de julio de 2026"),
     a("cliente","auren","parrilla",3,"Carrusel beneficios","Carrusel","Instagram",11,"DG","Domingo, 5 de julio de 2026","todo","","","Jueves, 2 de julio de 2026"),
-    a("cliente","auren","parrilla",1,"Post testimonio","Post","Facebook",16,"SF","Jueves, 9 de julio de 2026","cambios","Cambiar foto","y","Lunes, 6 de julio de 2026"),
+    a("cliente","auren","parrilla",1,"Post testimonio","Post","Facebook",16,"SF","Jueves, 9 de julio de 2026","cambios","Cambiar foto","y","Lunes, 6 de julio de 2026","La foto se ve oscura, ¿pueden usar otra más clara? Y subir un poco el logo."),
     a("cliente","auren","parrilla",1,"Arte cierre de mes","Post","Instagram",29,"DG","Miércoles, 22 de julio de 2026","todo","","","Jueves, 16 de julio de 2026"),
     // Auren extra
     a("cliente","auren","extra",1,"Brief CheckUp Empresarial","","",0,"DG","Jueves, 18 de junio de 2026","todo","Insumos del cliente",""),
@@ -1510,8 +1511,8 @@
     // una finalizada de cliente
     af("cliente","verde","extra",1,"Brief sesión de producto","MR","y","SF")
   ];
-  function a(cuenta,acc,tipo,cant,que,formato,plat,pub,quien,due,estado,det,link,entrega){
-    return {id:uid(),cuenta,acc,tipo,cant,que,formato,plat,pub,quien,due,estado,det,link:link==='y',entrega:entrega||'',fin:false,reg:"2026-06-02",regPor:"AN"};
+  function a(cuenta,acc,tipo,cant,que,formato,plat,pub,quien,due,estado,det,link,entrega,cliente){
+    return {id:uid(),cuenta,acc,tipo,cant,que,formato,plat,pub,quien,due,estado,det,link:link==='y',entrega:entrega||'',cliente:cliente||'',fin:false,reg:"2026-06-02",regPor:"AN"};
   }
   function af(cuenta,acc,tipo,cant,que,quien,link,finPor){
     return {id:uid(),cuenta,acc,tipo,cant,que,formato:"",plat:"",pub:0,quien,due:"—",estado:"done",det:"",link:link==='y',fin:true,reg:"2026-05-20",regPor:"AN",finPor,finFecha:"2026-05-29"};
@@ -1541,6 +1542,7 @@
     el('det-view-title').textContent=a.que||'Detalle';
     el('det-view-body').innerHTML=
       fechas
+      +(a.cliente?`<div class="det-sec"><h5>Comentarios del cliente</h5><p class="det-cli">${esc(a.cliente).replace(/\n/g,'<br>')}</p></div>`:'')
       +(detTxt?`<div class="det-sec"><h5>Información para trabajar</h5><p>${esc(a.det).replace(/\n/g,'<br>')}</p></div>`:'')
       +(links?`<div class="det-sec"><h5>Links</h5><div class="det-links">${links}</div></div>`:'')
       +(files?`<div class="det-sec"><h5>Archivos</h5><div class="det-links">${files}</div></div>`:'')
