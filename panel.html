@@ -698,6 +698,14 @@
   .pcal-ev.pub{background:#e8f0e2;color:#3f6212}
   .pcal-ev.published{background:#16151c;color:#fff}
   .pcal-ev.done{background:#dcf5ea;color:#047857}
+  .pcal-ev{display:flex;align-items:center;gap:5px}
+  .pcal-ev .pcal-who{width:15px;height:15px;border-radius:4px;color:#fff;font-size:8px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .pcal-ev .pcal-evt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .pcal-ev.venc{box-shadow:inset 3px 0 0 #e11d48;background:#fde2e7;color:#9f1239}
+  .pcal-legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:12px;padding:0 4px}
+  .pcal-legend span{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--muted);font-weight:600}
+  .pcal-legend .lg{width:11px;height:11px;border-radius:4px;display:inline-block}
+  .pcal-legend .lg.todo{background:#eef1f6;border:1px solid #cdd3df}.pcal-legend .lg.proc{background:#e2ecfd}.pcal-legend .lg.review{background:#fef3da}.pcal-legend .lg.chg{background:#fde2e7}.pcal-legend .lg.pub{background:#e8f0e2}.pcal-legend .lg.published{background:#16151c}.pcal-legend .lg.venc{background:#fde2e7;box-shadow:inset 3px 0 0 #e11d48}
   #cli-kanban .kcard{cursor:pointer;transition:transform .2s var(--ease-spring),box-shadow .2s var(--ease)}
   #cli-kanban .kcard:hover{transform:translateY(-2px);box-shadow:0 12px 24px -12px rgba(40,25,90,.4)}
   @media(max-width:760px){.pcal{gap:5px;padding:9px}.pcal-cell{min-height:74px}.pcal-ev{font-size:10px;padding:2px 5px}}
@@ -925,6 +933,10 @@
             <select class="fsel" id="pview-tipo"><option value="">Todo tipo</option><option value="parrilla">Parrilla</option><option value="extra">Extras</option></select>
             <select class="fsel" id="pview-resp"><option value="">Todo responsable</option></select>
             <select class="fsel" id="pview-estado"><option value="">Todo estado</option><option value="todo">Por hacer</option><option value="proc">En proceso</option><option value="review">En revisión</option><option value="cambios">Cambios</option><option value="publicar">Aprobado</option><option value="publicado">Publicado</option></select>
+            <div class="seg" id="pcal-mode" style="display:none">
+              <button type="button" class="seg-opt active" data-cm="pub">Publicación</button>
+              <button type="button" class="seg-opt" data-cm="entrega">Entrega</button>
+            </div>
             <div class="pview-nav" id="pview-nav" style="display:none">
               <button type="button" class="pnav-btn" id="pcal-prev" aria-label="Mes anterior">‹</button>
               <span class="pnav-label" id="pcal-label"></span>
@@ -939,6 +951,9 @@
           </div>
           <div class="pview-panel hidden" id="pv-cal">
             <div class="pcal" id="pcal"></div>
+            <div class="pcal-legend">
+              <span><i class="lg todo"></i>Por hacer</span><span><i class="lg proc"></i>En proceso</span><span><i class="lg review"></i>En revisión</span><span><i class="lg chg"></i>Cambios</span><span><i class="lg pub"></i>Aprobado</span><span><i class="lg published"></i>Publicado</span><span><i class="lg venc"></i>Entrega vencida</span>
+            </div>
           </div>
           <div class="pview-panel hidden" id="pv-trello">
             <div class="kanban" id="cli-kanban"></div>
@@ -2184,7 +2199,7 @@
   }
   // ===== Parrilla: vistas Tabla / Calendario / Trello (tipo Notion) =====
   const DOW_MIN=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
-  let pView='tabla', pCalY=2026, pCalM=6, pResp='', pTipo='', pEstado=''; // julio 2026 (donde vive la parrilla demo)
+  let pView='tabla', pCalY=2026, pCalM=6, pResp='', pTipo='', pEstado='', pCalMode='pub'; // julio 2026 (donde vive la parrilla demo)
   function cliParrillaItems(all){if(!curClient)return [];let r=acts.filter(a=>a.acc===curClient.id&&(a.tipo==='parrilla'||a.tipo==='extra')&&!a.fin);if(!all){if(pTipo)r=r.filter(a=>a.tipo===pTipo);if(pResp)r=r.filter(a=>a.quien===pResp);if(pEstado)r=r.filter(a=>a.estado===pEstado);}return r;}
   function populatePResp(){const s=el('pview-resp');if(!s)return;const prev=s.value;const codes=[...new Set(cliParrillaItems(true).map(a=>a.quien).filter(Boolean))];s.innerHTML='<option value="">Todo responsable</option>'+codes.map(c=>`<option value="${c}">${people[c]?people[c].n:c}</option>`).join('');s.value=codes.indexOf(prev)>=0?prev:'';}
   function renderCliParrillaTable(){const par=cliParrillaItems();el('cli-parrilla-rows').innerHTML=par.length?par.map(a=>`<tr><td>${tipoTag(a.tipo)}</td><td>${esc(a.que)}</td><td>${a.formato?esc(a.formato):'<span class="dash">—</span>'}</td><td>${who(a.quien)}</td><td>${a.entrega?esc(a.entrega):'<span class="dash">—</span>'}</td><td>${esc(a.due||'')}</td><td>${detCell(a)}</td><td>${pill(a.estado)}</td></tr>`).join(''):'<tr><td colspan="8"><div class="empty">Sin piezas para este filtro.</div></td></tr>';}
@@ -2195,23 +2210,32 @@
     el('pv-cal').classList.toggle('hidden',v!=='cal');
     el('pv-trello').classList.toggle('hidden',v!=='trello');
     el('pview-nav').style.display = v==='cal' ? '' : 'none';
+    el('pcal-mode').style.display = v==='cal' ? '' : 'none';
     if(v==='tabla')renderCliParrillaTable();
     if(v==='cal')renderCliCal();
     if(v==='trello')renderCliTrello();
   }
+  function parseFecha(s){const m=String(s||'').toLowerCase().match(/(\d{1,2}) de ([a-záé]+) de (\d{4})/);if(m){const mi=MES_LC.indexOf(m[2]);if(mi>=0)return {y:+m[3],m:mi,d:+m[1]};}return null;}
+  function cliItemDate(a){return pCalMode==='entrega'?parseFecha(a.entrega):itemDate(a);}
   function renderCliCal(){
     const host=el('pcal'); if(!host||!curClient)return;
     el('pcal-label').textContent=MESES[pCalM]+' '+pCalY;
     const byDay={};
-    cliParrillaItems().forEach(a=>{const dt=itemDate(a);if(dt&&dt.y===pCalY&&dt.m===pCalM){(byDay[dt.d]=byDay[dt.d]||[]).push(a);}});
+    cliParrillaItems().forEach(a=>{const dt=cliItemDate(a);if(dt&&dt.y===pCalY&&dt.m===pCalM){(byDay[dt.d]=byDay[dt.d]||[]).push(a);}});
     const startDow=(new Date(pCalY,pCalM,1).getDay()+6)%7;
     const dim=new Date(pCalY,pCalM+1,0).getDate();
     const today=new Date(), isThisMonth=today.getFullYear()===pCalY&&today.getMonth()===pCalM;
+    const todayN=today.getFullYear()*10000+today.getMonth()*100+today.getDate();
     let h=DOW_MIN.map(d=>`<div class="pcal-dow">${d}</div>`).join('');
     for(let i=0;i<startDow;i++)h+='<div class="pcal-cell empty"></div>';
     for(let d=1;d<=dim;d++){
+      const dayN=pCalY*10000+pCalM*100+d;
       const evs=byDay[d]||[];
-      const chips=evs.map(a=>`<div class="pcal-ev ${EST[a.estado][1]}" title="${esc(a.que)} · ${EST[a.estado][0]}" onclick="verDetalle('${a.id}')">${a.cant>1?a.cant+' ':''}${esc(a.que)}</div>`).join('');
+      const chips=evs.map(a=>{
+        const venc=pCalMode==='entrega'&&dayN<todayN&&a.estado!=='publicar'&&a.estado!=='publicado';
+        const who=people[a.quien]?`<span class="pcal-who" style="background:${people[a.quien].c}">${a.quien}</span>`:'';
+        return `<div class="pcal-ev ${EST[a.estado][1]}${venc?' venc':''}" title="${esc(accName(a.acc))} · ${esc(a.que)} · ${EST[a.estado][0]}${venc?' · ENTREGA VENCIDA':''}" onclick="verDetalle('${a.id}')">${who}<span class="pcal-evt">${esc(a.que)}</span></div>`;
+      }).join('');
       h+=`<div class="pcal-cell${isThisMonth&&d===today.getDate()?' today':''}"><div class="pcal-d">${d}</div>${chips}</div>`;
     }
     host.innerHTML=h;
@@ -2391,6 +2415,7 @@
   el('pview-resp').addEventListener('change',()=>{pResp=el('pview-resp').value;setPView(pView);});
   el('pview-tipo').addEventListener('change',()=>{pTipo=el('pview-tipo').value;populatePResp();setPView(pView);});
   el('pview-estado').addEventListener('change',()=>{pEstado=el('pview-estado').value;setPView(pView);});
+  el('pcal-mode').addEventListener('click',e=>{const b=e.target.closest('.seg-opt');if(!b)return;pCalMode=b.dataset.cm;document.querySelectorAll('#pcal-mode .seg-opt').forEach(o=>o.classList.toggle('active',o===b));renderCliCal();});
   el('pcal-prev').addEventListener('click',()=>{pCalM--;if(pCalM<0){pCalM=11;pCalY--;}renderCliCal();});
   el('pcal-next').addEventListener('click',()=>{pCalM++;if(pCalM>11){pCalM=0;pCalY++;}renderCliCal();});
   document.querySelectorAll('#nav a, #nav2 a').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();showView(a.dataset.view);}));
