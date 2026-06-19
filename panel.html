@@ -414,6 +414,25 @@
   .qchip:hover{border-color:var(--brand);color:var(--brand)}
   .qchip.empty{color:#b8771a;border-style:dashed}
   .qchip svg{width:15px;height:15px}
+  /* Barra de progreso del brief */
+  .brief-prog{background:#fff;border:1px solid #edecf4;border-radius:16px;padding:16px 20px;margin-bottom:16px;box-shadow:0 1px 2px rgba(24,20,50,.03),0 10px 30px -22px rgba(40,25,90,.16)}
+  .bp-top{display:flex;align-items:center;gap:16px}
+  .bp-pct{font-family:var(--font-head);font-weight:800;font-size:26px;letter-spacing:-.02em;color:var(--brand-deep);min-width:54px}
+  .bp-meta{flex:1;min-width:0}
+  .bp-lbl{font-size:12px;font-weight:600;color:var(--muted);margin-bottom:6px}
+  .bp-bar{height:8px;background:#eeecf6;border-radius:99px;overflow:hidden}
+  .bp-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--brand-2),var(--brand-deep));border-radius:99px;transition:width .5s var(--ease-out)}
+  .bp-count{font-size:12px;font-weight:600;color:var(--muted);white-space:nowrap}
+  .bp-pend{display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin-top:14px;padding-top:13px;border-top:1px solid #f0eff6}
+  .bp-pend-l{font-size:11.5px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+  .bp-chip{font-size:12.5px;font-weight:600;color:#9a6400;background:#fef3da;border:none;border-radius:8px;padding:5px 11px;cursor:pointer;transition:transform .2s var(--ease-spring),background .15s var(--ease)}
+  .bp-chip:hover{background:#fde9c4;transform:translateY(-1px)}
+  .bp-done{font-size:13px;font-weight:600;color:#047857}
+  /* Indicadores de estado por sección */
+  .acc-status{width:8px;height:8px;border-radius:50%;background:#dcdae8;border:1px solid #cfcde0;flex-shrink:0;transition:.2s var(--ease)}
+  .acc-status.on{background:var(--brand);border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
+  .bi-status{width:7px;height:7px;border-radius:50%;background:#d3d1e0;flex-shrink:0;margin-right:2px}
+  .bi-status.on{background:var(--brand)}
   .acc-item{background:#fff;border:1px solid #edecf4;border-radius:16px;margin-bottom:14px;overflow:hidden;box-shadow:0 1px 2px rgba(24,20,50,.03),0 10px 30px -22px rgba(40,25,90,.16)}
   .acc-item.open{box-shadow:0 1px 2px rgba(24,20,50,.04),0 18px 44px -26px rgba(40,25,90,.24)}
   .acc-head{width:100%;display:flex;align-items:center;gap:12px;padding:18px 24px;background:none;border:none;cursor:pointer;font-family:var(--font-ui);font-size:15px;font-weight:600;color:var(--ink);text-align:left}
@@ -429,8 +448,8 @@
   .acc-sub{font-size:12.5px;color:var(--muted);margin:0 0 18px;font-style:italic}
   .bf{margin-bottom:22px}.bf:last-child{margin-bottom:0}
   .bf>label{display:block;font-size:11.5px;font-weight:600;color:#8589a0;margin-bottom:8px;letter-spacing:.01em}
-  .bf-val{font-size:14px;line-height:1.5;color:var(--ink);border:1px solid transparent;border-radius:10px;padding:10px 13px;min-height:19px;background:#f7f7fb;transition:.15s;outline:none;white-space:pre-wrap}
-  .bf-val:hover{background:#f2f2f8}
+  .bf-val{font-size:14px;line-height:1.55;color:var(--ink);border:1px solid transparent;border-radius:10px;padding:9px 12px;min-height:19px;background:transparent;transition:.15s;outline:none;white-space:pre-wrap}
+  .bf-val:hover{background:#f4f3fa}
   .bf-val:focus{background:#fff;border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
   .bf-val:empty:before{content:'Pendiente';color:#b8771a;font-style:italic}
   .redcards{display:flex;flex-direction:column;gap:12px}
@@ -444,8 +463,8 @@
   .blist{display:flex;flex-direction:column;gap:7px}
   .bli{display:flex;align-items:flex-start;gap:9px}
   .bli-dot{color:var(--brand);font-weight:700;line-height:1.7;flex-shrink:0}
-  .bli-txt{flex:1;font-size:14px;line-height:1.5;color:var(--ink);border:1px solid transparent;border-radius:9px;padding:8px 11px;background:#f7f7fb;outline:none;white-space:pre-wrap}
-  .bli-txt:hover{background:#f2f2f8}
+  .bli-txt{flex:1;font-size:14px;line-height:1.55;color:var(--ink);border:1px solid transparent;border-radius:9px;padding:7px 10px;background:transparent;outline:none;white-space:pre-wrap}
+  .bli-txt:hover{background:#f4f3fa}
   .bli-txt:focus{background:#fff;border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
   .bli-rm{border:none;background:none;cursor:pointer;color:var(--muted);font-size:14px;line-height:1.7;padding:0;flex-shrink:0}
   .bli-rm:hover{color:#e11d48}
@@ -1864,16 +1883,26 @@
     const dk='_drive_'+sec.id;
     const driveRow=sec.noDrive?'':`<div class="drive-row"><div class="drive-head">${ICONS.folder} Consultar más información — Drive</div>${linksHTML(dk,gb(c)[dk])}</div>`;
     const open=briefOpen.has(sec.id);
-    return `<div class="acc-item${open?' open':''}"><button type="button" class="acc-head" data-acc="${sec.id}"><span class="ic">${ICONS[sec.ic]||''}</span> ${sec.n}${sec.nuevo?' <span class="badge-new">NUEVO</span>':''}<span class="chev">▶</span></button><div class="acc-body">${sec.sub?`<div class="acc-sub">${sec.sub}</div>`:''}${inner}${driveRow}</div></div>`;
+    const filled=sectionFilled(gb(c),sec);
+    return `<div class="acc-item${open?' open':''}"><button type="button" class="acc-head" data-acc="${sec.id}"><span class="acc-status${filled?' on':''}" title="${filled?'Con información':'Pendiente'}"></span><span class="ic">${ICONS[sec.ic]||''}</span> ${sec.n}${sec.nuevo?' <span class="badge-new">NUEVO</span>':''}<span class="chev">▶</span></button><div class="acc-body">${sec.sub?`<div class="acc-sub">${sec.sub}</div>`:''}${inner}${driveRow}</div></div>`;
   }
+  function hasVal(v){if(v==null)return false;if(typeof v==='string')return v.trim()!=='';if(Array.isArray(v))return v.length>0;if(typeof v==='object')return Object.keys(v).length>0;return !!v;}
+  function sectionFilled(b,sec){
+    if(sec.kind==='dos')return sec.pairs.some(p=>hasVal(b[p[1]])||hasVal(b[p[2]]));
+    if(sec.kind==='checklist')return hasVal(b._val)||hasVal(b.val_otras);
+    return (sec.fields||[]).some(f=>f.k&&hasVal(b[f.k]));
+  }
+  function briefStats(c){const b=gb(c);let full=0;const pend=[];BRIEF_SCHEMA.forEach(s=>{if(sectionFilled(b,s))full++;else pend.push({id:s.id,n:s.n});});return{full,total:BRIEF_SCHEMA.length,pct:Math.round(full/BRIEF_SCHEMA.length*100),pend};}
   function renderBrief(c){
     const b=gb(c);
     const snap=`<div class="brief-snap"><div class="brief-logo" data-logo="1">${b.logo?`<img src="${esc(b.logo)}">`:esc(c.ini)}</div><div class="si"><h2>${esc(c.name)}</h2><div class="giro">${b.giro?esc(b.giro):'Giro pendiente'}</div></div><div class="brief-quick">${b.sitio?`<a class="qchip" href="${esc(b.sitio)}" target="_blank" rel="noopener">${ICONS.globe} Sitio</a>`:`<button type="button" class="qchip empty" data-snaplink="sitio">${ICONS.globe} Sitio</button>`}</div></div>`;
-    el('brief-root').innerHTML=snap+BRIEF_SCHEMA.map(s=>sectionHTML(c,s)).join('');
+    const st=briefStats(c);
+    const prog=`<div class="brief-prog"><div class="bp-top"><span class="bp-pct">${st.pct}%</span><div class="bp-meta"><div class="bp-lbl">Brief completo</div><div class="bp-bar"><i style="width:${st.pct}%"></i></div></div><span class="bp-count">${st.full}/${st.total} secciones</span></div>${st.pend.length?`<div class="bp-pend"><span class="bp-pend-l">Falta llenar:</span>${st.pend.map(p=>`<button type="button" class="bp-chip" data-jump="${p.id}">${esc(p.n)}</button>`).join('')}</div>`:`<div class="bp-pend"><span class="bp-done">Brief completo 🎉</span></div>`}</div>`;
+    el('brief-root').innerHTML=snap+prog+BRIEF_SCHEMA.map(s=>sectionHTML(c,s)).join('');
     renderBriefIndex(); renderBriefRail(); updateBriefProgress(); persist();
   }
   // Índice / navegador del brief
-  function briefIndexHTML(){return '<div class="bi-title">Secciones</div>'+BRIEF_SCHEMA.map(s=>`<button type="button" class="bi-item" data-jump="${s.id}"><span class="ic">${ICONS[s.ic]||''}</span>${s.n}</button>`).join('');}
+  function briefIndexHTML(){const b=curClient?gb(curClient):{};return '<div class="bi-title">Secciones</div>'+BRIEF_SCHEMA.map(s=>`<button type="button" class="bi-item" data-jump="${s.id}"><span class="bi-status${curClient&&sectionFilled(b,s)?' on':''}"></span><span class="ic">${ICONS[s.ic]||''}</span>${s.n}</button>`).join('');}
   function renderBriefIndex(){const p=el('briefMenuPop');if(p)p.innerHTML=briefIndexHTML();}
   function setActiveIndex(id){document.querySelectorAll('.bi-item').forEach(b=>b.classList.toggle('active',b.dataset.jump===id));}
   function renderBriefRail(){const r=el('briefRail');if(r)r.innerHTML='<div class="br-track"><i class="br-fill" id="briefRailFill"></i>'+BRIEF_SCHEMA.map(s=>`<button type="button" class="br-dot" data-jump="${s.id}" title="${esc(s.n)}"></button>`).join('')+'</div>';}
