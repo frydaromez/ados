@@ -908,6 +908,7 @@
               <button type="button" class="seg-opt" data-pv="cal">Calendario</button>
               <button type="button" class="seg-opt" data-pv="trello">Trello</button>
             </div>
+            <select class="fsel" id="pview-resp"><option value="">Todo responsable</option></select>
             <div class="pview-nav" id="pview-nav" style="display:none">
               <button type="button" class="pnav-btn" id="pcal-prev" aria-label="Mes anterior">‹</button>
               <span class="pnav-label" id="pcal-label"></span>
@@ -2098,7 +2099,7 @@
     renderCliEntregables();
     // parrilla del cliente
     const par=acts.filter(a=>a.acc===id&&a.tipo==='parrilla'&&!a.fin);
-    el('cli-parrilla-rows').innerHTML=par.length?par.map(a=>`<tr><td class="num">${a.cant}</td><td>${a.que}</td><td>${a.formato}</td><td>${a.plat}</td><td>${a.entrega?esc(a.entrega):'<span class="dash">—</span>'}</td><td>Jul ${a.pub}</td><td>${who(a.quien)}</td><td>${detCell(a)}</td><td>${pill(a.estado)}</td></tr>`).join(''):'<tr><td colspan="9"><div class="empty">Sin parrilla cargada.</div></td></tr>';
+    pResp=''; populatePResp(); renderCliParrillaTable();
     // extras
     const ex=acts.filter(a=>a.acc===id&&a.tipo==='extra'&&!a.fin);
     el('cli-extras-rows').innerHTML=ex.length?ex.map(a=>`<tr><td class="num">${a.cant}</td><td>${a.que}</td><td>${who(a.quien)}</td><td>${a.due}</td><td>${detCell(a)}</td><td>${pill(a.estado)}</td></tr>`).join(''):'<tr><td colspan="6"><div class="empty">Sin extras.</div></td></tr>';
@@ -2120,8 +2121,10 @@
   }
   // ===== Parrilla: vistas Tabla / Calendario / Trello (tipo Notion) =====
   const DOW_MIN=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
-  let pView='tabla', pCalY=2026, pCalM=6; // julio 2026 (donde vive la parrilla demo)
-  function cliParrillaItems(){return curClient?acts.filter(a=>a.acc===curClient.id&&a.tipo==='parrilla'&&!a.fin):[];}
+  let pView='tabla', pCalY=2026, pCalM=6, pResp=''; // julio 2026 (donde vive la parrilla demo)
+  function cliParrillaItems(all){if(!curClient)return [];let r=acts.filter(a=>a.acc===curClient.id&&a.tipo==='parrilla'&&!a.fin);if(!all&&pResp)r=r.filter(a=>a.quien===pResp);return r;}
+  function populatePResp(){const s=el('pview-resp');if(!s)return;const prev=s.value;const codes=[...new Set(cliParrillaItems(true).map(a=>a.quien).filter(Boolean))];s.innerHTML='<option value="">Todo responsable</option>'+codes.map(c=>`<option value="${c}">${people[c]?people[c].n:c}</option>`).join('');s.value=codes.indexOf(prev)>=0?prev:'';}
+  function renderCliParrillaTable(){const par=cliParrillaItems();el('cli-parrilla-rows').innerHTML=par.length?par.map(a=>`<tr><td class="num">${a.cant}</td><td>${a.que}</td><td>${a.formato}</td><td>${a.plat}</td><td>${a.entrega?esc(a.entrega):'<span class="dash">—</span>'}</td><td>Jul ${a.pub}</td><td>${who(a.quien)}</td><td>${detCell(a)}</td><td>${pill(a.estado)}</td></tr>`).join(''):'<tr><td colspan="9"><div class="empty">Sin piezas para este filtro.</div></td></tr>';}
   function setPView(v){
     pView=v;
     document.querySelectorAll('#pview-seg .seg-opt').forEach(o=>o.classList.toggle('active',o.dataset.pv===v));
@@ -2129,6 +2132,7 @@
     el('pv-cal').classList.toggle('hidden',v!=='cal');
     el('pv-trello').classList.toggle('hidden',v!=='trello');
     el('pview-nav').style.display = v==='cal' ? '' : 'none';
+    if(v==='tabla')renderCliParrillaTable();
     if(v==='cal')renderCliCal();
     if(v==='trello')renderCliTrello();
   }
@@ -2322,6 +2326,7 @@
 
   // ===== Listeners =====
   el('pview-seg').addEventListener('click',e=>{const b=e.target.closest('.seg-opt');if(b)setPView(b.dataset.pv);});
+  el('pview-resp').addEventListener('change',()=>{pResp=el('pview-resp').value;setPView(pView);});
   el('pcal-prev').addEventListener('click',()=>{pCalM--;if(pCalM<0){pCalM=11;pCalY--;}renderCliCal();});
   el('pcal-next').addEventListener('click',()=>{pCalM++;if(pCalM>11){pCalM=0;pCalY++;}renderCliCal();});
   document.querySelectorAll('#nav a, #nav2 a').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();showView(a.dataset.view);}));
