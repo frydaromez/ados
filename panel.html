@@ -1632,7 +1632,7 @@
     const links=(a.links||[]).map(l=>{const u=/^https?:\/\//i.test(l)?l:'https://'+l;return `<a class="det-link" href="${esc(u)}" target="_blank" rel="noopener">${ICONS.link}<span>${esc(l)}</span></a>`;}).join('');
     const files=(a.files||[]).map(f=>`<span class="det-file">📎 ${esc(f)}</span>`).join('');
     const detTxt=a.det&&String(a.det).trim();
-    const fechas=(a.entrega||a.tipo==='parrilla')?`<div class="det-sec"><h5>Fechas</h5><p>${a.entrega?`<b>Entrega interna:</b> ${esc(a.entrega)}<br>`:''}${a.tipo==='parrilla'&&a.pub?`<b>Publicación:</b> ${a.due?esc(a.due):'Jul '+a.pub}`:(a.due?`<b>Para cuándo:</b> ${esc(a.due)}`:'')}</p></div>`:'';
+    const fechas=(a.entrega||a.tipo==='parrilla')?`<div class="det-sec"><h5>Fechas</h5><p>${a.entrega?`<b>Entrega interna:</b> ${esc(sinAnio(a.entrega))}<br>`:''}${a.tipo==='parrilla'&&a.pub?`<b>Publicación:</b> ${a.due?esc(sinAnio(a.due)):'Jul '+a.pub}`:(a.due?`<b>Para cuándo:</b> ${esc(sinAnio(a.due))}`:'')}</p></div>`:'';
     el('det-view-title').textContent=a.que||'Detalle';
     el('det-view-body').innerHTML=
       fechas
@@ -1813,7 +1813,7 @@
       if(q){const hay=(accName(a.acc)+' '+a.que).toLowerCase();if(hay.indexOf(q)<0)return false;}
       return true;
     });
-    el('pros-rows').innerHTML=rows.length?rows.map(a=>`<tr><td>${accName(a.acc)}</td><td class="num">${a.cant}</td><td>${a.que}</td><td>${who(a.quien)}</td><td>${a.due}</td><td>${detCell(a)}</td><td>${pill(a.estado)}</td></tr>`).join(''):'<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:22px">Sin actividades para este filtro.</td></tr>';
+    el('pros-rows').innerHTML=rows.length?rows.map(a=>`<tr><td>${accName(a.acc)}</td><td class="num">${a.cant}</td><td>${a.que}</td><td>${who(a.quien)}</td><td>${esc(sinAnio(a.due))}</td><td>${detCell(a)}</td><td>${pill(a.estado)}</td></tr>`).join(''):'<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:22px">Sin actividades para este filtro.</td></tr>';
   }
 
   // ===== EQUIPO =====
@@ -1849,7 +1849,7 @@
   // ===== REVISIÓN =====
   function renderRevision(){
     const rows=acts.filter(a=>a.estado==='review'&&!a.fin);
-    el('rev-rows').innerHTML=rows.length?rows.map(a=>`<tr><td><span class="clilink" onclick="openAcc('${a.acc}','${a.cuenta}')">${accName(a.acc)}</span></td><td>${tipoTag(a.tipo)}</td><td class="num">${a.cant}</td><td>${a.que}</td><td>${who(a.quien)}</td><td>${a.due}</td><td>${detCell(a)}</td></tr>`).join('')
+    el('rev-rows').innerHTML=rows.length?rows.map(a=>`<tr><td><span class="clilink" onclick="openAcc('${a.acc}','${a.cuenta}')">${accName(a.acc)}</span></td><td>${tipoTag(a.tipo)}</td><td class="num">${a.cant}</td><td>${a.que}</td><td>${who(a.quien)}</td><td>${esc(sinAnio(a.due))}</td><td>${detCell(a)}</td></tr>`).join('')
       :'<tr><td colspan="7"><div class="empty">Nada por revisar ahora mismo.</div></td></tr>';
   }
 
@@ -2247,7 +2247,7 @@
         <div><div class="v" style="color:#1d4ed8">${pr}</div><div class="l">En proceso</div></div>
         <div><div class="v" style="color:#b8771a">${r}</div><div class="l">Por revisar</div></div>
       </div>`;
-    el('pros-detail-rows').innerHTML=mine.length?mine.map(a=>`<tr><td class="num">${a.cant}</td><td>${a.que}</td><td>${who(a.quien)}</td><td>${a.due}</td><td>${detCell(a)}</td><td>${pill(a.estado)}</td></tr>`).join(''):'<tr><td colspan="6"><div class="empty">Sin actividades registradas.</div></td></tr>';
+    el('pros-detail-rows').innerHTML=mine.length?mine.map(a=>`<tr><td class="num">${a.cant}</td><td>${a.que}</td><td>${who(a.quien)}</td><td>${esc(sinAnio(a.due))}</td><td>${detCell(a)}</td><td>${pill(a.estado)}</td></tr>`).join(''):'<tr><td colspan="6"><div class="empty">Sin actividades registradas.</div></td></tr>';
     showView('prospecto',p.name);
   }
   function openAcc(id,cuenta){
@@ -2264,7 +2264,7 @@
     pResp='';pTipo='';pEstado='';if(el('pview-tipo'))el('pview-tipo').value='';if(el('pview-estado'))el('pview-estado').value=''; populatePResp(); renderCliParrillaTable();
     // extras
     const ex=acts.filter(a=>a.acc===id&&a.tipo==='extra'&&!a.fin);
-    el('cli-extras-rows').innerHTML=ex.length?ex.map(a=>`<tr><td class="num">${a.cant}</td><td>${a.que}</td><td>${who(a.quien)}</td><td>${a.due}</td><td>${detCell(a)}</td><td>${pill(a.estado)}</td></tr>`).join(''):'<tr><td colspan="6"><div class="empty">Sin extras.</div></td></tr>';
+    el('cli-extras-rows').innerHTML=ex.length?ex.map(a=>`<tr><td class="num">${a.cant}</td><td>${a.que}</td><td>${who(a.quien)}</td><td>${esc(sinAnio(a.due))}</td><td>${detCell(a)}</td><td>${pill(a.estado)}</td></tr>`).join(''):'<tr><td colspan="6"><div class="empty">Sin extras.</div></td></tr>';
     // gantt cliente
     el('cli-gantt').innerHTML=ganttRows(par.filter(a=>a.pub>0).sort((x,y)=>x.pub-y.pub));
     // finalizados cliente
@@ -2279,14 +2279,15 @@
     if(cliFilter==='parrilla')mine=mine.filter(a=>a.tipo==='parrilla');
     else if(cliFilter==='extra')mine=mine.filter(a=>a.tipo==='extra');
     else if(['todo','proc','review'].includes(cliFilter))mine=mine.filter(a=>bucket(a.estado)===cliFilter);
-    el('cli-rows').innerHTML=mine.length?mine.map(a=>`<tr><td>${tipoTag(a.tipo)}</td><td class="num">${a.cant}</td><td>${a.que}</td><td>${who(a.quien)}</td><td>${a.due}</td><td>${detCell(a)}</td><td>${pill(a.estado)}</td></tr>`).join(''):'<tr><td colspan="7"><div class="empty">Sin actividades con ese filtro.</div></td></tr>';
+    el('cli-rows').innerHTML=mine.length?mine.map(a=>`<tr><td>${tipoTag(a.tipo)}</td><td class="num">${a.cant}</td><td>${a.que}</td><td>${who(a.quien)}</td><td>${esc(sinAnio(a.due))}</td><td>${detCell(a)}</td><td>${pill(a.estado)}</td></tr>`).join(''):'<tr><td colspan="7"><div class="empty">Sin actividades con ese filtro.</div></td></tr>';
   }
   // ===== Parrilla: vistas Tabla / Calendario / Trello (tipo Notion) =====
   const DOW_MIN=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
   let pView='tabla', pCalY=2026, pCalM=6, pResp='', pTipo='', pEstado='', pCalMode='pub'; // julio 2026 (donde vive la parrilla demo)
   function cliParrillaItems(all){if(!curClient)return [];let r=acts.filter(a=>a.acc===curClient.id&&(a.tipo==='parrilla'||a.tipo==='extra')&&!a.fin);if(!all){if(pTipo)r=r.filter(a=>a.tipo===pTipo);if(pResp)r=r.filter(a=>a.quien===pResp);if(pEstado)r=r.filter(a=>a.estado===pEstado);}return r;}
   function populatePResp(){const s=el('pview-resp');if(!s)return;const prev=s.value;const codes=[...new Set(cliParrillaItems(true).map(a=>a.quien).filter(Boolean))];s.innerHTML='<option value="">Todo responsable</option>'+codes.map(c=>`<option value="${c}">${people[c]?people[c].n:c}</option>`).join('');s.value=codes.indexOf(prev)>=0?prev:'';}
-  function fechaCell(str,overdue){return str?`<span class="fecha${overdue?' venc':''}">${overdue?'⚠ ':''}${esc(str)}</span>`:'<span class="dash">—</span>';}
+  function sinAnio(s){return String(s||'').replace(/ de \d{4}\b/,'');}
+  function fechaCell(str,overdue){return str?`<span class="fecha${overdue?' venc':''}">${overdue?'⚠ ':''}${esc(sinAnio(str))}</span>`:'<span class="dash">—</span>';}
   function shortFecha(s){const dt=parseFecha(s);return dt?dt.d+' '+MES_LC[dt.m].slice(0,3):(s||'—');}
   function kdates(a){return `<div class="kdates"><span class="kd${isOverdue(a)?' venc':''}" title="Entrega interna">↳ ${a.entrega?shortFecha(a.entrega):'—'}</span><span class="kd out" title="A cliente">→ ${a.due?shortFecha(a.due):'—'}</span></div>`;}
   function isOverdue(a){const dt=parseFecha(a.entrega);if(!dt)return false;const t=new Date();return dt.y*10000+dt.m*100+dt.d < t.getFullYear()*10000+t.getMonth()*100+t.getDate() && a.estado!=='publicar' && a.estado!=='publicado';}
@@ -2516,7 +2517,7 @@
   function initDuePicker(){
     el('calBtn').addEventListener('click',()=>{ if(fpInst)fpInst.open(); else toast('Calendario no disponible (revisa tu conexión)'); });
     if(typeof flatpickr!=='undefined'){
-      fpInst=flatpickr(el('m-due-fp'),{locale:(flatpickr.l10ns&&flatpickr.l10ns.es)?'es':'default',dateFormat:'l, j \\d\\e F \\d\\e Y',positionElement:el('m-due'),onChange:(d,s)=>{el('m-due').value=s.charAt(0).toUpperCase()+s.slice(1);}});
+      fpInst=flatpickr(el('m-due-fp'),{locale:(flatpickr.l10ns&&flatpickr.l10ns.es)?'es':'default',dateFormat:'l, j \\d\\e F',positionElement:el('m-due'),onChange:(d,s)=>{el('m-due').value=s.charAt(0).toUpperCase()+s.slice(1);}});
     }
   }
   function saveClient(){
