@@ -2012,7 +2012,7 @@
     if(t.dataset&&t.dataset.save!==undefined&&t.dataset.save!==''){const k=t.dataset.save;const val=(t.isContentEditable?t.textContent:t.value).trim();gb(curClient)[k]=val;persist();if(BRIEF_RERENDER_ON_SAVE.indexOf(k)>=0)renderBrief(curClient);}
   }
   // ===== Persistencia (localStorage) + exportar a Word =====
-  function persist(){try{localStorage.setItem('adsos_v5',JSON.stringify({clients:clients,prospects:prospects,acts:acts}));}catch(e){}}
+  function persist(){try{localStorage.setItem('adsos_v6',JSON.stringify({clients:clients,prospects:prospects,acts:acts}));}catch(e){}}
   function handleLogoFile(e){
     const f=e.target.files&&e.target.files[0]; if(!f||!curClient){e.target.value='';return;}
     const rd=new FileReader();
@@ -2027,7 +2027,7 @@
   }
   function saveBriefData(){persist();toast('Brief guardado ✓');}
   function downloadLogo(){const u=curClient&&gb(curClient).logo;if(!u){toast('No hay logo cargado');return;}try{const a=document.createElement('a');a.href=u;a.download=curClient.name.replace(/\s+/g,'_')+'-logo.png';document.body.appendChild(a);a.click();a.remove();}catch(e){toast('No se pudo descargar el logo');}}
-  function loadPersisted(){try{localStorage.removeItem('adsos_data');localStorage.removeItem('adsos_v3');localStorage.removeItem('adsos_v4');const s=JSON.parse(localStorage.getItem('adsos_v5')||'null');if(s&&Array.isArray(s.clients)&&s.clients.length){const defs=[...clients];clients.length=0;s.clients.forEach(saved=>{const def=defs.find(c=>c.id===saved.id);if(def){const cb=def.brief||{};const sb=saved.brief||{};Object.keys(cb).forEach(k=>{if(sb[k]===undefined)sb[k]=cb[k];});saved.brief=sb;saved.name=def.name;saved.role=def.role;saved.desc=def.desc;saved.color=def.color;saved.ini=def.ini;}clients.push(saved);});if(Array.isArray(s.prospects)){prospects.length=0;s.prospects.forEach(x=>prospects.push(x));}if(Array.isArray(s.acts)){acts.length=0;s.acts.forEach(x=>acts.push(x));}}}catch(e){}}
+  function loadPersisted(){try{localStorage.removeItem('adsos_data');localStorage.removeItem('adsos_v3');localStorage.removeItem('adsos_v4');localStorage.removeItem('adsos_v5');const s=JSON.parse(localStorage.getItem('adsos_v6')||'null');if(s&&Array.isArray(s.clients)&&s.clients.length){const defs=[...clients];clients.length=0;s.clients.forEach(saved=>{const def=defs.find(c=>c.id===saved.id);if(def){const cb=def.brief||{};const sb=saved.brief||{};Object.keys(cb).forEach(k=>{if(sb[k]===undefined)sb[k]=cb[k];});saved.brief=sb;saved.name=def.name;saved.role=def.role;saved.desc=def.desc;saved.color=def.color;saved.ini=def.ini;}clients.push(saved);});if(Array.isArray(s.prospects)){prospects.length=0;s.prospects.forEach(x=>prospects.push(x));}if(Array.isArray(s.acts)){acts.length=0;s.acts.forEach(x=>acts.push(x));}}}catch(e){}}
   function briefToHTML(c){
     const b=gb(c); let h=`<h1>Brief — ${esc(c.name)}</h1>`;
     const val=(f)=>{const v=b[f.k];
