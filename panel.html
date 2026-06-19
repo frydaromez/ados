@@ -1888,7 +1888,7 @@
     const items=acts.filter(a=>a.tipo==='parrilla'&&!a.fin&&(!cli||a.acc===cli));
     el('kanban').innerHTML=KCOLS.map(s=>{
       const col=items.filter(a=>a.estado===s);
-      const cards=col.map(a=>`<div class="kcard" onclick="verDetalle('${a.id}')"><div class="cli">${accName(a.acc)}</div><div class="ttl">${a.cant>1?a.cant+' ':''}${esc(a.que)}</div><div class="ft"><span>${esc(a.formato||'')}${a.plat?' · '+esc(a.plat):''}</span><span class="who"><span class="a" style="background:${people[a.quien]?people[a.quien].c:'#888'}">${a.quien}</span></span></div></div>`).join('')||'<div style="font-size:12px;color:#b8bac6;padding:6px 4px">—</div>';
+      const cards=col.map(a=>`<div class="kcard" onclick="verDetalle('${a.id}')"><div class="cli">${accName(a.acc)}</div><div class="ttl">${a.cant>1?a.cant+' ':''}${esc(a.que)}</div>${kdates(a)}<div class="ft"><span>${esc(a.formato||tipoLabel(a.tipo))}</span><span class="who"><span class="a" style="background:${people[a.quien]?people[a.quien].c:'#888'}">${a.quien}</span></span></div></div>`).join('')||'<div style="font-size:12px;color:#b8bac6;padding:6px 4px">—</div>';
       return `<div class="kcol"><h4>${EST[s][0]} <span class="c">${col.length}</span></h4>${cards}</div>`;
     }).join('');
   }
