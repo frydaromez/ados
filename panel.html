@@ -713,6 +713,30 @@
   .pcal-legend span{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink-2);font-weight:600}
   .pcal-legend .lg{width:9px;height:9px;border-radius:50%;display:inline-block}
   .pcal-legend .lg.todo{background:#64748b}.pcal-legend .lg.proc{background:#3b82f6}.pcal-legend .lg.review{background:#f59e0b}.pcal-legend .lg.chg{background:#e11d48}.pcal-legend .lg.pub{background:#65a30d}.pcal-legend .lg.published{background:#16151c}.pcal-legend .lg.venc{background:#e11d48;box-shadow:0 0 0 3px #fde2e7}
+  /* Gantt real (deadline interno -> envío a cliente, línea de HOY) */
+  .g2{position:relative}
+  .g2-row{display:flex;align-items:center;height:34px}
+  .g2-row.g2-head{height:26px;margin-bottom:2px}
+  .g2-label{flex:0 0 230px;padding:0 12px 0 4px;overflow:hidden;cursor:pointer}
+  .g2-label b{display:block;font-size:12.5px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .g2-label small{font-size:10.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+  .g2-track{position:relative;flex:1;height:100%;border-left:1px solid var(--line)}
+  .g2-row:not(.g2-head) .g2-track{background:linear-gradient(#f7f7fc,#f7f7fc) ;border-radius:6px}
+  .g2-row:not(.g2-head):nth-child(even) .g2-track{background:#fafafe}
+  .g2-tick{position:absolute;top:6px;font-size:10px;color:var(--muted);font-weight:600;transform:translateX(-1px);white-space:nowrap}
+  .g2-fri{position:absolute;top:0;bottom:0;background:rgba(129,85,255,.05)}
+  .g2-today{position:absolute;top:0;bottom:0;width:2px;background:#e11d48;z-index:3}
+  .g2-head .g2-today{top:0;bottom:-1000px;height:auto}
+  .g2-bar{position:absolute;top:8px;height:18px;border-radius:9px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;padding:0 3px;box-shadow:0 2px 6px -2px rgba(40,25,90,.3);transition:transform .15s var(--ease)}
+  .g2-bar:hover{transform:scaleY(1.12)}
+  .g2-bar.todo{background:#cbd5e1}.g2-bar.proc{background:#93c5fd}.g2-bar.review{background:#fcd9a0}.g2-bar.chg{background:#f9a8c0}.g2-bar.pub{background:#bbe0a0}.g2-bar.published{background:#3a3a44}
+  .g2-bar.venc{outline:2px solid #e11d48;outline-offset:1px}
+  .g2-cap{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+  .g2-cap.e{background:#7a5a1e;box-shadow:0 0 0 2px #fff}
+  .g2-cap.c{background:#1d4ed8;box-shadow:0 0 0 2px #fff}
+  .g2-legend{display:flex;flex-wrap:wrap;gap:16px;margin-top:12px;padding:10px 14px;background:#fff;border:1px solid var(--line);border-radius:12px;font-size:11.5px;font-weight:600;color:var(--ink-2)}
+  .g2-legend span{display:inline-flex;align-items:center;gap:6px}
+  .g2-legend .g2-cap{box-shadow:none}.g2-legend .g2-tl{width:3px;height:13px;background:#e11d48;border-radius:2px}.g2-legend .g2-frihint{width:11px;height:11px;border-radius:3px;background:rgba(129,85,255,.12)}
   /* Fechas y estados súper visibles en tablas */
   .col-fecha{white-space:nowrap}
   td.col-fecha .fecha{font-weight:600;color:var(--ink)}
@@ -1885,8 +1909,37 @@
   }
   function renderGantt(){
     const cli=el('g-cli').value;
-    const items=acts.filter(a=>a.tipo==='parrilla'&&!a.fin&&a.pub>0&&(!cli||a.acc===cli)).sort((x,y)=>x.pub-y.pub);
-    el('gantt').innerHTML=ganttRows(items);
+    const items=acts.filter(a=>(a.tipo==='parrilla'||a.tipo==='extra')&&!a.fin&&(!cli||a.acc===cli));
+    renderGantt2(items, el('gantt'), true);
+  }
+  // Gantt real: deadline interno -> envío a cliente, con línea de HOY (se actualiza por día)
+  function gDate(a){const c=parseFecha(a.due)||(a.tipo==='parrilla'&&a.pub?{y:2026,m:6,d:a.pub}:null);return {e:parseFecha(a.entrega),c:c};}
+  function renderGantt2(items, host, showCli){
+    if(!host)return;
+    const toN=d=>d?Math.floor(Date.UTC(d.y,d.m,d.d)/86400000):null;
+    const data=items.map(a=>{const g=gDate(a);return {a,e:toN(g.e),c:toN(g.c)};}).filter(x=>x.e!=null||x.c!=null);
+    if(!data.length){host.innerHTML='<div class="empty">Sin fechas para el Gantt.</div>';return;}
+    const t=new Date(); const todayN=Math.floor(Date.UTC(t.getFullYear(),t.getMonth(),t.getDate())/86400000);
+    let min=Infinity,max=-Infinity;
+    data.forEach(x=>{[x.e,x.c].forEach(n=>{if(n!=null){min=Math.min(min,n);max=Math.max(max,n);}});});
+    min=Math.min(min,todayN); max=Math.max(max,todayN);
+    const span=max-min+1; const cellW=26; const pct=n=>((n-min)/span*100);
+    let axis='';
+    for(let n=min;n<=max;n++){const dt=new Date(n*86400000);const dow=dt.getUTCDay();
+      if(dow===1||n===min)axis+=`<div class="g2-tick" style="left:${pct(n)}%">${dt.getUTCDate()} ${MES_LC[dt.getUTCMonth()].slice(0,3)}</div>`;
+      if(dow===5)axis+=`<div class="g2-fri" style="left:${pct(n)}%;width:${100/span}%"></div>`;
+    }
+    const todayLine=`<div class="g2-today" style="left:${pct(todayN)+(100/span/2)}%"></div>`;
+    const sorted=data.sort((x,y)=>(x.e!=null?x.e:x.c)-(y.e!=null?y.e:y.c));
+    const rows=sorted.map(x=>{
+      const s=x.e!=null?x.e:x.c, e=x.c!=null?x.c:x.e; const lo=Math.min(s,e),hi=Math.max(s,e);
+      const left=pct(lo), width=Math.max(pct(hi)-pct(lo)+(100/span),100/span);
+      const overdue=isOverdue(x.a);
+      const lbl=`${showCli?esc(accName(x.a.acc))+' · ':''}${esc(x.a.que)}`;
+      return `<div class="g2-row"><div class="g2-label" onclick="verDetalle('${x.a.id}')" title="${lbl}"><b>${esc(x.a.que)}</b><small>${showCli?esc(accName(x.a.acc))+' · ':''}${tipoLabel(x.a.tipo)} · ${x.a.quien}</small></div><div class="g2-track">${todayLine}<div class="g2-bar ${EST[x.a.estado][1]}${overdue?' venc':''}" style="left:${left}%;width:${width}%" onclick="verDetalle('${x.a.id}')" title="Entrega interna: ${x.a.entrega?sinAnio(x.a.entrega):'—'}  →  A cliente: ${x.a.due?sinAnio(x.a.due):'—'}">${x.e!=null?'<span class="g2-cap e"></span>':''}${x.c!=null?'<span class="g2-cap c"></span>':''}</div></div></div>`;
+    }).join('');
+    host.innerHTML=`<div class="g2" style="min-width:${Math.max(span*cellW+230,640)}px"><div class="g2-row g2-head"><div class="g2-label"></div><div class="g2-track">${axis}${todayLine}</div></div>${rows}</div>
+      <div class="g2-legend"><span><i class="g2-cap e"></i>Entrega interna</span><span><i class="g2-cap c"></i>Envío a cliente</span><span><i class="g2-tl"></i>Hoy</span><span><i class="g2-frihint"></i>Viernes</span></div>`;
   }
 
   // ===== FINALIZADOS =====
@@ -2306,7 +2359,7 @@
     if(v==='trello')renderCliTrello();
     if(v==='gantt')renderCliGantt();
   }
-  function renderCliGantt(){const host=el('cli-gantt-v');if(!host)return;host.innerHTML=ganttRows(cliParrillaItems().filter(a=>a.pub>0).sort((x,y)=>x.pub-y.pub));}
+  function renderCliGantt(){renderGantt2(cliParrillaItems(), el('cli-gantt-v'), false);}
   function parseFecha(s){const m=String(s||'').toLowerCase().match(/(\d{1,2}) de ([a-záé]+) de (\d{4})/);if(m){const mi=MES_LC.indexOf(m[2]);if(mi>=0)return {y:+m[3],m:mi,d:+m[1]};}return null;}
   function cliItemDate(a){return pCalMode==='entrega'?parseFecha(a.entrega):itemDate(a);}
   function renderCliCal(){
