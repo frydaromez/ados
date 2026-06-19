@@ -386,6 +386,14 @@
   .det-sec p{margin:0;font-size:14px;line-height:1.55;color:var(--ink);white-space:pre-line}
   .det-empty{color:var(--muted)!important}
   .det-cli{background:#fff7ec;border:1px solid #f6e2bf;border-left:3px solid #e0a93c;border-radius:10px;padding:11px 13px;color:#7a5a1e;font-size:13.5px;line-height:1.55}
+  /* Importar parrilla */
+  .imp-btn{flex-shrink:0}
+  .imp-btn .plus{font-size:14px}
+  .imp-tpl{background:#f6f4fc;border:1px solid var(--line);border-radius:10px;padding:10px 13px;font-size:12px;color:var(--ink-2);margin-bottom:12px;line-height:1.6}
+  .imp-tpl code{background:#fff;border:1px solid var(--line);border-radius:6px;padding:2px 7px;font-size:11.5px;color:var(--brand-deep);font-weight:600;display:inline-block;margin-top:4px}
+  #imp-text{width:100%;min-height:170px;border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;line-height:1.5;color:var(--ink);resize:vertical;white-space:pre;overflow:auto}
+  #imp-text:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
+  .imp-preview{font-size:13px;color:var(--brand-deep);font-weight:600;margin-top:10px;min-height:18px}
   .det-links{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
   .det-link{display:inline-flex;align-items:center;gap:8px;max-width:100%;font-size:13px;font-weight:600;color:var(--brand-deep);background:var(--brand-soft);border-radius:9px;padding:8px 12px;text-decoration:none;transition:.15s var(--ease)}
   .det-link:hover{background:#e6dcff}
@@ -933,6 +941,7 @@
             <select class="fsel" id="pview-tipo"><option value="">Todo tipo</option><option value="parrilla">Parrilla</option><option value="extra">Extras</option></select>
             <select class="fsel" id="pview-resp"><option value="">Todo responsable</option></select>
             <select class="fsel" id="pview-estado"><option value="">Todo estado</option><option value="todo">Por hacer</option><option value="proc">En proceso</option><option value="review">En revisión</option><option value="cambios">Cambios</option><option value="publicar">Aprobado</option><option value="publicado">Publicado</option></select>
+            <button type="button" class="tbtn imp-btn" onclick="openImport()"><span class="plus">↑</span> Importar parrilla</button>
             <div class="seg" id="pcal-mode" style="display:none">
               <button type="button" class="seg-opt active" data-cm="pub">Publicación</button>
               <button type="button" class="seg-opt" data-cm="entrega">Entrega</button>
@@ -1085,6 +1094,24 @@
     <div id="det-view-body" class="det-body"></div>
     <div class="modactions">
       <button class="mbtn save" onclick="closeModal('ov-det')">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Importar parrilla -->
+<div class="overlay" id="ov-import">
+  <div class="modal modal-cap">
+    <button class="modal-close" onclick="closeModal('ov-import')" aria-label="Cerrar">×</button>
+    <h3>Importar parrilla <span id="imp-cli" style="color:var(--brand-deep)"></span></h3>
+    <p class="msub">Copia las filas desde tu Google Sheets y pégalas aquí — una pieza por renglón.</p>
+    <div class="imp-tpl">Columnas, en este orden (sepáralas con TAB o coma):<br>
+      <code>Qué &nbsp;·&nbsp; Formato &nbsp;·&nbsp; Plataforma &nbsp;·&nbsp; Responsable &nbsp;·&nbsp; Idea/Caption &nbsp;·&nbsp; Entrega interna &nbsp;·&nbsp; Publicación &nbsp;·&nbsp; Estado</code>
+    </div>
+    <textarea id="imp-text" placeholder="Arte aniversario&#9;Post&#9;Instagram&#9;Des&#9;Felicitación de aniversario&#9;Lunes, 29 de junio de 2026&#9;Jueves, 2 de julio de 2026&#9;Por hacer"></textarea>
+    <div class="imp-preview" id="imp-preview"></div>
+    <div class="modactions">
+      <button class="mbtn cancel" onclick="closeModal('ov-import')">Cancelar</button>
+      <button class="mbtn save" id="imp-go" onclick="runImport()">Importar piezas</button>
     </div>
   </div>
 </div>
@@ -2249,6 +2276,45 @@
       return `<div class="kcol"><h4>${EST[s][0]} <span class="c">${col.length}</span></h4>${cards}</div>`;
     }).join('');
   }
+  // ===== Importar parrilla (pegar desde Sheets) =====
+  const PERSON_COLORS=["#0ea5e9","#8155ff","#e0457a","#10b981","#f59e0b","#a855f7","#ef4444","#14b8a6","#6366f1"];
+  function personEnsure(name){
+    const n=normalize(name); if(!n)return 'AN';
+    for(const k in people){if(normalize(people[k].n)===n)return k;}
+    let code=n.replace(/[^A-Z0-9]/g,'').slice(0,2)||'XX'; let c=code,i=1;
+    while(people[c]){c=code.slice(0,1)+i;i++;}
+    people[c]={n:name.trim(),c:PERSON_COLORS[Object.keys(people).length%PERSON_COLORS.length]};
+    return c;
+  }
+  const EST_IMPORT={'por hacer':'todo','pendiente':'todo','en proceso':'proc','en revision':'review','en revisión':'review','revision':'review','cambios':'cambios','aprobado':'publicar','programado':'publicar','publicado':'publicado','finalizado':'done'};
+  function mapEstado(t){return EST_IMPORT[normalize(t).toLowerCase()]||'todo';}
+  function parseImport(text){
+    const rows=[];
+    String(text||'').split(/\r?\n/).forEach(line=>{
+      if(!line.trim())return;
+      const cols=line.includes('\t')?line.split('\t'):line.split(',');
+      const g=i=>(cols[i]||'').trim();
+      if(/^(qué|que)$/i.test(g(0)))return; // saltar encabezado
+      rows.push({que:g(0),formato:g(1),plat:g(2),resp:g(3),det:g(4),entrega:g(5),due:g(6),estado:g(7)});
+    });
+    return rows;
+  }
+  function openImport(){if(!curClient){toast('Abre un cliente primero');return;}el('imp-cli').textContent='· '+curClient.name;el('imp-text').value='';el('imp-preview').innerHTML='';openModal('ov-import');setTimeout(()=>el('imp-text').focus(),60);}
+  function previewImport(){const r=parseImport(el('imp-text').value);el('imp-preview').innerHTML=r.length?`<b>${r.length}</b> pieza${r.length!==1?'s':''} lista${r.length!==1?'s':''} para importar.`:'';}
+  function runImport(){
+    if(!curClient)return;
+    const rows=parseImport(el('imp-text').value);
+    if(!rows.length){toast('Pega al menos una fila');return;}
+    const today=new Date().toISOString().slice(0,10);
+    rows.forEach(r=>{
+      acts.unshift({id:uid(),cuenta:'cliente',acc:curClient.id,tipo:'parrilla',cant:1,que:r.que||'Pieza',
+        formato:r.formato||'',plat:r.plat||'',pub:0,quien:personEnsure(r.resp),due:r.due||'',estado:mapEstado(r.estado),
+        det:r.det||'',link:false,links:[],files:[],entrega:r.entrega||'',cliente:'',fin:false,reg:today,regPor:'AN'});
+    });
+    closeModal('ov-import');
+    fillAccFilter(); populatePResp(); renderAll(); setPView(pView);
+    toast(rows.length+' pieza'+(rows.length!==1?'s':'')+' importada'+(rows.length!==1?'s':'')+' a '+curClient.name);
+  }
   function setPtab(name){
     document.querySelectorAll('#ptabs .tab').forEach(t=>t.classList.toggle('active',t.dataset.pt===name));
     document.querySelectorAll('.ptab').forEach(p=>p.classList.toggle('active',p.id==='pt-'+name));
@@ -2416,6 +2482,7 @@
   el('pview-tipo').addEventListener('change',()=>{pTipo=el('pview-tipo').value;populatePResp();setPView(pView);});
   el('pview-estado').addEventListener('change',()=>{pEstado=el('pview-estado').value;setPView(pView);});
   el('pcal-mode').addEventListener('click',e=>{const b=e.target.closest('.seg-opt');if(!b)return;pCalMode=b.dataset.cm;document.querySelectorAll('#pcal-mode .seg-opt').forEach(o=>o.classList.toggle('active',o===b));renderCliCal();});
+  el('imp-text').addEventListener('input',previewImport);
   el('pcal-prev').addEventListener('click',()=>{pCalM--;if(pCalM<0){pCalM=11;pCalY--;}renderCliCal();});
   el('pcal-next').addEventListener('click',()=>{pCalM++;if(pCalM>11){pCalM=0;pCalY++;}renderCliCal();});
   document.querySelectorAll('#nav a, #nav2 a').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();showView(a.dataset.view);}));
