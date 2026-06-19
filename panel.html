@@ -423,7 +423,7 @@
   .acc-head .badge-new{font-size:9.5px;font-weight:700;color:var(--brand);background:var(--brand-soft);border-radius:6px;padding:2px 7px;letter-spacing:.05em}
   .acc-head .chev{margin-left:auto;font-size:11px;color:var(--muted);transition:transform .25s var(--ease)}
   .acc-item.open .acc-head .chev{transform:rotate(90deg)}
-  .acc-body{display:none;padding:6px 24px 26px}
+  .acc-body{display:none;padding:10px 28px 30px;max-width:940px}
   .acc-item.open .acc-body{display:block;animation:accIn .25s var(--ease-out)}
   @keyframes accIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
   .acc-sub{font-size:12.5px;color:var(--muted);margin:0 0 18px;font-style:italic}
@@ -555,14 +555,14 @@
   @keyframes viewIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
   body.anim .view.vin{animation:viewIn .5s var(--ease-out) both}
 
-  /* Scrollbar fino, separado e interactivo */
-  *{scrollbar-width:thin;scrollbar-color:#cdcbe0 transparent}
-  ::-webkit-scrollbar{width:13px;height:13px}
+  /* Scrollbar fino, separado e interactivo (morado de marca) */
+  ::-webkit-scrollbar{width:15px;height:15px}
   ::-webkit-scrollbar-track{background:transparent}
-  ::-webkit-scrollbar-thumb{background:#d3d1e2;border-radius:99px;border:4px solid transparent;background-clip:content-box;min-height:42px;transition:background .2s var(--ease)}
-  ::-webkit-scrollbar-thumb:hover{background:var(--brand-2);background-clip:content-box}
+  ::-webkit-scrollbar-thumb{background:rgba(129,85,255,.5);border-radius:99px;border:4px solid transparent;background-clip:content-box;min-height:48px}
+  ::-webkit-scrollbar-thumb:hover{background:rgba(129,85,255,.82);background-clip:content-box}
   ::-webkit-scrollbar-thumb:active{background:var(--brand-deep);background-clip:content-box}
   ::-webkit-scrollbar-corner{background:transparent}
+  @-moz-document url-prefix(){html{scrollbar-width:thin;scrollbar-color:#a98cff transparent}}
 
   /* Jerarquía de texto: columnas secundarias más suaves */
   body.anim td .num,td.num{color:var(--ink-2)}
