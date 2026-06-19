@@ -713,6 +713,25 @@
   .pcal-legend span{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink-2);font-weight:600}
   .pcal-legend .lg{width:9px;height:9px;border-radius:50%;display:inline-block}
   .pcal-legend .lg.todo{background:#64748b}.pcal-legend .lg.proc{background:#3b82f6}.pcal-legend .lg.review{background:#f59e0b}.pcal-legend .lg.chg{background:#e11d48}.pcal-legend .lg.pub{background:#65a30d}.pcal-legend .lg.published{background:#16151c}.pcal-legend .lg.venc{background:#e11d48;box-shadow:0 0 0 3px #fde2e7}
+  /* Carga del equipo (Equipo) */
+  .eq-person{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px 18px;margin-bottom:16px;box-shadow:0 1px 2px rgba(24,20,50,.03),0 12px 32px -24px rgba(40,25,90,.18)}
+  .eq-head{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+  .eq-head .a{width:26px;height:26px;border-radius:8px;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
+  .eq-head b{font-size:15px}
+  .eq-total{margin-left:auto;font-size:12px;font-weight:600;color:var(--muted);background:#f3f2f8;border-radius:999px;padding:3px 11px}
+  .eq-cols{display:flex;gap:12px;overflow-x:auto;padding-bottom:6px}
+  .eq-col{flex:0 0 220px;background:#f7f7fc;border:1px solid var(--line);border-radius:12px;padding:10px}
+  .eq-col.urgent{background:#fff6f1;border-color:#f6d9c8}
+  .eq-col.venc{background:#fdf0f2;border-color:#f6c9d2}
+  .eq-col h5{margin:2px 4px 9px;font-size:12px;font-weight:700;color:var(--ink);display:flex;align-items:center;justify-content:space-between}
+  .eq-col h5 span{font-size:11px;color:var(--muted);background:#fff;border:1px solid var(--line);border-radius:999px;padding:1px 7px}
+  .eq-card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 11px;margin-bottom:8px;cursor:pointer;transition:transform .18s var(--ease-spring),box-shadow .18s var(--ease)}
+  .eq-card:hover{transform:translateY(-2px);box-shadow:0 10px 20px -12px rgba(40,25,90,.4)}
+  .eq-cli{font-size:11px;font-weight:600;color:var(--muted);display:flex;align-items:center;gap:6px}
+  .eq-prosp{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:#1e40af;background:#e7f0ff;border-radius:5px;padding:1px 5px}
+  .eq-q{font-size:13px;font-weight:600;color:var(--ink);margin:3px 0 6px}
+  .eq-ft{display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--muted)}
+  .eq-st{display:inline-flex;align-items:center;gap:5px;font-weight:600}
   .kanban .kcard{cursor:pointer;transition:transform .2s var(--ease-spring),box-shadow .2s var(--ease)}
   .kanban .kcard:hover{transform:translateY(-2px);box-shadow:0 12px 24px -12px rgba(40,25,90,.4)}
   @media(max-width:760px){.pcal{gap:5px;padding:9px}.pcal-cell{min-height:74px}.pcal-ev{font-size:10px;padding:2px 5px}}
@@ -845,9 +864,13 @@
         </table></div></div>
       </section>
 
-      <!-- EQUIPO -->
+      <!-- EQUIPO · CARGA -->
       <section class="view hidden" id="view-equipo">
-        <div class="section-title"><span class="dot"></span> Lo que cada quien tiene asignado</div>
+        <div class="filters">
+          <select class="fsel" id="eq-quien"><option value="">Todo el equipo</option></select>
+          <div class="fspacer"></div>
+          <span class="hint">Autogestión: organiza tus entregas por viernes · lo de “Urgente” es extra/prospecto, fuera de parrilla</span>
+        </div>
         <div id="equipo-blocks"></div>
       </section>
 
@@ -1747,6 +1770,7 @@
       clients.map(c=>`<option value="${c.id}">${c.name}</option>`).join('')+
       prospects.map(p=>`<option value="${p.id}">${p.name} (prospecto)</option>`).join('');
     el('f-quien').innerHTML='<option value="">Todos</option>'+Object.keys(people).map(k=>`<option value="${k}">${people[k].n}</option>`).join('');
+    const eq=el('eq-quien');if(eq){const prev=eq.value;eq.innerHTML='<option value="">Todo el equipo</option>'+Object.keys(people).map(k=>`<option value="${k}">${people[k].n}</option>`).join('');eq.value=people[prev]?prev:'';}
   }
 
   // ===== PROSPECTOS =====
@@ -1778,14 +1802,33 @@
   }
 
   // ===== EQUIPO =====
+  function fridayBucket(a){
+    const dt=parseFecha(a.entrega); if(!dt)return null;
+    const base=new Date(dt.y,dt.m,dt.d); const mondayOffset=(base.getDay()+6)%7;
+    const fri=new Date(base); fri.setDate(base.getDate()-mondayOffset+4);
+    return {key:fri.getFullYear()+'-'+fri.getMonth()+'-'+fri.getDate(),
+      label:'Vie '+fri.getDate()+' '+MES_LC[fri.getMonth()].slice(0,3),
+      num:fri.getFullYear()*10000+fri.getMonth()*100+fri.getDate()};
+  }
+  function eqCard(a){
+    const prosp=a.cuenta==='prospecto';
+    return `<div class="eq-card" onclick="verDetalle('${a.id}')"><div class="eq-cli">${esc(accName(a.acc))}${prosp?'<span class="eq-prosp">prospecto</span>':''}</div><div class="eq-q">${a.cant>1?a.cant+' ':''}${esc(a.que)}</div><div class="eq-ft"><span>${esc(a.formato||tipoLabel(a.tipo))}</span><span class="eq-st"><span class="pcal-dot ${EST[a.estado][1]}"></span>${EST[a.estado][0]}</span></div></div>`;
+  }
+  function tipoLabel(t){return t==='parrilla'?'Parrilla':t==='extra'?'Extra':'Prospecto';}
   function renderEquipo(){
-    el('equipo-blocks').innerHTML=Object.keys(people).map(code=>{
-      const mine=acts.filter(a=>a.quien===code&&!a.fin);
+    const fq=el('eq-quien')?el('eq-quien').value:'';
+    const t=new Date(); const todayN=t.getFullYear()*10000+t.getMonth()*100+t.getDate();
+    el('equipo-blocks').innerHTML=Object.keys(people).filter(c=>!fq||c===fq).map(code=>{
+      const mine=acts.filter(a=>a.quien===code&&!a.fin&&a.estado!=='publicado');
       if(!mine.length)return '';
-      const rows=mine.map(a=>`<tr><td>${accName(a.acc)}</td><td>${tipoTag(a.tipo)}</td><td class="num">${a.cant}</td><td>${a.que}</td><td>${a.due}</td><td>${detCell(a)}</td><td>${pill(a.estado)}</td></tr>`).join('');
-      return `<div style="margin-bottom:6px"><div class="section-title" style="font-size:14px"><span class="a" style="background:${people[code].c};width:22px;height:22px;border-radius:6px;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center">${code}</span> ${people[code].n} <span class="hint">${mine.length} activas</span></div>
-        <div class="tablecard" style="margin-bottom:18px"><div class="tablewrap"><table><thead><tr><th>Cuenta</th><th>Tipo</th><th class="num">Cant.</th><th>Qué</th><th>Para cuándo</th><th>Detalle</th><th>Estado</th></tr></thead><tbody>${rows}</tbody></table></div></div></div>`;
-    }).join('');
+      const buckets={}; const urgente=[];
+      mine.forEach(a=>{const b=(a.tipo==='parrilla')?fridayBucket(a):null; if(b){(buckets[b.key]=buckets[b.key]||{label:b.label,num:b.num,items:[]}).items.push(a);}else urgente.push(a);});
+      const keys=Object.keys(buckets).sort((x,y)=>buckets[x].num-buckets[y].num);
+      const cols=keys.map(k=>{const bk=buckets[k];const venc=bk.num<todayN;
+        return `<div class="eq-col${venc?' venc':''}"><h5>${venc?'⚠ ':''}${bk.label} <span>${bk.items.length}</span></h5>${bk.items.map(eqCard).join('')}</div>`;}).join('');
+      const urgCol=urgente.length?`<div class="eq-col urgent"><h5>⚡ Urgente <span>${urgente.length}</span></h5>${urgente.map(eqCard).join('')}</div>`:'';
+      return `<div class="eq-person"><div class="eq-head"><span class="a" style="background:${people[code].c}">${code}</span><b>${esc(people[code].n)}</b><span class="eq-total">${mine.length} pieza${mine.length!==1?'s':''}</span></div><div class="eq-cols">${cols||urgCol?cols+urgCol:'<div class="empty">Sin carga.</div>'}</div></div>`;
+    }).join('')||'<div class="empty">Sin actividades asignadas.</div>';
   }
 
   // ===== REVISIÓN =====
@@ -2488,6 +2531,7 @@
   ['f-cuenta','f-acc','f-tipo','f-quien','f-estado'].forEach(id=>el(id).addEventListener('change',renderMadre));
   el('f-fin').addEventListener('click',function(){madreFin=!madreFin;this.classList.toggle('active',madreFin);this.textContent=madreFin?'Ocultar finalizadas':'Incluir finalizadas';renderMadre();});
   el('madre-seg').addEventListener('click',e=>{const b=e.target.closest('.seg-opt');if(b)setMadreView(b.dataset.mv);});
+  el('eq-quien').addEventListener('change',renderEquipo);
   el('madre-prev').addEventListener('click',()=>{madreCalM--;if(madreCalM<0){madreCalM=11;madreCalY--;}renderMadreCal();});
   el('madre-next').addEventListener('click',()=>{madreCalM++;if(madreCalM>11){madreCalM=0;madreCalY++;}renderMadreCal();});
   el('cli-filters').addEventListener('click',e=>{const b=e.target.closest('.fbtn');if(!b)return;document.querySelectorAll('#cli-filters .fbtn').forEach(x=>x.classList.remove('active'));b.classList.add('active');cliFilter=b.dataset.cf;renderCliEntregables();});
