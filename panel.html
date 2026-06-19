@@ -916,7 +916,7 @@
           </div>
           <div class="pview-panel" id="pv-tabla">
             <div class="tablecard"><div class="tablewrap"><table>
-              <thead><tr><th class="num">Cant.</th><th>Qué</th><th>Formato</th><th>Plataforma</th><th>Publica</th><th>Responsable</th><th>Detalle</th><th>Estado</th></tr></thead>
+              <thead><tr><th class="num">Cant.</th><th>Qué</th><th>Formato</th><th>Plataforma</th><th>Entrega interna</th><th>Publica</th><th>Responsable</th><th>Detalle</th><th>Estado</th></tr></thead>
               <tbody id="cli-parrilla-rows"></tbody>
             </table></div></div>
           </div>
@@ -1478,11 +1478,11 @@
   let _uid=0; function uid(){return 'a'+(++_uid);}
   let acts = [
     // Auren parrilla
-    a("cliente","auren","parrilla",1,"Arte aniversario","Post","Instagram",3,"DG","Jueves, 2 de julio de 2026","review","Carpeta julio","y"),
-    a("cliente","auren","parrilla",1,"Reel tip de salud","Reel","Instagram",7,"SF","Sábado, 4 de julio de 2026","proc","Guion listo","n"),
-    a("cliente","auren","parrilla",3,"Carrusel beneficios","Carrusel","Instagram",11,"DG","Domingo, 5 de julio de 2026","todo","",""),
-    a("cliente","auren","parrilla",1,"Post testimonio","Post","Facebook",16,"SF","Jueves, 9 de julio de 2026","cambios","Cambiar foto","y"),
-    a("cliente","auren","parrilla",1,"Arte cierre de mes","Post","Instagram",29,"DG","Miércoles, 22 de julio de 2026","todo","",""),
+    a("cliente","auren","parrilla",1,"Arte aniversario","Post","Instagram",3,"DG","Jueves, 2 de julio de 2026","review","Carpeta julio","y","Lunes, 29 de junio de 2026"),
+    a("cliente","auren","parrilla",1,"Reel tip de salud","Reel","Instagram",7,"SF","Sábado, 4 de julio de 2026","proc","Guion listo","n","Miércoles, 1 de julio de 2026"),
+    a("cliente","auren","parrilla",3,"Carrusel beneficios","Carrusel","Instagram",11,"DG","Domingo, 5 de julio de 2026","todo","","","Jueves, 2 de julio de 2026"),
+    a("cliente","auren","parrilla",1,"Post testimonio","Post","Facebook",16,"SF","Jueves, 9 de julio de 2026","cambios","Cambiar foto","y","Lunes, 6 de julio de 2026"),
+    a("cliente","auren","parrilla",1,"Arte cierre de mes","Post","Instagram",29,"DG","Miércoles, 22 de julio de 2026","todo","","","Jueves, 16 de julio de 2026"),
     // Auren extra
     a("cliente","auren","extra",1,"Brief CheckUp Empresarial","","",0,"DG","Jueves, 18 de junio de 2026","todo","Insumos del cliente",""),
     a("cliente","auren","extra",1,"Investigación salud laboral","","",0,"MR","Martes, 16 de junio de 2026","review","Fuentes recabadas","y"),
@@ -1509,8 +1509,8 @@
     // una finalizada de cliente
     af("cliente","verde","extra",1,"Brief sesión de producto","MR","y","SF")
   ];
-  function a(cuenta,acc,tipo,cant,que,formato,plat,pub,quien,due,estado,det,link){
-    return {id:uid(),cuenta,acc,tipo,cant,que,formato,plat,pub,quien,due,estado,det,link:link==='y',fin:false,reg:"2026-06-02",regPor:"AN"};
+  function a(cuenta,acc,tipo,cant,que,formato,plat,pub,quien,due,estado,det,link,entrega){
+    return {id:uid(),cuenta,acc,tipo,cant,que,formato,plat,pub,quien,due,estado,det,link:link==='y',entrega:entrega||'',fin:false,reg:"2026-06-02",regPor:"AN"};
   }
   function af(cuenta,acc,tipo,cant,que,quien,link,finPor){
     return {id:uid(),cuenta,acc,tipo,cant,que,formato:"",plat:"",pub:0,quien,due:"—",estado:"done",det:"",link:link==='y',fin:true,reg:"2026-05-20",regPor:"AN",finPor,finFecha:"2026-05-29"};
@@ -1536,9 +1536,11 @@
     const links=(a.links||[]).map(l=>{const u=/^https?:\/\//i.test(l)?l:'https://'+l;return `<a class="det-link" href="${esc(u)}" target="_blank" rel="noopener">${ICONS.link}<span>${esc(l)}</span></a>`;}).join('');
     const files=(a.files||[]).map(f=>`<span class="det-file">📎 ${esc(f)}</span>`).join('');
     const detTxt=a.det&&String(a.det).trim();
+    const fechas=(a.entrega||a.tipo==='parrilla')?`<div class="det-sec"><h5>Fechas</h5><p>${a.entrega?`<b>Entrega interna:</b> ${esc(a.entrega)}<br>`:''}${a.tipo==='parrilla'&&a.pub?`<b>Publicación:</b> ${a.due?esc(a.due):'Jul '+a.pub}`:(a.due?`<b>Para cuándo:</b> ${esc(a.due)}`:'')}</p></div>`:'';
     el('det-view-title').textContent=a.que||'Detalle';
     el('det-view-body').innerHTML=
-      (detTxt?`<div class="det-sec"><h5>Información para trabajar</h5><p>${esc(a.det).replace(/\n/g,'<br>')}</p></div>`:'')
+      fechas
+      +(detTxt?`<div class="det-sec"><h5>Información para trabajar</h5><p>${esc(a.det).replace(/\n/g,'<br>')}</p></div>`:'')
       +(links?`<div class="det-sec"><h5>Links</h5><div class="det-links">${links}</div></div>`:'')
       +(files?`<div class="det-sec"><h5>Archivos</h5><div class="det-links">${files}</div></div>`:'')
       +(!detTxt&&!links&&!files&&a.link?`<div class="det-sec"><p class="det-empty">Esta actividad tiene un enlace registrado.</p></div>`:'');
@@ -2096,7 +2098,7 @@
     renderCliEntregables();
     // parrilla del cliente
     const par=acts.filter(a=>a.acc===id&&a.tipo==='parrilla'&&!a.fin);
-    el('cli-parrilla-rows').innerHTML=par.length?par.map(a=>`<tr><td class="num">${a.cant}</td><td>${a.que}</td><td>${a.formato}</td><td>${a.plat}</td><td>Jul ${a.pub}</td><td>${who(a.quien)}</td><td>${detCell(a)}</td><td>${pill(a.estado)}</td></tr>`).join(''):'<tr><td colspan="8"><div class="empty">Sin parrilla cargada.</div></td></tr>';
+    el('cli-parrilla-rows').innerHTML=par.length?par.map(a=>`<tr><td class="num">${a.cant}</td><td>${a.que}</td><td>${a.formato}</td><td>${a.plat}</td><td>${a.entrega?esc(a.entrega):'<span class="dash">—</span>'}</td><td>Jul ${a.pub}</td><td>${who(a.quien)}</td><td>${detCell(a)}</td><td>${pill(a.estado)}</td></tr>`).join(''):'<tr><td colspan="9"><div class="empty">Sin parrilla cargada.</div></td></tr>';
     // extras
     const ex=acts.filter(a=>a.acc===id&&a.tipo==='extra'&&!a.fin);
     el('cli-extras-rows').innerHTML=ex.length?ex.map(a=>`<tr><td class="num">${a.cant}</td><td>${a.que}</td><td>${who(a.quien)}</td><td>${a.due}</td><td>${detCell(a)}</td><td>${pill(a.estado)}</td></tr>`).join(''):'<tr><td colspan="6"><div class="empty">Sin extras.</div></td></tr>';
