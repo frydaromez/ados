@@ -783,7 +783,7 @@
         <div class="cards" id="client-cards"></div>
       </section>
 
-      <!-- ACTIVIDADES (panel madre) -->
+      <!-- ACTIVIDADES (panel madre · centro operativo) -->
       <section class="view hidden" id="view-actividades">
         <div class="filters">
           <select class="fsel" id="f-cuenta"><option value="">Toda cuenta</option><option value="cliente">Cliente</option><option value="prospecto">Prospecto</option></select>
@@ -794,10 +794,26 @@
           <div class="fspacer"></div>
           <button class="fbtn" id="f-fin" data-on="0">Incluir finalizadas</button>
         </div>
-        <div class="tablecard"><div class="tablewrap"><table>
-          <thead><tr><th>Cuenta</th><th>Tipo</th><th class="num">Cant.</th><th>Qué</th><th>Responsable</th><th>Para cuándo</th><th>Detalle</th><th>Estado</th></tr></thead>
-          <tbody id="madre-rows"></tbody>
-        </table></div></div>
+        <div class="pview-bar">
+          <div class="seg" id="madre-seg">
+            <button type="button" class="seg-opt active" data-mv="tabla">Tabla</button>
+            <button type="button" class="seg-opt" data-mv="board">Tablero</button>
+            <button type="button" class="seg-opt" data-mv="cal">Calendario</button>
+          </div>
+          <div class="pview-nav" id="madre-nav" style="display:none">
+            <button type="button" class="pnav-btn" id="madre-prev" aria-label="Mes anterior">‹</button>
+            <span class="pnav-label" id="madre-cal-label"></span>
+            <button type="button" class="pnav-btn" id="madre-next" aria-label="Mes siguiente">›</button>
+          </div>
+        </div>
+        <div class="pview-panel" id="mv-tabla">
+          <div class="tablecard"><div class="tablewrap"><table>
+            <thead><tr><th>Cuenta</th><th>Tipo</th><th>Qué</th><th>Formato</th><th>Responsable</th><th>Para cuándo</th><th>Detalle</th><th>Estado</th></tr></thead>
+            <tbody id="madre-rows"></tbody>
+          </table></div></div>
+        </div>
+        <div class="pview-panel hidden" id="mv-board"><div class="kanban" id="madre-board"></div></div>
+        <div class="pview-panel hidden" id="mv-cal"><div class="pcal" id="madre-cal"></div></div>
       </section>
 
       <!-- PROSPECTOS -->
@@ -1629,16 +1645,62 @@
   }
 
   // ===== PANEL MADRE =====
-  let madreFin=false;
-  function renderMadre(){
+  let madreFin=false, madreView='tabla', madreCalY=2026, madreCalM=6;
+  function madreItems(){
     const fc=el('f-cuenta').value, fa=el('f-acc').value, ft=el('f-tipo').value, fq=el('f-quien').value, fe=el('f-estado').value;
-    let rows=acts.filter(a=>(madreFin||!a.fin)
+    return acts.filter(a=>(madreFin||!a.fin)
       && (!fc||a.cuenta===fc) && (!fa||a.acc===fa) && (!ft||a.tipo===ft) && (!fq||a.quien===fq) && (!fe||a.estado===fe));
+  }
+  function renderMadre(){
+    if(madreView==='board'){renderMadreBoard();return;}
+    if(madreView==='cal'){renderMadreCal();return;}
+    const rows=madreItems();
     el('madre-rows').innerHTML = rows.length? rows.map(a=>`<tr>
       <td><span class="clilink" onclick="openAcc('${a.acc}','${a.cuenta}')">${accName(a.acc)}</span></td>
-      <td>${tipoTag(a.tipo)}</td><td class="num">${a.cant}</td><td>${a.que}</td>
-      <td>${who(a.quien)}</td><td>${a.due}</td><td>${detCell(a)}</td><td>${pill(a.estado)}</td></tr>`).join('')
+      <td>${tipoTag(a.tipo)}</td><td>${a.que}</td><td>${a.formato?esc(a.formato):'<span class="dash">—</span>'}</td>
+      <td>${who(a.quien)}</td><td>${esc(a.due||'')}</td><td>${detCell(a)}</td><td>${pill(a.estado)}</td></tr>`).join('')
       : '<tr><td colspan="8"><div class="empty">Sin actividades con esos filtros.</div></td></tr>';
+  }
+  function setMadreView(v){
+    madreView=v;
+    document.querySelectorAll('#madre-seg .seg-opt').forEach(o=>o.classList.toggle('active',o.dataset.mv===v));
+    el('mv-tabla').classList.toggle('hidden',v!=='tabla');
+    el('mv-board').classList.toggle('hidden',v!=='board');
+    el('mv-cal').classList.toggle('hidden',v!=='cal');
+    el('madre-nav').style.display = v==='cal' ? '' : 'none';
+    renderMadre();
+  }
+  function renderMadreBoard(){
+    const items=madreItems();
+    el('madre-board').innerHTML=KCOLS.map(s=>{
+      const col=items.filter(a=>a.estado===s);
+      const cards=col.map(a=>`<div class="kcard" onclick="verDetalle('${a.id}')"><div class="cli">${accName(a.acc)}</div><div class="ttl">${a.cant>1?a.cant+' ':''}${esc(a.que)}</div><div class="ft"><span>${esc(a.formato||a.tipo||'')}${a.plat?' · '+esc(a.plat):''}</span><span class="who"><span class="a" style="background:${people[a.quien]?people[a.quien].c:'#888'}">${a.quien}</span></span></div></div>`).join('')||'<div style="font-size:12px;color:#b8bac6;padding:6px 4px">—</div>';
+      return `<div class="kcol"><h4>${EST[s][0]} <span class="c">${col.length}</span></h4>${cards}</div>`;
+    }).join('');
+  }
+  const MES_LC=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  function itemDate(a){
+    if(a.tipo==='parrilla'&&a.pub>0)return {y:2026,m:6,d:a.pub};
+    const m=String(a.due||'').toLowerCase().match(/(\d{1,2}) de ([a-záé]+) de (\d{4})/);
+    if(m){const mi=MES_LC.indexOf(m[2]);if(mi>=0)return {y:+m[3],m:mi,d:+m[1]};}
+    return null;
+  }
+  function renderMadreCal(){
+    const host=el('madre-cal'); if(!host)return;
+    el('madre-cal-label').textContent=MESES[madreCalM]+' '+madreCalY;
+    const byDay={};
+    madreItems().forEach(a=>{const dt=itemDate(a);if(dt&&dt.y===madreCalY&&dt.m===madreCalM){(byDay[dt.d]=byDay[dt.d]||[]).push(a);}});
+    const startDow=(new Date(madreCalY,madreCalM,1).getDay()+6)%7;
+    const dim=new Date(madreCalY,madreCalM+1,0).getDate();
+    const today=new Date(), isTM=today.getFullYear()===madreCalY&&today.getMonth()===madreCalM;
+    let h=DOW_MIN.map(d=>`<div class="pcal-dow">${d}</div>`).join('');
+    for(let i=0;i<startDow;i++)h+='<div class="pcal-cell empty"></div>';
+    for(let d=1;d<=dim;d++){
+      const evs=byDay[d]||[];
+      const chips=evs.map(a=>`<div class="pcal-ev ${EST[a.estado][1]}" title="${esc(accName(a.acc))} · ${esc(a.que)}" onclick="verDetalle('${a.id}')">${esc(accName(a.acc))}: ${esc(a.que)}</div>`).join('');
+      h+=`<div class="pcal-cell${isTM&&d===today.getDate()?' today':''}"><div class="pcal-d">${d}</div>${chips}</div>`;
+    }
+    host.innerHTML=h;
   }
   function fillAccFilter(){
     el('f-acc').innerHTML='<option value="">Toda cuenta/nombre</option>'+
@@ -2334,6 +2396,9 @@
   document.querySelectorAll('#nav a, #nav2 a').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();showView(a.dataset.view);}));
   ['f-cuenta','f-acc','f-tipo','f-quien','f-estado'].forEach(id=>el(id).addEventListener('change',renderMadre));
   el('f-fin').addEventListener('click',function(){madreFin=!madreFin;this.classList.toggle('active',madreFin);this.textContent=madreFin?'Ocultar finalizadas':'Incluir finalizadas';renderMadre();});
+  el('madre-seg').addEventListener('click',e=>{const b=e.target.closest('.seg-opt');if(b)setMadreView(b.dataset.mv);});
+  el('madre-prev').addEventListener('click',()=>{madreCalM--;if(madreCalM<0){madreCalM=11;madreCalY--;}renderMadreCal();});
+  el('madre-next').addEventListener('click',()=>{madreCalM++;if(madreCalM>11){madreCalM=0;madreCalY++;}renderMadreCal();});
   el('cli-filters').addEventListener('click',e=>{const b=e.target.closest('.fbtn');if(!b)return;document.querySelectorAll('#cli-filters .fbtn').forEach(x=>x.classList.remove('active'));b.classList.add('active');cliFilter=b.dataset.cf;renderCliEntregables();});
   el('ptabs').addEventListener('click',e=>{const t=e.target.closest('.tab');if(t)setPtab(t.dataset.pt);});
   el('p-cli').addEventListener('change',renderKanban);
