@@ -386,6 +386,12 @@
   .det-sec p{margin:0;font-size:14px;line-height:1.55;color:var(--ink);white-space:pre-line}
   .det-empty{color:var(--muted)!important}
   .det-cli{background:#fff7ec;border:1px solid #f6e2bf;border-left:3px solid #e0a93c;border-radius:10px;padding:11px 13px;color:#7a5a1e;font-size:13.5px;line-height:1.55}
+  .det-ficha{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:4px}
+  .df{background:#fff;padding:9px 13px;display:flex;flex-direction:column;gap:3px}
+  .df-l{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+  .df-v{font-size:13.5px;font-weight:600;color:var(--ink)}
+  .df-v.venc{color:#be123c}
+  @media(max-width:520px){.det-ficha{grid-template-columns:1fr}}
   /* Importar parrilla */
   .imp-btn{flex-shrink:0}
   .imp-btn .plus{font-size:14px}
@@ -713,6 +719,22 @@
   .pcal-legend span{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink-2);font-weight:600}
   .pcal-legend .lg{width:9px;height:9px;border-radius:50%;display:inline-block}
   .pcal-legend .lg.todo{background:#64748b}.pcal-legend .lg.proc{background:#3b82f6}.pcal-legend .lg.review{background:#f59e0b}.pcal-legend .lg.chg{background:#e11d48}.pcal-legend .lg.pub{background:#65a30d}.pcal-legend .lg.published{background:#16151c}.pcal-legend .lg.venc{background:#e11d48;box-shadow:0 0 0 3px #fde2e7}
+  /* Tablero por viernes de entrega (Entregas) */
+  .fb-note{font-size:12.5px;color:var(--ink-2);background:#f6f4fc;border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin-bottom:14px;line-height:1.5}
+  .fb{display:flex;gap:13px;overflow-x:auto;padding-bottom:8px;align-items:flex-start}
+  .fb-col{flex:0 0 240px;background:#f7f7fc;border:1px solid var(--line);border-radius:14px;padding:11px}
+  .fb-col.deadline{background:#fff4ee;border-color:#f3c9af;box-shadow:0 0 0 1px #f3c9af inset}
+  .fb-col.venc{background:#fdf0f2;border-color:#f6c9d2}
+  .fb-col h5{margin:2px 4px 11px;font-size:12.5px;font-weight:700;color:var(--ink);display:flex;align-items:center;justify-content:space-between}
+  .fb-col h5 span{font-size:11px;color:var(--muted);background:#fff;border:1px solid var(--line);border-radius:999px;padding:1px 8px}
+  .fb-col.deadline h5{color:#c2410c}
+  .fb-card{position:relative;background:#fff;border:1px solid var(--line);border-left-width:4px;border-radius:10px;padding:10px 12px;margin-bottom:9px;cursor:pointer;transition:transform .18s var(--ease-spring),box-shadow .18s var(--ease)}
+  .fb-card:hover{transform:translateY(-2px);box-shadow:0 12px 24px -12px rgba(40,25,90,.4)}
+  .fb-card.st-todo{border-left-color:#64748b}.fb-card.st-proc{border-left-color:#3b82f6}.fb-card.st-review{border-left-color:#f59e0b}.fb-card.st-cambios{border-left-color:#e11d48}.fb-card.st-publicar{border-left-color:#65a30d}.fb-card.st-publicado{border-left-color:#16151c}
+  .fb-top{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:var(--brand-deep)}
+  .fb-name{font-size:13.5px;font-weight:600;color:var(--ink);margin:3px 0 5px}
+  .fb-meta{font-size:11px;color:var(--muted);margin-bottom:8px}
+  .fb-card .g2-pill{font-size:9.5px;padding:1px 7px}
   /* Gantt real (deadline interno -> envío a cliente, línea de HOY) */
   .g2{position:relative}
   .g2-row{display:flex;align-items:center;height:44px}
@@ -869,7 +891,7 @@
           <div class="seg" id="madre-seg">
             <button type="button" class="seg-opt active" data-mv="tabla">Tabla</button>
             <button type="button" class="seg-opt" data-mv="board">Tablero</button>
-            <button type="button" class="seg-opt" data-mv="gantt">Gantt</button>
+            <button type="button" class="seg-opt" data-mv="gantt">Entregas</button>
           </div>
           <div class="pview-nav" id="madre-nav" style="display:none">
             <button type="button" class="pnav-btn" id="madre-prev" aria-label="Mes anterior">‹</button>
@@ -995,7 +1017,7 @@
             <div class="seg" id="pview-seg">
               <button type="button" class="seg-opt active" data-pv="tabla">Tabla</button>
               <button type="button" class="seg-opt" data-pv="trello">Tablero</button>
-              <button type="button" class="seg-opt" data-pv="gantt">Gantt</button>
+              <button type="button" class="seg-opt" data-pv="gantt">Entregas</button>
             </div>
             <select class="fsel" id="pview-tipo"><option value="">Todo tipo</option><option value="parrilla">Parrilla</option><option value="extra">Extras</option></select>
             <select class="fsel" id="pview-resp"><option value="">Todo responsable</option></select>
@@ -1657,10 +1679,19 @@
     const links=(a.links||[]).map(l=>{const u=/^https?:\/\//i.test(l)?l:'https://'+l;return `<a class="det-link" href="${esc(u)}" target="_blank" rel="noopener">${ICONS.link}<span>${esc(l)}</span></a>`;}).join('');
     const files=(a.files||[]).map(f=>`<span class="det-file">📎 ${esc(f)}</span>`).join('');
     const detTxt=a.det&&String(a.det).trim();
-    const fechas=(a.entrega||a.tipo==='parrilla')?`<div class="det-sec"><h5>Fechas</h5><p>${a.entrega?`<b>Entrega interna:</b> ${esc(sinAnio(a.entrega))}<br>`:''}${a.tipo==='parrilla'&&a.pub?`<b>Publicación:</b> ${a.due?esc(sinAnio(a.due)):'Jul '+a.pub}`:(a.due?`<b>Para cuándo:</b> ${esc(sinAnio(a.due))}`:'')}</p></div>`:'';
+    const ficha=`<div class="det-ficha">
+      <div class="df"><span class="df-l">Cliente</span><span class="df-v">${esc(accName(a.acc))}${a.cuenta==='prospecto'?' · prospecto':''}</span></div>
+      <div class="df"><span class="df-l">Tipo</span><span class="df-v">${tipoLabel(a.tipo)}</span></div>
+      ${a.plat?`<div class="df"><span class="df-l">Plataforma</span><span class="df-v">${esc(a.plat)}</span></div>`:''}
+      ${a.formato?`<div class="df"><span class="df-l">Formato</span><span class="df-v">${esc(a.formato)}</span></div>`:''}
+      <div class="df"><span class="df-l">Responsable</span><span class="df-v">${people[a.quien]?esc(people[a.quien].n):a.quien}</span></div>
+      <div class="df"><span class="df-l">Estado</span><span class="df-v">${pill(a.estado)}</span></div>
+      ${a.entrega?`<div class="df"><span class="df-l">Entrega interna</span><span class="df-v${isOverdue(a)?' venc':''}">${isOverdue(a)?'⚠ ':''}${esc(sinAnio(a.entrega))}</span></div>`:''}
+      ${a.due?`<div class="df"><span class="df-l">A cliente</span><span class="df-v">${esc(sinAnio(a.due))}</span></div>`:''}
+    </div>`;
     el('det-view-title').textContent=a.que||'Detalle';
     el('det-view-body').innerHTML=
-      fechas
+      ficha
       +(a.cliente?`<div class="det-sec"><h5>Comentarios del cliente</h5><p class="det-cli">${esc(a.cliente).replace(/\n/g,'<br>')}</p></div>`:'')
       +(detTxt?`<div class="det-sec"><h5>Información para trabajar</h5><p>${esc(a.det).replace(/\n/g,'<br>')}</p></div>`:'')
       +(links?`<div class="det-sec"><h5>Links</h5><div class="det-links">${links}</div></div>`:'')
@@ -1756,7 +1787,7 @@
   }
   function renderMadre(){
     if(madreView==='board'){renderMadreBoard();return;}
-    if(madreView==='gantt'){renderGantt2(madreItems(), el('madre-gantt'), true);return;}
+    if(madreView==='gantt'){fridayBoard(madreItems(), el('madre-gantt'), true);return;}
     if(madreView==='cal'){renderMadreCal();return;}
     const rows=madreItems();
     el('madre-rows').innerHTML = rows.length? rows.map(a=>`<tr class="st-${a.estado}">
@@ -1851,6 +1882,20 @@
     return {key:fri.getFullYear()+'-'+fri.getMonth()+'-'+fri.getDate(),
       label:'Vie '+fri.getDate()+' '+MES_LC[fri.getMonth()].slice(0,3),
       num:fri.getFullYear()*10000+fri.getMonth()*100+fri.getDate()};
+  }
+  function fbCard(a,showCli){
+    return `<div class="fb-card st-${a.estado}" onclick="verDetalle('${a.id}')"><div class="fb-top">${a.plat?esc(a.plat):'—'}</div><div class="fb-name">${esc(a.que)}</div><div class="fb-meta">${showCli?esc(accName(a.acc))+' · ':''}${tipoLabel(a.tipo)} · ${a.quien}</div><span class="pill ${EST[a.estado][1]} g2-pill">${EST[a.estado][0]}</span></div>`;
+  }
+  function fridayBoard(items, host, showCli){
+    if(!host)return;
+    const buckets={}; const sinfecha=[]; const t=new Date(); const todayN=t.getFullYear()*10000+t.getMonth()*100+t.getDate();
+    items.forEach(a=>{const b=fridayBucket(a); if(b){(buckets[b.key]=buckets[b.key]||{label:b.label,num:b.num,items:[]}).items.push(a);}else sinfecha.push(a);});
+    const keys=Object.keys(buckets).sort((x,y)=>buckets[x].num-buckets[y].num);
+    const lastKey=keys[keys.length-1];
+    let cols=keys.map(k=>{const bk=buckets[k];const venc=bk.num<todayN;const dl=k===lastKey&&keys.length>1;
+      return `<div class="fb-col${dl?' deadline':''}${venc?' venc':''}"><h5>${dl?'🏁 ':venc?'⚠ ':''}${bk.label}${dl?' · Deadline':''} <span>${bk.items.length}</span></h5>${bk.items.map(a=>fbCard(a,showCli)).join('')}</div>`;}).join('');
+    if(sinfecha.length)cols+=`<div class="fb-col"><h5>Sin fecha <span>${sinfecha.length}</span></h5>${sinfecha.map(a=>fbCard(a,showCli)).join('')}</div>`;
+    host.innerHTML=`<div class="fb-note">Cada columna es un <b>viernes de entrega</b>; la última es el <b>deadline</b> antes de enviar al cliente. El <b>color</b> de la barra izquierda de cada tarjeta = su <b>estado</b>.</div><div class="fb">${cols||'<div class="empty">Sin piezas con fecha de entrega.</div>'}</div>`;
   }
   function eqCard(a){
     const prosp=a.cuenta==='prospecto';
@@ -2362,7 +2407,7 @@
     if(v==='trello')renderCliTrello();
     if(v==='gantt')renderCliGantt();
   }
-  function renderCliGantt(){renderGantt2(cliParrillaItems(), el('cli-gantt-v'), false);}
+  function renderCliGantt(){fridayBoard(cliParrillaItems(), el('cli-gantt-v'), false);}
   function parseFecha(s){const m=String(s||'').toLowerCase().match(/(\d{1,2}) de ([a-záé]+) de (\d{4})/);if(m){const mi=MES_LC.indexOf(m[2]);if(mi>=0)return {y:+m[3],m:mi,d:+m[1]};}return null;}
   function cliItemDate(a){return pCalMode==='entrega'?parseFecha(a.entrega):itemDate(a);}
   function renderCliCal(){
