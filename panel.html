@@ -752,7 +752,9 @@
   .g2-today{position:absolute;top:0;bottom:0;width:2px;background:#e11d48;z-index:3}
   .g2-head .g2-today{top:0;bottom:-1000px;height:auto}
   .g2-bar{position:absolute;top:13px;height:18px;border-radius:9px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;padding:0 3px;box-shadow:0 2px 6px -2px rgba(40,25,90,.3);transition:transform .15s var(--ease)}
-  .g2-bar:hover{transform:scaleY(1.12)}
+  .g2-bar{cursor:grab}
+  .g2-bar:hover{filter:brightness(.97)}
+  .g2-bar.dragging{cursor:grabbing;opacity:.9;z-index:6;box-shadow:0 8px 20px -6px rgba(40,25,90,.5)}
   .g2-bar.todo{background:#cbd5e1}.g2-bar.proc{background:#93c5fd}.g2-bar.review{background:#fcd9a0}.g2-bar.chg{background:#f9a8c0}.g2-bar.pub{background:#bbe0a0}.g2-bar.published{background:#3a3a44}
   .g2-bar.venc{outline:2px solid #e11d48;outline-offset:1px}
   .g2-cap{width:9px;height:9px;border-radius:50%;flex-shrink:0}
@@ -823,7 +825,7 @@
       <a data-view="prospectos" title="Prospectos"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 7v10l8 5 8-5V7z"/></svg> <span class="lbl">Prospectos</span> <span class="ct" id="ct-pros">0</span></a>
       <a data-view="equipo" title="Equipo"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3.2"/><circle cx="17" cy="9" r="2.6"/><path d="M3 20c0-3.3 2.7-5 6-5s6 1.7 6 5M15.5 20c0-2.3 1.5-3.6 3.5-3.6"/></svg> <span class="lbl">Equipo</span></a>
       <a data-view="revision" title="Revisión"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 12 2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg> <span class="lbl">Revisión</span> <span class="ct" id="ct-rev">0</span></a>
-      <a data-view="gantt" title="Entregas"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 4v16M15 4v16"/></svg> <span class="lbl">Entregas</span></a>
+      <a data-view="gantt" title="Gantt"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h9M4 12h13M4 18h7"/></svg> <span class="lbl">Gantt</span></a>
       <a data-view="finalizados" title="Finalizados"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8M3 8l2-4h14l2 4M3 8h18M10 12h4"/></svg> <span class="lbl">Finalizados</span> <span class="ct" id="ct-fin">0</span></a>
     </nav>
     <a class="back" href="index.html"><span class="lbl">← Volver a la propuesta</span></a>
@@ -892,7 +894,7 @@
           <div class="seg" id="madre-seg">
             <button type="button" class="seg-opt active" data-mv="tabla">Tabla</button>
             <button type="button" class="seg-opt" data-mv="board">Tablero</button>
-            <button type="button" class="seg-opt" data-mv="gantt">Entregas</button>
+            <button type="button" class="seg-opt" data-mv="gantt">Gantt</button>
           </div>
           <div class="pview-nav" id="madre-nav" style="display:none">
             <button type="button" class="pnav-btn" id="madre-prev" aria-label="Mes anterior">‹</button>
@@ -955,22 +957,14 @@
         <div class="kanban" id="kanban"></div>
       </section>
 
-      <!-- GANTT GENERAL -->
+      <!-- GANTT GENERAL (vista de la estratega) -->
       <section class="view hidden" id="view-gantt">
         <div class="filters">
           <select class="fsel" id="g-cli"><option value="">Todos los clientes</option></select>
           <div class="fspacer"></div>
-          <span style="font-size:12.5px;color:var(--muted)">Parrilla mensual · Julio 2026</span>
+          <button type="button" class="tbtn primary" onclick="openImport()"><span class="plus">↑</span> Subir parrilla</button>
         </div>
         <div class="ganttwrap"><div class="gantt" id="gantt"></div></div>
-        <div style="margin-top:12px;font-size:12.5px;color:var(--muted)">
-          Leyenda:
-          <span class="pill todo">Por hacer</span>
-          <span class="pill proc">En proceso</span>
-          <span class="pill review">Por revisar</span>
-          <span class="pill pub">Aprobado</span>
-          <span class="pill published">Publicado</span>
-        </div>
       </section>
 
       <!-- FINALIZADOS -->
@@ -1018,12 +1012,11 @@
             <div class="seg" id="pview-seg">
               <button type="button" class="seg-opt active" data-pv="tabla">Tabla</button>
               <button type="button" class="seg-opt" data-pv="trello">Tablero</button>
-              <button type="button" class="seg-opt" data-pv="gantt">Entregas</button>
+              <button type="button" class="seg-opt" data-pv="gantt">Gantt</button>
             </div>
             <select class="fsel" id="pview-tipo"><option value="">Todo tipo</option><option value="parrilla">Parrilla</option><option value="extra">Extras</option></select>
             <select class="fsel" id="pview-resp"><option value="">Todo responsable</option></select>
             <select class="fsel" id="pview-estado"><option value="">Todo estado</option><option value="todo">Por hacer</option><option value="proc">En proceso</option><option value="review">Por revisar</option><option value="cambios">Cambios</option><option value="publicar">Aprobado</option><option value="publicado">Publicado</option></select>
-            <button type="button" class="tbtn imp-btn" onclick="openImport()"><span class="plus">↑</span> Importar parrilla</button>
             <div class="seg" id="pcal-mode" style="display:none">
               <button type="button" class="seg-opt active" data-cm="pub">Publicación</button>
               <button type="button" class="seg-opt" data-cm="entrega">Entrega</button>
@@ -1187,8 +1180,9 @@
 <div class="overlay" id="ov-import">
   <div class="modal modal-cap">
     <button class="modal-close" onclick="closeModal('ov-import')" aria-label="Cerrar">×</button>
-    <h3>Importar parrilla <span id="imp-cli" style="color:var(--brand-deep)"></span></h3>
-    <p class="msub">Copia las filas desde tu Google Sheets y pégalas aquí — una pieza por renglón.</p>
+    <h3>Subir parrilla</h3>
+    <p class="msub">Vista de la estratega · copia las filas desde tu Google Sheets y pégalas — una pieza por renglón.</p>
+    <div class="bf" style="margin-bottom:12px"><label style="font-size:11.5px;font-weight:600;color:#8589a0">Cliente</label><select class="fsel" id="imp-cliente" style="width:100%"></select></div>
     <div class="imp-tpl">Columnas, en este orden (sepáralas con TAB o coma):<br>
       <code>Qué &nbsp;·&nbsp; Formato &nbsp;·&nbsp; Plataforma &nbsp;·&nbsp; Responsable &nbsp;·&nbsp; Idea/Caption &nbsp;·&nbsp; Entrega interna &nbsp;·&nbsp; Publicación &nbsp;·&nbsp; Estado</code>
     </div>
@@ -1788,7 +1782,7 @@
   }
   function renderMadre(){
     if(madreView==='board'){renderMadreBoard();return;}
-    if(madreView==='gantt'){fridayBoard(madreItems(), el('madre-gantt'), true);return;}
+    if(madreView==='gantt'){renderGantt2(madreItems(), el('madre-gantt'), true);return;}
     if(madreView==='cal'){renderMadreCal();return;}
     const rows=madreItems();
     el('madre-rows').innerHTML = rows.length? rows.map(a=>`<tr class="st-${a.estado}">
@@ -1959,10 +1953,24 @@
   function renderGantt(){
     const cli=el('g-cli').value;
     const items=acts.filter(a=>(a.tipo==='parrilla'||a.tipo==='extra')&&!a.fin&&(!cli||a.acc===cli));
-    fridayBoard(items, el('gantt'), true);
+    renderGantt2(items, el('gantt'), true);
   }
   // Gantt real: deadline interno -> envío a cliente, con línea de HOY (se actualiza por día)
   function gDate(a){const c=parseFecha(a.due)||(a.tipo==='parrilla'&&a.pub?{y:2026,m:6,d:a.pub}:null);return {e:parseFecha(a.entrega),c:c};}
+  const DIAS_SEM=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+  function addDays(dt,n){const d=new Date(dt.y,dt.m,dt.d);d.setDate(d.getDate()+n);return {y:d.getFullYear(),m:d.getMonth(),d:d.getDate()};}
+  function fmtFecha(dt){const d=new Date(dt.y,dt.m,dt.d);return DIAS_SEM[d.getDay()]+', '+dt.d+' de '+MES_LC[dt.m];}
+  function shiftPiece(id,days){const a=acts.find(x=>x.id===id);if(!a||!days)return;
+    if(a.entrega){const dt=parseFecha(a.entrega);if(dt)a.entrega=fmtFecha(addDays(dt,days));}
+    if(a.due){const dt=parseFecha(a.due);if(dt)a.due=fmtFecha(addDays(dt,days));}
+    persist();renderAll();if(curClient){populatePResp();setPView(pView);} }
+  let gDrag=null;
+  document.addEventListener('mousedown',e=>{const bar=e.target.closest('.g2-bar');if(!bar||!bar.dataset.gid)return;e.preventDefault();
+    const tr=bar.closest('.g2-track');gDrag={id:bar.dataset.gid,startX:e.clientX,trackW:tr.getBoundingClientRect().width,span:+bar.dataset.span,bar,moved:0};bar.classList.add('dragging');});
+  document.addEventListener('mousemove',e=>{if(!gDrag)return;gDrag.moved=e.clientX-gDrag.startX;gDrag.bar.style.transform=`translateX(${gDrag.moved}px)`;});
+  document.addEventListener('mouseup',()=>{if(!gDrag)return;const d=gDrag;gDrag=null;d.bar.classList.remove('dragging');d.bar.style.transform='';
+    if(Math.abs(d.moved)<4){verDetalle(d.id);return;}
+    const pxDay=d.trackW/d.span;const shift=Math.round(d.moved/pxDay);if(shift)shiftPiece(d.id,shift);});
   function renderGantt2(items, host, showCli){
     if(!host)return;
     const toN=d=>d?Math.floor(Date.UTC(d.y,d.m,d.d)/86400000):null;
@@ -1985,7 +1993,7 @@
       const left=pct(lo), width=Math.max(pct(hi)-pct(lo)+(100/span),100/span);
       const overdue=isOverdue(x.a);
       const lbl=`${showCli?esc(accName(x.a.acc))+' · ':''}${esc(x.a.que)}`;
-      return `<div class="g2-row"><div class="g2-label" onclick="verDetalle('${x.a.id}')" title="${lbl}"><div class="g2-name"><b>${esc(x.a.que)}</b><span class="pill ${EST[x.a.estado][1]} g2-pill">${overdue?'⚠ ':''}${EST[x.a.estado][0]}</span></div><small>${showCli?esc(accName(x.a.acc))+' · ':''}${tipoLabel(x.a.tipo)} · ${x.a.quien}</small></div><div class="g2-track">${todayLine}<div class="g2-bar ${EST[x.a.estado][1]}${overdue?' venc':''}" style="left:${left}%;width:${width}%" onclick="verDetalle('${x.a.id}')" title="${EST[x.a.estado][0]} · Entrega interna: ${x.a.entrega?sinAnio(x.a.entrega):'—'}  →  A cliente: ${x.a.due?sinAnio(x.a.due):'—'}">${x.e!=null?'<span class="g2-cap e"></span>':''}${x.c!=null?'<span class="g2-cap c"></span>':''}</div></div></div>`;
+      return `<div class="g2-row"><div class="g2-label" onclick="verDetalle('${x.a.id}')" title="${lbl}"><div class="g2-name"><b>${esc(x.a.que)}</b><span class="pill ${EST[x.a.estado][1]} g2-pill">${overdue?'⚠ ':''}${EST[x.a.estado][0]}</span></div><small>${showCli?esc(accName(x.a.acc))+' · ':''}${tipoLabel(x.a.tipo)} · ${x.a.quien}</small></div><div class="g2-track">${todayLine}<div class="g2-bar ${EST[x.a.estado][1]}${overdue?' venc':''}" data-gid="${x.a.id}" data-span="${span}" style="left:${left}%;width:${width}%" title="${EST[x.a.estado][0]} · Entrega interna: ${x.a.entrega?sinAnio(x.a.entrega):'—'}  →  A cliente: ${x.a.due?sinAnio(x.a.due):'—'} · Arrastra para mover">${x.e!=null?'<span class="g2-cap e"></span>':''}${x.c!=null?'<span class="g2-cap c"></span>':''}</div></div></div>`;
     }).join('');
     host.innerHTML=`<div class="g2" style="min-width:${Math.max(span*cellW+230,640)}px"><div class="g2-row g2-head"><div class="g2-label"></div><div class="g2-track">${axis}${todayLine}</div></div>${rows}</div>
       <div class="g2-legend"><b>Hitos:</b><span><i class="g2-cap e"></i>Entrega interna</span><span><i class="g2-cap c"></i>Envío a cliente</span><span><i class="g2-tl"></i>Hoy</span><span><i class="g2-frihint"></i>Viernes</span><b style="margin-left:8px">Fase:</b><span><i class="lgp todo"></i>Por hacer</span><span><i class="lgp proc"></i>En proceso</span><span><i class="lgp review"></i>Por revisar</span><span><i class="lgp chg"></i>Cambios</span><span><i class="lgp pub"></i>Aprobado</span><span><i class="lgp published"></i>Publicado</span></div>`;
@@ -2408,7 +2416,7 @@
     if(v==='trello')renderCliTrello();
     if(v==='gantt')renderCliGantt();
   }
-  function renderCliGantt(){fridayBoard(cliParrillaItems(), el('cli-gantt-v'), false);}
+  function renderCliGantt(){renderGantt2(cliParrillaItems(), el('cli-gantt-v'), false);}
   function parseFecha(s){const m=String(s||'').toLowerCase().match(/(\d{1,2}) de ([a-záé]+) de (\d{4})/);if(m){const mi=MES_LC.indexOf(m[2]);if(mi>=0)return {y:+m[3],m:mi,d:+m[1]};}return null;}
   function cliItemDate(a){return pCalMode==='entrega'?parseFecha(a.entrega):itemDate(a);}
   function renderCliCal(){
@@ -2466,21 +2474,22 @@
     });
     return rows;
   }
-  function openImport(){if(!curClient){toast('Abre un cliente primero');return;}el('imp-cli').textContent='· '+curClient.name;el('imp-text').value='';el('imp-preview').innerHTML='';openModal('ov-import');setTimeout(()=>el('imp-text').focus(),60);}
+  function openImport(){const s=el('imp-cliente');s.innerHTML=clients.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');if(curClient)s.value=curClient.id;el('imp-text').value='';el('imp-preview').innerHTML='';openModal('ov-import');setTimeout(()=>el('imp-text').focus(),60);}
   function previewImport(){const r=parseImport(el('imp-text').value);el('imp-preview').innerHTML=r.length?`<b>${r.length}</b> pieza${r.length!==1?'s':''} lista${r.length!==1?'s':''} para importar.`:'';}
   function runImport(){
-    if(!curClient)return;
+    const accId=el('imp-cliente').value; if(!accId){toast('Elige un cliente');return;}
     const rows=parseImport(el('imp-text').value);
     if(!rows.length){toast('Pega al menos una fila');return;}
     const today=new Date().toISOString().slice(0,10);
     rows.forEach(r=>{
-      acts.unshift({id:uid(),cuenta:'cliente',acc:curClient.id,tipo:'parrilla',cant:1,que:r.que||'Pieza',
+      acts.unshift({id:uid(),cuenta:'cliente',acc:accId,tipo:'parrilla',cant:1,que:r.que||'Pieza',
         formato:r.formato||'',plat:r.plat||'',pub:0,quien:personEnsure(r.resp),due:r.due||'',estado:mapEstado(r.estado),
         det:r.det||'',link:false,links:[],files:[],entrega:r.entrega||'',cliente:'',fin:false,reg:today,regPor:'AN'});
     });
     closeModal('ov-import');
-    fillAccFilter(); populatePResp(); renderAll(); setPView(pView);
-    toast(rows.length+' pieza'+(rows.length!==1?'s':'')+' importada'+(rows.length!==1?'s':'')+' a '+curClient.name);
+    fillAccFilter(); if(curClient)populatePResp(); renderAll(); if(curClient)setPView(pView);
+    const cn=(clients.find(c=>c.id===accId)||{}).name||'';
+    toast(rows.length+' pieza'+(rows.length!==1?'s':'')+' importada'+(rows.length!==1?'s':'')+' a '+cn);
   }
   function setPtab(name){
     document.querySelectorAll('#ptabs .tab').forEach(t=>t.classList.toggle('active',t.dataset.pt===name));
@@ -2501,7 +2510,7 @@
     equipo:["Equipo","Lo que cada quien tiene asignado"],
     revision:["Revisión","Todo lo que está por revisar"],
     parrilla:["Parrilla","Vista de la estratega · mes completo"],
-    gantt:["Entregas","Material por viernes de entrega · todos los clientes"],
+    gantt:["Gantt","Entrega interna → envío a cliente · arrastra para mover · todos los clientes"],
     finalizados:["Finalizados","Histórico · nada se pierde"],
     cliente:["",""], prospecto:["",""]
   };
