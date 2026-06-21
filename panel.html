@@ -413,15 +413,20 @@
   .act-modal{width:1180px;max-width:96vw}
   .ae-body{max-height:74vh;overflow:auto;padding-right:4px}
   .ae-grid{display:grid;grid-template-columns:1fr 1fr;gap:26px;align-items:start}
-  .ae-col{display:flex;flex-direction:column;gap:16px;min-width:0}
-  .ae-statusblk{background:#faf9ff;border:1px solid var(--line);border-radius:13px;padding:12px 14px}
-  .ae-flow{display:flex;align-items:flex-end;gap:12px}
-  .ae-hint{font-size:11.5px;color:var(--muted);margin-top:9px}
+  .ae-col{display:flex;flex-direction:column;gap:15px;min-width:0}
+  .ae-ctx-title{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--brand-deep);padding-bottom:2px;border-bottom:2px solid var(--brand-soft)}
+  .ae-step{background:#faf9ff;border:1px solid var(--line);border-radius:13px;padding:13px 15px;display:flex;flex-direction:column;gap:11px}
+  .ae-step.ae-final{background:#fbf7ff;border-color:#e1d4ff}
+  .ae-steph{display:flex;align-items:center;gap:9px}
+  .ae-steph b{font-size:14px;font-weight:700;color:var(--ink)}
+  .ae-tag{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:#9a6400;background:#fef3da;border-radius:6px;padding:2px 8px;margin-left:auto}
+  .ae-flow{display:flex;align-items:center;gap:12px}
+  .ae-hint{font-size:11.5px;color:var(--muted)}
+  .ae-hint b{color:var(--ink)}
   .ae-muted{font-size:13px;color:var(--muted);padding:9px 0}
-  .ae-final{background:#fbf7ff;border:1px solid #e7ddff;border-radius:13px;padding:12px 14px}
-  .mbtn.rev{background:#e0a93c;color:#fff;border:none;white-space:nowrap;padding:11px 16px}
+  .mbtn.rev{background:#e0a93c;color:#fff;border:none;white-space:nowrap;padding:11px 16px;font-weight:700}
   .mbtn.rev:hover{background:#cf9a2e}
-  .act-btn{border:1px solid var(--brand);background:var(--brand-soft);color:var(--brand-deep);font-family:inherit;font-size:12px;font-weight:700;border-radius:8px;padding:5px 12px;cursor:pointer;transition:.15s var(--ease)}
+  .act-btn{border:1px solid var(--brand);background:var(--brand-soft);color:var(--brand-deep);font-family:inherit;font-size:12px;font-weight:700;border-radius:8px;padding:5px 14px;cursor:pointer;transition:.15s var(--ease)}
   .act-btn:hover{background:var(--brand);color:#fff}
   @media(max-width:820px){.ae-grid{grid-template-columns:1fr}}
   .det-body{display:flex;flex-direction:column;gap:18px;margin-bottom:4px}
@@ -1192,7 +1197,7 @@
           </div>
           <div class="pview-panel" id="pv-tabla">
             <div class="tablecard"><div class="tablewrap fit-scroll"><table>
-              <thead><tr><th>Tipo</th><th>Qué</th><th>Responsable</th><th class="col-fecha">Entrega interna</th><th class="col-fecha">A cliente</th><th>Estado</th><th>Detalle</th><th>Actividad</th></tr></thead>
+              <thead><tr><th>Tipo</th><th>Qué</th><th>Responsable</th><th class="col-fecha">Entrega interna</th><th class="col-fecha">A cliente</th><th>Estado</th><th>Detalle</th><th>Subir</th></tr></thead>
               <tbody id="cli-parrilla-rows"></tbody>
             </table></div></div>
           </div>
@@ -1846,7 +1851,7 @@
   const linkCell=h=>h?'<a class="lk" href="#">Link</a>':'<span class="dash">—</span>';
   function hasDet(a){return !!(a&&((a.det&&String(a.det).trim())||(a.links&&a.links.length)||(a.files&&a.files.length)||a.link));}
   function detCell(a){return `<a class="lk" href="#" onclick="verDetalle('${a.id}');return false;">Ver</a>`;}
-  function actCell(a){return `<button type="button" class="act-btn" onclick="abrirActividad('${a.id}')">Actividad</button>`;}
+  function actCell(a){return `<button type="button" class="act-btn" onclick="abrirActividad('${a.id}')">Subir</button>`;}
   const linkChips=(arr,delFn,id)=>arr.length?`<div class="det-links">${arr.map((l,i)=>{const u=/^https?:\/\//i.test(l)?l:'https://'+l;return `<span class="det-linkchip"><a class="det-link" href="${esc(u)}" target="_blank" rel="noopener">${ICONS.link}<span>${esc(l)}</span></a>${delFn?`<button type="button" class="lk-x" title="Quitar" onclick="${delFn}('${id}',${i})">×</button>`:''}</span>`;}).join('')}</div>`:'';
   const cmtThread=a=>{const cmts=(a.comentarios||[]);const seed=(a.cliente&&String(a.cliente).trim())?`<div class="cmt"><span class="a" style="background:#e0457a">CL</span><div class="cmt-b cli"><div class="cmt-h"><b>Cliente</b><span>feedback</span></div><p>${esc(a.cliente).replace(/\n/g,'<br>')}</p></div></div>`:'';
     return (seed||cmts.length)?seed+cmts.map(c=>{const p=people[c.por];return `<div class="cmt"><span class="a" style="background:${p?p.c:'#888'}">${esc(c.por||'?')}</span><div class="cmt-b"><div class="cmt-h"><b>${p?esc(p.n):esc(c.por||'')}</b><span>${esc(c.fecha||'')}</span></div><p>${esc(c.txt).replace(/\n/g,'<br>')}</p></div></div>`;}).join(''):'<div class="cmt-empty">Sin comentarios todavía.</div>';};
@@ -1869,10 +1874,10 @@
     el('det-view-title').textContent=a.que||'Detalle';
     el('det-view-body').innerHTML=
       ficha
-      +`<div class="det-sec"><h5>📋 Información para trabajar ${a.tipo==='parrilla'?'<span class="det-tag">de la estratega</span>':''}</h5><p>${a.det?esc(a.det).replace(/\n/g,'<br>'):'<span class="det-muted">Sin información.</span>'}</p></div>`
-      +(finals.length?`<div class="det-sec"><h5>🏁 Link final</h5>${finList}</div>`:'')
-      +`<div class="det-sec"><h5>📎 Links adjuntos al crear</h5>${adjList}</div>`
-      +`<div class="det-sec"><h5>💬 Comentarios</h5><div class="cmt-list">${cmtThread(a)}</div></div>`;
+      +`<div class="det-sec"><h5>Información para trabajar ${a.tipo==='parrilla'?'<span class="det-tag">de la estratega</span>':''}</h5><p>${a.det?esc(a.det).replace(/\n/g,'<br>'):'<span class="det-muted">Sin información.</span>'}</p></div>`
+      +(finals.length?`<div class="det-sec"><h5>Link final</h5>${finList}</div>`:'')
+      +`<div class="det-sec"><h5>Links adjuntos al crear</h5>${adjList}</div>`
+      +`<div class="det-sec"><h5>Comentarios</h5><div class="cmt-list">${cmtThread(a)}</div></div>`;
     openModal('ov-det');
   }
   // ===== ACTIVIDAD (panel ancho, editable) =====
@@ -1886,32 +1891,42 @@
     const estSel=`<select id="ae-estado" class="det-statussel ${EST[a.estado][1]}">${KCOLS.map(s=>`<option value="${s}"${a.estado===s?' selected':''}>${EST[s][0]}</option>`).join('')}</select>`;
     const quienSel=`<select id="ae-quien">${Object.keys(people).map(k=>`<option value="${k}"${a.quien===k?' selected':''}>${esc(people[k].n)}</option>`).join('')}</select>`;
     const ultimo=a.estadoFecha?`<div class="ae-hint">Última actualización de estado: <b>${esc(a.estadoFecha)}</b></div>`:'';
+    const adjList=linkChips(a.links||[],'delAdjLink',id)||'<p class="det-muted">Sin links adjuntos.</p>';
+    // IZQUIERDA · contexto (lo que necesitas para trabajar)
     const left=`<div class="ae-col">
-      <div class="ae-block ae-statusblk">
-        <div class="ae-flow"><div class="f" style="flex:1"><label>Estado</label>${estSel}</div>
-          <button type="button" class="mbtn rev" onclick="aeQuick('${id}','review')">✓ Pasar a revisión</button></div>
-        ${ultimo}
-      </div>
+      <div class="ae-ctx-title">Contexto de la pieza</div>
+      <div class="det-sec"><h5>Información para trabajar${a.tipo==='parrilla'?' <span class="det-tag">de la estratega</span>':''}</h5><textarea id="ae-det" class="det-ta" placeholder="Contexto, instrucciones, notas internas…">${ev(a.det)}</textarea></div>
+      <div class="det-sec"><h5>Links adjuntos al crear</h5>${adjList}
+        <div class="det-addrow"><input id="ae-addadj" class="link-input" placeholder="Agregar otro link de apoyo…"><button type="button" class="mbtn ghost sm" onclick="addAdjLink('${id}')">Agregar</button></div></div>
       <div class="det-edit">
         <div class="f"><label>Responsable</label>${quienSel}</div>
-        <div class="f"><label>&nbsp;</label><div class="ae-muted">${esc(accName(a.acc))} · ${tipoLabel(a.tipo)}${a.plat?' · '+esc(a.plat):''}</div></div>
+        <div class="f"><label>Cliente y plataforma</label><div class="ae-muted">${esc(accName(a.acc))} · ${tipoLabel(a.tipo)}${a.plat?' · '+esc(a.plat):''}</div></div>
         <div class="f"><label>Entrega interna</label><input id="ae-entrega" value="${ev(a.entrega)}" placeholder="Ej. Viernes, 12 de junio de 2026"></div>
         <div class="f"><label>Envío a cliente</label><input id="ae-due" value="${ev(a.due)}" placeholder="Ej. Lunes, 22 de junio de 2026"></div>
       </div>
-      <div class="det-sec"><h5>📋 Información para trabajar</h5><textarea id="ae-det" class="det-ta" placeholder="Contexto, instrucciones, notas internas…">${ev(a.det)}</textarea></div>
     </div>`;
     const finList=linkChips(a.finalLinks||[],'delFinalLink',id)||'<p class="det-muted">Aún sin link final. Pega el entregable abajo.</p>';
-    const adjList=linkChips(a.links||[],'delAdjLink',id)||'<p class="det-muted">Sin links adjuntos.</p>';
+    // DERECHA · tu entrega (pasos numerados)
     const right=`<div class="ae-col">
-      <div class="det-sec ae-final"><h5>🏁 Links finales (entregable) <span class="det-tag">lo importante</span></h5>${finList}
-        <div class="det-addrow"><input id="ae-addfinal" class="link-input" placeholder="Pega el link final (Canva, Drive, MP4…)"><button type="button" class="mbtn save sm" onclick="addFinalLink('${id}')">Agregar</button></div></div>
-      <div class="det-sec"><h5>📎 Links adjuntos al crear</h5>${adjList}
-        <div class="det-addrow"><input id="ae-addadj" class="link-input" placeholder="Agregar otro link de apoyo…"><button type="button" class="mbtn ghost sm" onclick="addAdjLink('${id}')">Agregar</button></div></div>
-      <div class="det-sec"><h5>💬 Comentarios / modificaciones</h5><div class="cmt-list" id="ae-cmt-list">${cmtThread(a)}</div>
-        <div class="cmt-add"><textarea id="ae-newcmt" placeholder="Escribe un comentario o una modificación…"></textarea><div class="cmt-add-row"><select id="ae-cmt-por">${Object.keys(people).map(k=>`<option value="${k}">${esc(people[k].n)}</option>`).join('')}</select><button type="button" class="mbtn ghost sm" onclick="addComentarioAct('${id}')">Agregar comentario</button></div></div></div>
+      <div class="ae-ctx-title">Tu entrega</div>
+      <div class="ae-step ae-final">
+        <div class="ae-steph"><span class="step">1</span><b>Sube el entregable</b><span class="ae-tag">lo importante</span></div>
+        ${finList}
+        <div class="det-addrow"><input id="ae-addfinal" class="link-input" placeholder="Pega el link final (Canva, Drive, MP4…)"><button type="button" class="mbtn save sm" onclick="addFinalLink('${id}')">Agregar</button></div>
+      </div>
+      <div class="ae-step">
+        <div class="ae-steph"><span class="step">2</span><b>Actualiza el estado</b></div>
+        <div class="ae-flow"><div class="f" style="flex:1">${estSel}</div><button type="button" class="mbtn rev" onclick="aeQuick('${id}','review')">Pasar a revisión</button></div>
+        ${ultimo}
+      </div>
+      <div class="ae-step">
+        <div class="ae-steph"><span class="step">3</span><b>Comentarios y modificaciones</b></div>
+        <div class="cmt-list" id="ae-cmt-list">${cmtThread(a)}</div>
+        <div class="cmt-add"><textarea id="ae-newcmt" placeholder="Escribe un comentario o una modificación…"></textarea><div class="cmt-add-row"><select id="ae-cmt-por">${Object.keys(people).map(k=>`<option value="${k}">${esc(people[k].n)}</option>`).join('')}</select><button type="button" class="mbtn ghost sm" onclick="addComentarioAct('${id}')">Agregar comentario</button></div></div>
+      </div>
     </div>`;
     el('ae-title').textContent=a.que||'Actividad';
-    el('ae-sub').textContent='Trabaja la pieza: cambia estado (se registra la fecha), adjunta el link final y deja comentarios.';
+    el('ae-sub').textContent='Sube tu entregable, actualiza el estado (se registra la fecha) y deja comentarios.';
     el('ae-body').innerHTML=`<div class="ae-grid">${left}${right}</div>`;
     const es=el('ae-estado'); if(es)es.onchange=()=>{es.className='det-statussel '+(EST[es.value]?EST[es.value][1]:'');};
     openModal('ov-act-edit');
@@ -1923,13 +1938,13 @@
     if(el('ae-due'))a.due=el('ae-due').value.trim();
     if(el('ae-det'))a.det=el('ae-det').value.trim();
   }
-  function aeQuick(id,ne){const a=acts.find(x=>x.id===id);if(!a)return;aeStash(a);if(a.estado!==ne)registrarEstado(a,ne);(a.comentarios=a.comentarios||[]).push({por:'AN',txt:'→ '+EST[ne][0],fecha:a.estadoFecha||hoyStr()});persist();abrirActividad(id);}
+  function aeQuick(id,ne){const a=acts.find(x=>x.id===id);if(!a)return;aeStash(a);if(a.estado!==ne)registrarEstado(a,ne);(a.comentarios=a.comentarios||[]).push({por:'AN',txt:'Pasó a '+EST[ne][0],fecha:a.estadoFecha||hoyStr()});persist();abrirActividad(id);}
   function addFinalLink(id){const a=acts.find(x=>x.id===id);if(!a)return;const inp=el('ae-addfinal');const v=inp?inp.value.trim():'';if(!v){toast('Pega el link final');return;}aeStash(a);(a.finalLinks=a.finalLinks||[]).push(v);persist();abrirActividad(id);}
   function delFinalLink(id,i){const a=acts.find(x=>x.id===id);if(!a||!a.finalLinks)return;aeStash(a);a.finalLinks.splice(i,1);persist();abrirActividad(id);}
   function addAdjLink(id){const a=acts.find(x=>x.id===id);if(!a)return;const inp=el('ae-addadj');const v=inp?inp.value.trim():'';if(!v){toast('Pega un link');return;}aeStash(a);(a.links=a.links||[]).push(v);a.link=true;persist();abrirActividad(id);}
   function delAdjLink(id,i){const a=acts.find(x=>x.id===id);if(!a||!a.links)return;aeStash(a);a.links.splice(i,1);persist();abrirActividad(id);}
   function addComentarioAct(id){const a=acts.find(x=>x.id===id);if(!a)return;const ta=el('ae-newcmt');const txt=ta?ta.value.trim():'';if(!txt){toast('Escribe un comentario');return;}const por=el('ae-cmt-por')?el('ae-cmt-por').value:'AN';aeStash(a);(a.comentarios=a.comentarios||[]).push({por,txt,fecha:hoyStr()});persist();abrirActividad(id);}
-  function saveActividad(id){const a=acts.find(x=>x.id===id);if(!a)return;aeStash(a);persist();renderAll();if(curClient){populatePResp();populatePPlat();setPView(pView);}closeModal('ov-act-edit');toast('Cambios guardados ✓');}
+  function saveActividad(id){const a=acts.find(x=>x.id===id);if(!a)return;aeStash(a);persist();renderAll();if(curClient){populatePResp();populatePPlat();setPView(pView);}closeModal('ov-act-edit');toast('Cambios guardados');}
   const bucket=s=>s==='todo'?'todo':s==='proc'?'proc':(s==='review'||s==='cambios'||s==='publicar')?'review':null;
 
   // ===== KPIs + counters =====
@@ -2124,7 +2139,7 @@
     const keys=Object.keys(buckets).sort((x,y)=>buckets[x].num-buckets[y].num);
     const lastKey=keys[keys.length-1];
     let cols=keys.map(k=>{const bk=buckets[k];const venc=bk.num<todayN;const dl=k===lastKey&&keys.length>1;
-      return `<div class="fb-col${dl?' deadline':''}${venc?' venc':''}"><h5>${dl?'🏁 ':venc?'⚠ ':''}${bk.label}${dl?' · Deadline':''} <span>${bk.items.length}</span></h5>${bk.items.map(a=>fbCard(a,showCli)).join('')}</div>`;}).join('');
+      return `<div class="fb-col${dl?' deadline':''}${venc?' venc':''}"><h5>${dl?'':venc?'':''}${bk.label}${dl?' · Deadline':''} <span>${bk.items.length}</span></h5>${bk.items.map(a=>fbCard(a,showCli)).join('')}</div>`;}).join('');
     if(sinfecha.length)cols+=`<div class="fb-col"><h5>Sin fecha <span>${sinfecha.length}</span></h5>${sinfecha.map(a=>fbCard(a,showCli)).join('')}</div>`;
     host.innerHTML=`<div class="fb-note">Cada columna es un <b>viernes de entrega</b>; la última es el <b>deadline</b> antes de enviar al cliente. El <b>color</b> de la barra izquierda de cada tarjeta = su <b>estado</b>.</div><div class="fb">${cols||'<div class="empty">Sin piezas con fecha de entrega.</div>'}</div>`;
   }
@@ -2143,8 +2158,8 @@
       mine.forEach(a=>{const b=(a.tipo==='parrilla')?fridayBucket(a):null; if(b){(buckets[b.key]=buckets[b.key]||{label:b.label,num:b.num,items:[]}).items.push(a);}else urgente.push(a);});
       const keys=Object.keys(buckets).sort((x,y)=>buckets[x].num-buckets[y].num);
       const cols=keys.map(k=>{const bk=buckets[k];const venc=bk.num<todayN;
-        return `<div class="eq-col${venc?' venc':''}"><h5>${venc?'⚠ ':''}${bk.label} <span>${bk.items.length}</span></h5>${bk.items.map(eqCard).join('')}</div>`;}).join('');
-      const urgCol=urgente.length?`<div class="eq-col urgent"><h5>⚡ Urgente <span>${urgente.length}</span></h5>${urgente.map(eqCard).join('')}</div>`:'';
+        return `<div class="eq-col${venc?' venc':''}"><h5>${venc?'':''}${bk.label} <span>${bk.items.length}</span></h5>${bk.items.map(eqCard).join('')}</div>`;}).join('');
+      const urgCol=urgente.length?`<div class="eq-col urgent"><h5>Urgente <span>${urgente.length}</span></h5>${urgente.map(eqCard).join('')}</div>`:'';
       return `<div class="eq-person"><div class="eq-head"><span class="a" style="background:${people[code].c}">${code}</span><b>${esc(people[code].n)}</b><span class="eq-total">${mine.length} pieza${mine.length!==1?'s':''}</span></div><div class="eq-cols">${cols||urgCol?cols+urgCol:'<div class="empty">Sin carga.</div>'}</div></div>`;
     }).join('')||'<div class="empty">Sin actividades asignadas.</div>';
   }
@@ -2264,7 +2279,7 @@
       const revDot=x.ent!=null?`<div class="gx-dot rev" style="left:${Xc(x.ent)}px" title="Revisión interna · ${x.a.entrega?sinAnio(x.a.entrega):'—'}"></div>`:'';
       const cliDot=x.cli!=null?`<div class="gx-dot cli" style="left:${Xc(x.cli)}px" title="Envío al cliente · ${x.a.due?sinAnio(x.a.due):'—'}"></div>`:'';
       const tip=`Se pidió: ${fmtReg(x.a.reg)} · Revisión interna: ${x.a.entrega?sinAnio(x.a.entrega):'—'} · Envío al cliente: ${x.a.due?sinAnio(x.a.due):'—'} · ↔ arrastra para mover`;
-      return `<div class="gx-row"><div class="gx-label" onclick="verDetalle('${x.a.id}')"><div class="gx-name"><b>${esc(x.a.que)}</b><span class="pill ${est[1]} gx-pill">${overdue?'⚠ ':''}${est[0]}</span></div><div class="gx-sub">${esc(x.a.plat||tipoLabel(x.a.tipo))} · <span class="gx-who"><i style="background:${pcol}"></i>${esc(pname)}</span></div><div class="gx-id">${showCli?esc(accName(x.a.acc))+' · ':''}#${esc(String(x.a.id))}</div></div><div class="gx-track" style="width:${trackW}px">${friCols}${todayLine}<div class="gx-bar ${est[1]}" data-gid="${x.a.id}" data-span="${span}" style="left:${left}px;width:${width}px" title="${tip}"></div>${startMk}${revDot}${cliDot}</div></div>`;
+      return `<div class="gx-row"><div class="gx-label" onclick="verDetalle('${x.a.id}')"><div class="gx-name"><b>${esc(x.a.que)}</b><span class="pill ${est[1]} gx-pill">${overdue?'':''}${est[0]}</span></div><div class="gx-sub">${esc(x.a.plat||tipoLabel(x.a.tipo))} · <span class="gx-who"><i style="background:${pcol}"></i>${esc(pname)}</span></div><div class="gx-id">${showCli?esc(accName(x.a.acc))+' · ':''}#${esc(String(x.a.id))}</div></div><div class="gx-track" style="width:${trackW}px">${friCols}${todayLine}<div class="gx-bar ${est[1]}" data-gid="${x.a.id}" data-span="${span}" style="left:${left}px;width:${width}px" title="${tip}"></div>${startMk}${revDot}${cliDot}</div></div>`;
     }).join('');
     const head=`<div class="gx-row gx-head"><div class="gx-label"><div class="gx-name"><b style="font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em">Pieza</b></div><div class="gx-sub">Plataforma · responsable</div></div><div class="gx-track" style="width:${trackW}px"><div class="gx-months">${months}</div><div class="gx-days">${days}</div></div></div>`;
     const innerW=209+trackW;
@@ -2411,10 +2426,10 @@
   function triggerUpload(key,type,accept){_uploadCtx={key:key,type:type};const inp=el('mediaFileInput');inp.accept=accept||'';inp.click();}
   function handleMediaFile(e){const f=e.target.files&&e.target.files[0];e.target.value='';if(!f||!curClient||!_uploadCtx)return;const ctx=_uploadCtx;_uploadCtx=null;const rd=new FileReader();
     rd.onload=()=>{const asImg=cb=>{const img=new Image();img.onload=()=>{const max=480,s=Math.min(1,max/Math.max(img.width,img.height));const cv=document.createElement('canvas');cv.width=Math.round(img.width*s)||1;cv.height=Math.round(img.height*s)||1;let data;try{cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height);data=cv.toDataURL('image/jpeg',0.85);}catch(_){data=rd.result;}cb(data);};img.onerror=()=>cb(rd.result);img.src=rd.result;};
-      if(ctx.type==='media'){asImg(d=>{briefArr(curClient,ctx.key).push({img:d,txt:''});renderBrief(curClient);persist();toast('Imagen agregada ✓');});}
-      else if(ctx.type==='mediainto'||ctx.type==='fontimg'){const[k,i]=ctx.key.split('|');asImg(d=>{const a=briefArr(curClient,k);if(a[+i])a[+i].img=d;renderBrief(curClient);persist();toast('Imagen agregada ✓');});}
-      else if(ctx.type==='manual'){gb(curClient).manual_file={t:f.name,file:rd.result};renderBrief(curClient);persist();toast('Manual cargado ✓');}
-      else{briefArr(curClient,ctx.key).push({t:f.name,file:rd.result});renderBrief(curClient);persist();toast('Archivo agregado ✓');}};
+      if(ctx.type==='media'){asImg(d=>{briefArr(curClient,ctx.key).push({img:d,txt:''});renderBrief(curClient);persist();toast('Imagen agregada');});}
+      else if(ctx.type==='mediainto'||ctx.type==='fontimg'){const[k,i]=ctx.key.split('|');asImg(d=>{const a=briefArr(curClient,k);if(a[+i])a[+i].img=d;renderBrief(curClient);persist();toast('Imagen agregada');});}
+      else if(ctx.type==='manual'){gb(curClient).manual_file={t:f.name,file:rd.result};renderBrief(curClient);persist();toast('Manual cargado');}
+      else{briefArr(curClient,ctx.key).push({t:f.name,file:rd.result});renderBrief(curClient);persist();toast('Archivo agregado');}};
     rd.readAsDataURL(f);}
   function fieldHTML(c,f){
     if(f.kind==='subhead')return `<div class="bf-subhead">${esc(f.l)}</div>`;
@@ -2446,7 +2461,7 @@
     return '';
   }
   function dosHTML(c,sec){const b=gb(c);
-    return `<div class="dos-grid"><div class="dos-col yes"><h5>✓ Do's</h5>${sec.pairs.map(p=>`<div class="dos-pair"><label>${p[0]}</label>${listHTML(p[1],b[p[1]])}</div>`).join('')}</div><div class="dos-col no"><h5>✗ Don'ts</h5>${sec.pairs.map(p=>`<div class="dos-pair"><label>${p[0]}</label>${listHTML(p[2],b[p[2]])}</div>`).join('')}</div></div>`;}
+    return `<div class="dos-grid"><div class="dos-col yes"><h5>Do's</h5>${sec.pairs.map(p=>`<div class="dos-pair"><label>${p[0]}</label>${listHTML(p[1],b[p[1]])}</div>`).join('')}</div><div class="dos-col no"><h5>Don'ts</h5>${sec.pairs.map(p=>`<div class="dos-pair"><label>${p[0]}</label>${listHTML(p[2],b[p[2]])}</div>`).join('')}</div></div>`;}
   function checklistHTML(c,sec){const on=gb(c)._val||{};
     return `<div class="vcheck">${sec.items.map((it,i)=>`<button type="button" class="vrow" data-val="${i}" aria-pressed="${!!on[i]}"><span class="vbox"><span>✓</span></span>${esc(it)}</button>`).join('')}</div>`;}
   function sectionHTML(c,sec){
@@ -2582,11 +2597,11 @@
       const cv=document.createElement('canvas');cv.width=Math.round(w*s)||1;cv.height=Math.round(h*s)||1;
       try{cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height);gb(curClient).logo=cv.toDataURL('image/png');}
       catch(err){gb(curClient).logo=rd.result;}
-      renderBrief(curClient);persist();toast('Logo actualizado ✓');
+      renderBrief(curClient);persist();toast('Logo actualizado');
     };img.onerror=()=>{gb(curClient).logo=rd.result;renderBrief(curClient);persist();};img.src=rd.result;};
     rd.readAsDataURL(f);e.target.value='';
   }
-  function saveBriefData(){persist();toast('Brief guardado ✓');}
+  function saveBriefData(){persist();toast('Brief guardado');}
   function downloadLogo(){const u=curClient&&gb(curClient).logo;if(!u){toast('No hay logo cargado');return;}try{const a=document.createElement('a');a.href=u;a.download=curClient.name.replace(/\s+/g,'_')+'-logo.png';document.body.appendChild(a);a.click();a.remove();}catch(e){toast('No se pudo descargar el logo');}}
   function loadPersisted(){try{localStorage.removeItem('adsos_data');localStorage.removeItem('adsos_v3');localStorage.removeItem('adsos_v4');localStorage.removeItem('adsos_v5');localStorage.removeItem('adsos_v6');const s=JSON.parse(localStorage.getItem('adsos_v7')||'null');if(s&&Array.isArray(s.clients)&&s.clients.length){const defs=[...clients];clients.length=0;s.clients.forEach(saved=>{const def=defs.find(c=>c.id===saved.id);if(def){const cb=def.brief||{};const sb=saved.brief||{};Object.keys(cb).forEach(k=>{if(sb[k]===undefined)sb[k]=cb[k];});saved.brief=sb;saved.name=def.name;saved.role=def.role;saved.desc=def.desc;saved.color=def.color;saved.ini=def.ini;}clients.push(saved);});if(Array.isArray(s.prospects)){prospects.length=0;s.prospects.forEach(x=>prospects.push(x));}if(Array.isArray(s.acts)){acts.length=0;s.acts.forEach(x=>acts.push(x));}}}catch(e){}}
   function briefToHTML(c){
@@ -2697,7 +2712,7 @@
     return r;}
   function populatePResp(){const s=el('pview-resp');if(!s)return;const prev=s.value;const codes=[...new Set(cliParrillaItems(true).map(a=>a.quien).filter(Boolean))];s.innerHTML='<option value="">Todo responsable</option>'+codes.map(c=>`<option value="${c}">${people[c]?people[c].n:c}</option>`).join('');s.value=codes.indexOf(prev)>=0?prev:'';}
   function sinAnio(s){return String(s||'').replace(/ de \d{4}\b/,'');}
-  function fechaCell(str,overdue){return str?`<span class="fecha${overdue?' venc':''}">${overdue?'⚠ ':''}${esc(sinAnio(str))}</span>`:'<span class="dash">—</span>';}
+  function fechaCell(str,overdue){return str?`<span class="fecha${overdue?' venc':''}">${overdue?'':''}${esc(sinAnio(str))}</span>`:'<span class="dash">—</span>';}
   function shortFecha(s){const dt=parseFecha(s);return dt?dt.d+' '+MES_LC[dt.m].slice(0,3):(s||'—');}
   function kdates(a){return `<div class="kdates"><span class="kd${isOverdue(a)?' venc':''}" title="Entrega interna">↳ ${a.entrega?shortFecha(a.entrega):'—'}</span><span class="kd out" title="A cliente">→ ${a.due?shortFecha(a.due):'—'}</span></div>`;}
   function isOverdue(a){const dt=parseFecha(a.entrega);if(!dt)return false;const t=new Date();return dt.y*10000+dt.m*100+dt.d < t.getFullYear()*10000+t.getMonth()*100+t.getDate() && a.estado!=='publicar' && a.estado!=='publicado';}
@@ -2877,8 +2892,8 @@
   function populateNames(){const list=segVal('seg-cuenta')==='cliente'?clients:prospects;el('dl-names').innerHTML=list.map(x=>`<option value="${x.name}">`).join('');}
   function syncTipoVisibility(){el('f-tipo').style.display=segVal('seg-cuenta')==='prospecto'?'none':'';}
   function renderDetChips(){
-    el('det-chips').innerHTML=modalLinks.map((l,i)=>`<span class="chip">🔗 <span>${l}</span><button type="button" onclick="rmLink(${i})">×</button></span>`).join('')
-      +modalFiles.map((f,i)=>`<span class="chip">📎 <span>${f}</span><button type="button" onclick="rmFile(${i})">×</button></span>`).join('');
+    el('det-chips').innerHTML=modalLinks.map((l,i)=>`<span class="chip"><span>${l}</span><button type="button" onclick="rmLink(${i})">×</button></span>`).join('')
+      +modalFiles.map((f,i)=>`<span class="chip"><span>${f}</span><button type="button" onclick="rmFile(${i})">×</button></span>`).join('');
   }
   function rmLink(i){modalLinks.splice(i,1);renderDetChips();}
   function rmFile(i){modalFiles.splice(i,1);renderDetChips();}
