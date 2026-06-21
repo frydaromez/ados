@@ -1104,6 +1104,14 @@
             <div class="kanban" id="cli-kanban"></div>
           </div>
           <div class="pview-panel hidden" id="pv-gantt2">
+            <div class="gx-filters">
+              <div class="gx-fgroup">
+                <span class="gx-fico">▦</span>
+                <select class="gx-fsel" id="gc-plat"><option value="">Todas las plataformas</option></select>
+                <span class="gx-fdiv"></span>
+                <input type="text" class="gx-fsearch" id="gc-find" placeholder="Buscar pieza o ID…" autocomplete="off">
+              </div>
+            </div>
             <div class="ganttwrap"><div class="gantt" id="cli-gantt-v"></div></div>
           </div>
         </div>
@@ -2091,10 +2099,18 @@
       return `<div class="gx-row"><div class="gx-label" onclick="verDetalle('${x.a.id}')"><div class="gx-name"><b>${esc(x.a.que)}</b><span class="pill ${est[1]} gx-pill">${overdue?'⚠ ':''}${est[0]}</span></div><div class="gx-sub">${esc(x.a.plat||tipoLabel(x.a.tipo))} · <span class="gx-who"><i style="background:${pcol}"></i>${esc(pname)}</span></div><div class="gx-id">${showCli?esc(accName(x.a.acc))+' · ':''}#${esc(String(x.a.id))}</div></div><div class="gx-track" style="width:${trackW}px">${todayLine}<div class="gx-bar ${est[1]}" data-gid="${x.a.id}" data-span="${span}" style="left:${left}px;width:${width}px" title="${tip}"></div>${startMk}${revDot}${cliDot}</div></div>`;
     }).join('');
     const head=`<div class="gx-row gx-head"><div class="gx-label"><div class="gx-name"><b style="font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em">Pieza</b></div><div class="gx-sub">Plataforma · responsable</div></div><div class="gx-track" style="width:${trackW}px"><div class="gx-months">${months}</div><div class="gx-days">${days}</div></div></div>`;
-    const legend=`<div class="gx-legend"><span><i class="gx-lbar"></i>Barra = pieza (<b>color = estado</b>)</span><span><i class="gx-lstart"></i>Se pidió</span><span><i class="gx-ldot rev"></i>Revisión interna</span><span><i class="gx-ldot cli"></i>Envío al cliente</span><span><i class="gx-ltoday"></i>Hoy</span><span class="gx-hint">↔ arrastra una barra para mover sus fechas</span></div>`;
+    const legend=`<div class="gx-legend"><span><i class="gx-lstart"></i>Se pidió</span><span><i class="gx-ldot rev"></i>Revisión interna</span><span><i class="gx-ldot cli"></i>Envío al cliente</span><span><i class="gx-ltoday"></i>Hoy</span><span class="gx-hint">↔ arrastra una barra para mover sus fechas</span></div>`;
     const innerW=235+trackW;
     host.innerHTML=`<div class="gx">${legend}<div class="gx-body"><div class="gx-inner" style="width:${innerW}px">${head}${rows}</div></div></div>`;
+    requestAnimationFrame(gxFit);
   }
+  // Ajusta la altura del cuerpo para que termine en la base de la pantalla:
+  // así el scroll vive dentro del gráfico y filtros + leyenda quedan inmóviles.
+  function gxFit(){document.querySelectorAll('.gx-body').forEach(b=>{
+    if(!b.offsetParent){b.style.maxHeight='';return;}
+    const top=b.getBoundingClientRect().top;
+    b.style.maxHeight=Math.max(window.innerHeight-top-80,260)+'px';});}
+  window.addEventListener('resize',()=>requestAnimationFrame(gxFit));
 
   // ===== FINALIZADOS =====
   function renderFinalizados(){
@@ -2513,7 +2529,19 @@
     if(v==='trello')renderCliTrello();
     if(v==='gantt')renderCliGantt();
   }
-  function renderCliGantt(){renderGantt2(cliParrillaItems(), el('cli-gantt-v'), false);}
+  function fillCliGanttPlats(){const s=el('gc-plat');if(!s)return;const cur=s.value;
+    const plats=[...new Set(cliParrillaItems(true).filter(a=>a.plat).map(a=>a.plat))].sort();
+    s.innerHTML='<option value="">Todas las plataformas</option>'+plats.map(p=>`<option value="${esc(p)}">${esc(p)}</option>`).join('');
+    if(plats.includes(cur))s.value=cur;}
+  function renderCliGantt(){
+    fillCliGanttPlats();
+    let items=cliParrillaItems();
+    const plat=el('gc-plat')?el('gc-plat').value:'';
+    const find=(el('gc-find')?el('gc-find').value:'').trim().toLowerCase().replace(/^#/,'');
+    if(plat)items=items.filter(a=>(a.plat||'')===plat);
+    if(find)items=items.filter(a=>String(a.id).toLowerCase().includes(find)||(a.que||'').toLowerCase().includes(find));
+    renderGantt2(items, el('cli-gantt-v'), false);
+  }
   function parseFecha(s){const m=String(s||'').toLowerCase().match(/(\d{1,2}) de ([a-záé]+) de (\d{4})/);if(m){const mi=MES_LC.indexOf(m[2]);if(mi>=0)return {y:+m[3],m:mi,d:+m[1]};}return null;}
   function cliItemDate(a){return pCalMode==='entrega'?parseFecha(a.entrega):itemDate(a);}
   function renderCliCal(){
@@ -2617,6 +2645,7 @@
     const vEl=el('view-'+view);
     vEl.classList.remove('hidden');
     void vEl.offsetWidth; vEl.classList.add('vin');
+    requestAnimationFrame(gxFit);
     const navMatch=view==='prospecto'?'prospectos':view;
     document.querySelectorAll('.nav a').forEach(n=>n.classList.toggle('active',n.dataset.view===navMatch));
     el('title').classList.toggle('big', view==='inicio');
@@ -2771,6 +2800,8 @@
   el('g-cli').addEventListener('change',renderGantt);
   el('g-plat').addEventListener('change',renderGantt);
   el('g-find').addEventListener('input',renderGantt);
+  el('gc-plat').addEventListener('change',renderCliGantt);
+  el('gc-find').addEventListener('input',renderCliGantt);
   document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
   el('menuBtn').addEventListener('click',toggleSide);
   el('sideOverlay').addEventListener('click',closeSide);
