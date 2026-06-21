@@ -166,7 +166,7 @@
   .tbtn.primary .plus{color:rgba(255,255,255,.85)}
   .tbtn.primary:hover{background:var(--brand-deep);border-color:var(--brand-deep);box-shadow:0 12px 26px -8px rgba(106,60,240,.6)}
   .tbtn.primary:hover .plus{color:#fff}
-  .content{padding:28px 34px 30px;overflow:auto}
+  .content{padding:22px 26px 24px;overflow:auto}
   .content.tight-top{padding-top:12px}
 
   /* KPIs */
@@ -232,7 +232,7 @@
   .who .a{width:24px;height:24px;border-radius:7px;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
   .pill{display:inline-block;font-size:12px;font-weight:600;padding:3px 11px;border-radius:999px;white-space:nowrap}
   .pill.todo{background:#eef1f6;color:#475569}.pill.proc{background:#e2ecfd;color:#1d4ed8}.pill.review{background:#fef3da;color:#9a6400}
-  .pill.chg{background:#fde2e7;color:#be123c}.pill.pub{background:#e8f0e2;color:#3f6212}.pill.published{background:#16151c;color:#fff}.pill.done{background:#dcf5ea;color:#047857}
+  .pill.chg{background:#e11d48;color:#fff}.pill.pub{background:#e8f0e2;color:#3f6212}.pill.published{background:#16151c;color:#fff}.pill.done{background:#dcf5ea;color:#047857}
   .tipo{font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:6px}
   .tipo.parrilla{background:#ede9fe;color:#6d28d9}.tipo.extra{background:#fff0e6;color:#c2410c}.tipo.prospecto{background:#e7f0ff;color:#1e40af}
   .lk{color:var(--brand);text-decoration:none;font-weight:600}.lk:hover{text-decoration:underline}
@@ -262,6 +262,14 @@
   .dstat.todo{background:#eef1f6;color:#475569}
   .dstat.proc{background:#e2ecfd;color:#1d4ed8}
   .dstat.review{background:#fef3da;color:#9a6400}
+  /* banner compacto en Operación: prioriza la vista de actividades */
+  .detail-head.compact{padding:8px 16px;gap:12px;margin-bottom:8px}
+  .detail-head.compact .avatar{width:38px;height:38px;border-radius:11px;font-size:15px}
+  .detail-head.compact h2{font-size:16px}
+  .detail-head.compact .role{font-size:11.5px;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:380px}
+  .detail-head.compact .dstat{min-width:0;padding:5px 12px}
+  .detail-head.compact .dstat .v{font-size:17px}
+  .detail-head.compact .dstat .l{font-size:8.5px;margin-top:2px}
   /* Finalizados: descripción a la derecha, centrada */
   .detail-head .dh-desc{margin-left:auto;max-width:46%;text-align:right;color:var(--muted);font-size:14px;line-height:1.5}
   .tabs{display:flex;gap:5px;margin:2px 0 16px;flex-wrap:wrap;border-bottom:1px solid var(--line)}
@@ -775,7 +783,7 @@
   .gx-row{display:flex;align-items:stretch;min-height:44px;border-top:1px solid #f3f1fb}
   .gx-row:first-child{border-top:none}
   .gx-row.gx-head{min-height:50px;position:sticky;top:0;z-index:8}
-  .gx-label{flex:0 0 234px;width:234px;box-sizing:border-box;padding:8px 14px;position:sticky;left:0;z-index:6;background:#fff;border-right:1px solid var(--line);cursor:pointer;display:flex;flex-direction:column;justify-content:center}
+  .gx-label{flex:0 0 208px;width:208px;box-sizing:border-box;padding:7px 13px;position:sticky;left:0;z-index:6;background:#fff;border-right:1px solid var(--line);cursor:pointer;display:flex;flex-direction:column;justify-content:center}
   .gx-row:nth-child(even) .gx-label{background:#faf9ff}
   .gx-row:hover .gx-label{background:#f4f1ff}
   .gx-row.gx-head .gx-label{z-index:10;background:#fff;border-bottom:1px solid var(--line)}
@@ -811,7 +819,7 @@
   .gx-bar.todo{background:linear-gradient(90deg,#d6dce7,#c5cedb)}
   .gx-bar.proc{background:linear-gradient(90deg,#aecbff,#7eb0ff)}
   .gx-bar.review{background:linear-gradient(90deg,#ffe3b3,#fcc879)}
-  .gx-bar.chg{background:linear-gradient(90deg,#ffc4d4,#f99bb6)}
+  .gx-bar.chg{background:linear-gradient(90deg,#f87171,#e11d48)}
   .gx-bar.pub{background:linear-gradient(90deg,#caeab0,#a9d97f)}
   .gx-bar.published{background:linear-gradient(90deg,#4d4d59,#33333d)}
   /* marca sutil de "se pidió" (inicio) */
@@ -1105,7 +1113,7 @@
               <span class="pf-div"></span>
               <select class="pf-sel" id="gc-plat"><option value="">Toda plataforma</option></select>
               <span class="pf-div"></span>
-              <input type="text" class="pf-find" id="gc-find" placeholder="Buscar pieza o ID…" autocomplete="off">
+              <input type="text" class="pf-find" id="gc-find" placeholder="Buscar pieza, ID, persona…" autocomplete="off">
             </div>
           </div>
           <div class="pview-panel" id="pv-tabla">
@@ -2038,7 +2046,7 @@
     const items=acts.filter(a=>(a.tipo==='parrilla'||a.tipo==='extra')&&!a.fin
       &&(!cli||a.acc===cli)
       &&(!plat||(a.plat||'')===plat)
-      &&(!find||String(a.id).toLowerCase().includes(find)||(a.que||'').toLowerCase().includes(find)));
+      &&(!find||String(a.id).toLowerCase().includes(find)||(a.que||'').toLowerCase().includes(find)||(a.plat||'').toLowerCase().includes(find)||(people[a.quien]?people[a.quien].n:a.quien||'').toLowerCase().includes(find)||(EST[a.estado]?EST[a.estado][0]:'').toLowerCase().includes(find)||accName(a.acc).toLowerCase().includes(find)));
     renderGantt2(items, el('gantt'), true);
   }
   function fillGanttPlats(){
@@ -2113,7 +2121,7 @@
     }).join('');
     const head=`<div class="gx-row gx-head"><div class="gx-label"><div class="gx-name"><b style="font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em">Pieza</b></div><div class="gx-sub">Plataforma · responsable</div></div><div class="gx-track" style="width:${trackW}px"><div class="gx-months">${months}</div><div class="gx-days">${days}</div></div></div>`;
     const legend=`<div class="gx-legend"><span><i class="gx-lstart"></i>Se pidió</span><span><i class="gx-ldot rev"></i>Revisión interna</span><span><i class="gx-ldot cli"></i>Envío al cliente</span><span><i class="gx-ltoday"></i>Hoy</span><span class="gx-hint">↔ arrastra una barra para mover sus fechas</span></div>`;
-    const innerW=235+trackW;
+    const innerW=209+trackW;
     host.innerHTML=`<div class="gx">${legend}<div class="gx-body"><div class="gx-inner" style="width:${innerW}px">${head}${rows}</div></div></div>`;
     requestAnimationFrame(gxFit);
   }
@@ -2458,9 +2466,11 @@
     const desc=c.desc||c.role||'';
     const av=`<div class="avatar" style="background:${c.color}">${c.ini}</div>`;
     if(ptab==='finalizados'){
+      el('detail-head').classList.remove('compact');
       el('detail-head').innerHTML=`${av}<div><h2>${c.name}</h2></div><div class="dh-desc">${esc(desc)}</div>`;
       return;
     }
+    el('detail-head').classList.add('compact');
     const mine=acts.filter(a=>a.acc===c.id&&!a.fin&&a.estado!=='publicado');
     const t=mine.filter(a=>bucket(a.estado)==='todo').length,p=mine.filter(a=>bucket(a.estado)==='proc').length,r=mine.filter(a=>bucket(a.estado)==='review').length;
     el('detail-head').innerHTML=`${av}
@@ -2522,7 +2532,10 @@
   let pView='tabla', pCalY=2026, pCalM=6, pResp='', pTipo='', pEstado='', pPlat='', pFind='', pCalMode='pub'; // julio 2026 (donde vive la parrilla demo)
   function cliParrillaItems(all){if(!curClient)return [];let r=acts.filter(a=>a.acc===curClient.id&&(a.tipo==='parrilla'||a.tipo==='extra')&&!a.fin);
     if(!all){if(pTipo)r=r.filter(a=>a.tipo===pTipo);if(pResp)r=r.filter(a=>a.quien===pResp);if(pEstado)r=r.filter(a=>a.estado===pEstado);if(pPlat)r=r.filter(a=>(a.plat||'')===pPlat);
-      if(pFind){const f=pFind.trim().toLowerCase().replace(/^#/,'');if(f)r=r.filter(a=>String(a.id).toLowerCase().includes(f)||(a.que||'').toLowerCase().includes(f));}}
+      if(pFind){const f=pFind.trim().toLowerCase().replace(/^#/,'');if(f)r=r.filter(a=>{
+        const who=(people[a.quien]?people[a.quien].n:a.quien||'').toLowerCase();
+        const est=(EST[a.estado]?EST[a.estado][0]:'').toLowerCase();
+        return String(a.id).toLowerCase().includes(f)||(a.que||'').toLowerCase().includes(f)||(a.plat||'').toLowerCase().includes(f)||who.includes(f)||est.includes(f);});}}
     return r;}
   function populatePResp(){const s=el('pview-resp');if(!s)return;const prev=s.value;const codes=[...new Set(cliParrillaItems(true).map(a=>a.quien).filter(Boolean))];s.innerHTML='<option value="">Todo responsable</option>'+codes.map(c=>`<option value="${c}">${people[c]?people[c].n:c}</option>`).join('');s.value=codes.indexOf(prev)>=0?prev:'';}
   function sinAnio(s){return String(s||'').replace(/ de \d{4}\b/,'');}
