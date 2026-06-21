@@ -166,7 +166,7 @@
   .tbtn.primary .plus{color:rgba(255,255,255,.85)}
   .tbtn.primary:hover{background:var(--brand-deep);border-color:var(--brand-deep);box-shadow:0 12px 26px -8px rgba(106,60,240,.6)}
   .tbtn.primary:hover .plus{color:#fff}
-  .content{padding:28px 34px 64px;overflow:auto}
+  .content{padding:28px 34px 30px;overflow:auto}
   .content.tight-top{padding-top:12px}
 
   /* KPIs */
@@ -693,8 +693,17 @@
   .topbar #saveBtn svg,.topbar #wordBtn svg,.topbar .home-btn svg{color:#c9b8ff}
 
   /* Parrilla · vistas Tabla / Calendario / Trello */
-  .pview-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+  .pview-bar{display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap}
   .pview-nav{display:flex;align-items:center;gap:10px}
+  /* filtros unificados en una sola pastilla (ahorra espacio) */
+  .pfilters{display:inline-flex;align-items:center;gap:1px;margin-left:auto;background:#fff;border:1px solid var(--line);border-radius:11px;padding:3px 5px;box-shadow:var(--shadow-sm);flex-wrap:wrap}
+  .pf-sel{border:none;background:transparent;font-size:13px;font-weight:600;color:#3a3f4d;padding:7px 9px;border-radius:8px;cursor:pointer;outline:none;font-family:inherit;transition:background .15s var(--ease)}
+  .pf-sel:hover{background:var(--brand-soft)}
+  .pf-sel:focus{background:var(--brand-soft)}
+  .pf-find{border:none;background:transparent;font-size:13px;font-weight:500;color:#3a3f4d;padding:7px 9px;border-radius:8px;outline:none;font-family:inherit;width:140px;transition:background .15s var(--ease)}
+  .pf-find::placeholder{color:#a7a4b8;font-weight:500}
+  .pf-find:focus{background:var(--brand-soft)}
+  .pf-div{width:1px;height:18px;background:var(--line);flex-shrink:0}
   .pnav-btn{width:34px;height:34px;border:1px solid var(--line);background:#fff;border-radius:10px;cursor:pointer;font-size:18px;line-height:1;color:var(--ink);display:flex;align-items:center;justify-content:center;transition:transform .2s var(--ease-spring),border-color .18s var(--ease),color .18s var(--ease)}
   .pnav-btn:hover{border-color:var(--brand);color:var(--brand);transform:translateY(-1px)}
   .pnav-btn:active{transform:scale(.92)}
@@ -747,7 +756,7 @@
   .gantt{min-width:0}
   .gx{position:relative}
   /* leyenda superior */
-  .gx-legend{display:flex;flex-wrap:wrap;gap:15px;align-items:center;padding:11px 16px;margin-bottom:13px;background:rgba(255,255,255,.72);backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:14px;font-size:11.5px;font-weight:600;color:#4a4a57}
+  .gx-legend{display:flex;flex-wrap:wrap;gap:15px;align-items:center;padding:8px 15px;margin-bottom:10px;background:rgba(255,255,255,.72);backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:13px;font-size:11.5px;font-weight:600;color:#4a4a57}
   .gx-legend span{display:inline-flex;align-items:center;gap:7px}
   .gx-legend i{flex-shrink:0}
   .gx-lbar{width:24px;height:11px;border-radius:6px;background:linear-gradient(90deg,#b9a6ff,#8155ff);display:inline-block}
@@ -763,9 +772,9 @@
   .gx-body::-webkit-scrollbar-thumb{background:#cdc7e6;border-radius:9px;border:2px solid #fff}
   .gx-body::-webkit-scrollbar-thumb:hover{background:#b6aee0}
   .gx-inner{position:relative}
-  .gx-row{display:flex;align-items:stretch;min-height:48px;border-top:1px solid #f3f1fb}
+  .gx-row{display:flex;align-items:stretch;min-height:44px;border-top:1px solid #f3f1fb}
   .gx-row:first-child{border-top:none}
-  .gx-row.gx-head{min-height:54px;position:sticky;top:0;z-index:8}
+  .gx-row.gx-head{min-height:50px;position:sticky;top:0;z-index:8}
   .gx-label{flex:0 0 234px;width:234px;box-sizing:border-box;padding:8px 14px;position:sticky;left:0;z-index:6;background:#fff;border-right:1px solid var(--line);cursor:pointer;display:flex;flex-direction:column;justify-content:center}
   .gx-row:nth-child(even) .gx-label{background:#faf9ff}
   .gx-row:hover .gx-label{background:#f4f1ff}
@@ -790,6 +799,9 @@
   .gx-day .dl{font-size:8.5px;color:var(--muted);font-weight:700;text-transform:uppercase}
   .gx-day .dn{font-size:11px;color:var(--ink);font-weight:600}
   .gx-day.is-today .dn{background:#e11d48;color:#fff;border-radius:7px;min-width:18px;height:16px;display:flex;align-items:center;justify-content:center}
+  /* sombreado de viernes = día de entrega/revisión (sin leyenda) */
+  .gx-fri{position:absolute;top:0;bottom:0;background:rgba(129,85,255,.07);pointer-events:none;z-index:1}
+  .gx-day.fri{background:rgba(129,85,255,.10)}
   /* línea de hoy */
   .gx-today{position:absolute;top:0;bottom:0;width:2px;background:#e11d48;z-index:4;pointer-events:none}
   /* barra: color = estado */
@@ -1075,17 +1087,25 @@
               <button type="button" class="seg-opt" data-pv="trello">Tablero</button>
               <button type="button" class="seg-opt" data-pv="gantt">Gantt</button>
             </div>
-            <select class="fsel" id="pview-tipo"><option value="">Todo tipo</option><option value="parrilla">Parrilla</option><option value="extra">Extras</option></select>
-            <select class="fsel" id="pview-resp"><option value="">Todo responsable</option></select>
-            <select class="fsel" id="pview-estado"><option value="">Todo estado</option><option value="todo">Por hacer</option><option value="proc">En proceso</option><option value="review">Por revisar</option><option value="cambios">Cambios</option><option value="publicar">Aprobado</option><option value="publicado">Publicado</option></select>
-            <div class="seg" id="pcal-mode" style="display:none">
-              <button type="button" class="seg-opt active" data-cm="pub">Publicación</button>
-              <button type="button" class="seg-opt" data-cm="entrega">Entrega</button>
-            </div>
             <div class="pview-nav" id="pview-nav" style="display:none">
               <button type="button" class="pnav-btn" id="pcal-prev" aria-label="Mes anterior">‹</button>
               <span class="pnav-label" id="pcal-label"></span>
               <button type="button" class="pnav-btn" id="pcal-next" aria-label="Mes siguiente">›</button>
+            </div>
+            <div class="seg" id="pcal-mode" style="display:none">
+              <button type="button" class="seg-opt active" data-cm="pub">Publicación</button>
+              <button type="button" class="seg-opt" data-cm="entrega">Entrega</button>
+            </div>
+            <div class="pfilters">
+              <select class="pf-sel" id="pview-tipo"><option value="">Todo tipo</option><option value="parrilla">Parrilla</option><option value="extra">Extras</option></select>
+              <span class="pf-div"></span>
+              <select class="pf-sel" id="pview-resp"><option value="">Todo responsable</option></select>
+              <span class="pf-div"></span>
+              <select class="pf-sel" id="pview-estado"><option value="">Todo estado</option><option value="todo">Por hacer</option><option value="proc">En proceso</option><option value="review">Por revisar</option><option value="cambios">Cambios</option><option value="publicar">Aprobado</option><option value="publicado">Publicado</option></select>
+              <span class="pf-div"></span>
+              <select class="pf-sel" id="gc-plat"><option value="">Toda plataforma</option></select>
+              <span class="pf-div"></span>
+              <input type="text" class="pf-find" id="gc-find" placeholder="Buscar pieza o ID…" autocomplete="off">
             </div>
           </div>
           <div class="pview-panel" id="pv-tabla">
@@ -1104,14 +1124,6 @@
             <div class="kanban" id="cli-kanban"></div>
           </div>
           <div class="pview-panel hidden" id="pv-gantt2">
-            <div class="gx-filters">
-              <div class="gx-fgroup">
-                <span class="gx-fico">▦</span>
-                <select class="gx-fsel" id="gc-plat"><option value="">Todas las plataformas</option></select>
-                <span class="gx-fdiv"></span>
-                <input type="text" class="gx-fsearch" id="gc-find" placeholder="Buscar pieza o ID…" autocomplete="off">
-              </div>
-            </div>
             <div class="ganttwrap"><div class="gantt" id="cli-gantt-v"></div></div>
           </div>
         </div>
@@ -2075,11 +2087,12 @@
     for(let n=min+1;n<=max+1;n++){const mo=n<=max?new Date(n*86400000).getUTCMonth():null;
       if(n>max||mo!==mMon){const cnt=n-mStart;const nm=MES_LC[mMon];
         months+=`<div class="gx-mon" style="width:${cnt*cw}px">${nm.charAt(0).toUpperCase()+nm.slice(1)}</div>`;mStart=n;mMon=mo;}}
-    // encabezado: días (letra + número)
-    let days='';
+    // encabezado: días (letra + número); viernes resaltado = entrega/revisión
+    let days='', friCols='';
     for(let n=min;n<=max;n++){const dt=new Date(n*86400000),dow=dt.getUTCDay();
-      const cls=(n===todayN?' is-today':'')+((dow===0||dow===6)?' wknd':'');
-      days+=`<div class="gx-day${cls}" style="width:${cw}px"><span class="dl">${DOW_L[dow]}</span><span class="dn">${dt.getUTCDate()}</span></div>`;}
+      const cls=(n===todayN?' is-today':'')+(dow===5?' fri':'')+((dow===0||dow===6)?' wknd':'');
+      days+=`<div class="gx-day${cls}" style="width:${cw}px"><span class="dl">${DOW_L[dow]}</span><span class="dn">${dt.getUTCDate()}</span></div>`;
+      if(dow===5)friCols+=`<div class="gx-fri" style="left:${X(n)}px;width:${cw}px"></div>`;}
     const todayLine=`<div class="gx-today" style="left:${Xc(todayN)}px"></div>`;
     // filas
     const key=x=>x.ped!=null?x.ped:(x.ent!=null?x.ent:x.cli);
@@ -2096,7 +2109,7 @@
       const revDot=x.ent!=null?`<div class="gx-dot rev" style="left:${Xc(x.ent)}px" title="Revisión interna · ${x.a.entrega?sinAnio(x.a.entrega):'—'}"></div>`:'';
       const cliDot=x.cli!=null?`<div class="gx-dot cli" style="left:${Xc(x.cli)}px" title="Envío al cliente · ${x.a.due?sinAnio(x.a.due):'—'}"></div>`:'';
       const tip=`Se pidió: ${fmtReg(x.a.reg)} · Revisión interna: ${x.a.entrega?sinAnio(x.a.entrega):'—'} · Envío al cliente: ${x.a.due?sinAnio(x.a.due):'—'} · ↔ arrastra para mover`;
-      return `<div class="gx-row"><div class="gx-label" onclick="verDetalle('${x.a.id}')"><div class="gx-name"><b>${esc(x.a.que)}</b><span class="pill ${est[1]} gx-pill">${overdue?'⚠ ':''}${est[0]}</span></div><div class="gx-sub">${esc(x.a.plat||tipoLabel(x.a.tipo))} · <span class="gx-who"><i style="background:${pcol}"></i>${esc(pname)}</span></div><div class="gx-id">${showCli?esc(accName(x.a.acc))+' · ':''}#${esc(String(x.a.id))}</div></div><div class="gx-track" style="width:${trackW}px">${todayLine}<div class="gx-bar ${est[1]}" data-gid="${x.a.id}" data-span="${span}" style="left:${left}px;width:${width}px" title="${tip}"></div>${startMk}${revDot}${cliDot}</div></div>`;
+      return `<div class="gx-row"><div class="gx-label" onclick="verDetalle('${x.a.id}')"><div class="gx-name"><b>${esc(x.a.que)}</b><span class="pill ${est[1]} gx-pill">${overdue?'⚠ ':''}${est[0]}</span></div><div class="gx-sub">${esc(x.a.plat||tipoLabel(x.a.tipo))} · <span class="gx-who"><i style="background:${pcol}"></i>${esc(pname)}</span></div><div class="gx-id">${showCli?esc(accName(x.a.acc))+' · ':''}#${esc(String(x.a.id))}</div></div><div class="gx-track" style="width:${trackW}px">${friCols}${todayLine}<div class="gx-bar ${est[1]}" data-gid="${x.a.id}" data-span="${span}" style="left:${left}px;width:${width}px" title="${tip}"></div>${startMk}${revDot}${cliDot}</div></div>`;
     }).join('');
     const head=`<div class="gx-row gx-head"><div class="gx-label"><div class="gx-name"><b style="font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em">Pieza</b></div><div class="gx-sub">Plataforma · responsable</div></div><div class="gx-track" style="width:${trackW}px"><div class="gx-months">${months}</div><div class="gx-days">${days}</div></div></div>`;
     const legend=`<div class="gx-legend"><span><i class="gx-lstart"></i>Se pidió</span><span><i class="gx-ldot rev"></i>Revisión interna</span><span><i class="gx-ldot cli"></i>Envío al cliente</span><span><i class="gx-ltoday"></i>Hoy</span><span class="gx-hint">↔ arrastra una barra para mover sus fechas</span></div>`;
@@ -2109,7 +2122,7 @@
   function gxFit(){document.querySelectorAll('.gx-body').forEach(b=>{
     if(!b.offsetParent){b.style.maxHeight='';return;}
     const top=b.getBoundingClientRect().top;
-    b.style.maxHeight=Math.max(window.innerHeight-top-80,260)+'px';});}
+    b.style.maxHeight=Math.max(window.innerHeight-top-42,300)+'px';});}
   window.addEventListener('resize',()=>requestAnimationFrame(gxFit));
 
   // ===== FINALIZADOS =====
@@ -2484,7 +2497,7 @@
     renderCliEntregables();
     // parrilla del cliente
     const par=acts.filter(a=>a.acc===id&&a.tipo==='parrilla'&&!a.fin);
-    pResp='';pTipo='';pEstado='';if(el('pview-tipo'))el('pview-tipo').value='';if(el('pview-estado'))el('pview-estado').value=''; populatePResp(); renderCliParrillaTable();
+    pResp='';pTipo='';pEstado='';pPlat='';pFind='';if(el('pview-tipo'))el('pview-tipo').value='';if(el('pview-estado'))el('pview-estado').value='';if(el('gc-find'))el('gc-find').value=''; populatePResp(); populatePPlat(); renderCliParrillaTable();
     // extras
     const ex=acts.filter(a=>a.acc===id&&a.tipo==='extra'&&!a.fin);
     el('cli-extras-rows').innerHTML=ex.length?ex.map(a=>`<tr><td class="num">${a.cant}</td><td>${a.que}</td><td>${who(a.quien)}</td><td>${esc(sinAnio(a.due))}</td><td>${detCell(a)}</td><td>${pill(a.estado)}</td></tr>`).join(''):'<tr><td colspan="6"><div class="empty">Sin extras.</div></td></tr>';
@@ -2506,8 +2519,11 @@
   }
   // ===== Parrilla: vistas Tabla / Calendario / Trello (tipo Notion) =====
   const DOW_MIN=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
-  let pView='tabla', pCalY=2026, pCalM=6, pResp='', pTipo='', pEstado='', pCalMode='pub'; // julio 2026 (donde vive la parrilla demo)
-  function cliParrillaItems(all){if(!curClient)return [];let r=acts.filter(a=>a.acc===curClient.id&&(a.tipo==='parrilla'||a.tipo==='extra')&&!a.fin);if(!all){if(pTipo)r=r.filter(a=>a.tipo===pTipo);if(pResp)r=r.filter(a=>a.quien===pResp);if(pEstado)r=r.filter(a=>a.estado===pEstado);}return r;}
+  let pView='tabla', pCalY=2026, pCalM=6, pResp='', pTipo='', pEstado='', pPlat='', pFind='', pCalMode='pub'; // julio 2026 (donde vive la parrilla demo)
+  function cliParrillaItems(all){if(!curClient)return [];let r=acts.filter(a=>a.acc===curClient.id&&(a.tipo==='parrilla'||a.tipo==='extra')&&!a.fin);
+    if(!all){if(pTipo)r=r.filter(a=>a.tipo===pTipo);if(pResp)r=r.filter(a=>a.quien===pResp);if(pEstado)r=r.filter(a=>a.estado===pEstado);if(pPlat)r=r.filter(a=>(a.plat||'')===pPlat);
+      if(pFind){const f=pFind.trim().toLowerCase().replace(/^#/,'');if(f)r=r.filter(a=>String(a.id).toLowerCase().includes(f)||(a.que||'').toLowerCase().includes(f));}}
+    return r;}
   function populatePResp(){const s=el('pview-resp');if(!s)return;const prev=s.value;const codes=[...new Set(cliParrillaItems(true).map(a=>a.quien).filter(Boolean))];s.innerHTML='<option value="">Todo responsable</option>'+codes.map(c=>`<option value="${c}">${people[c]?people[c].n:c}</option>`).join('');s.value=codes.indexOf(prev)>=0?prev:'';}
   function sinAnio(s){return String(s||'').replace(/ de \d{4}\b/,'');}
   function fechaCell(str,overdue){return str?`<span class="fecha${overdue?' venc':''}">${overdue?'⚠ ':''}${esc(sinAnio(str))}</span>`:'<span class="dash">—</span>';}
@@ -2517,6 +2533,7 @@
   function renderCliParrillaTable(){const par=cliParrillaItems();el('cli-parrilla-rows').innerHTML=par.length?par.map(a=>`<tr class="st-${a.estado}"><td>${tipoTag(a.tipo)}</td><td>${esc(a.que)}</td><td>${who(a.quien)}</td><td class="col-fecha">${fechaCell(a.entrega,isOverdue(a))}</td><td class="col-fecha">${fechaCell(a.due,false)}</td><td>${detCell(a)}</td><td>${pill(a.estado)}</td></tr>`).join(''):'<tr><td colspan="7"><div class="empty">Sin piezas para este filtro.</div></td></tr>';}
   function setPView(v){
     pView=v;
+    populatePPlat();
     document.querySelectorAll('#pview-seg .seg-opt').forEach(o=>o.classList.toggle('active',o.dataset.pv===v));
     el('pv-tabla').classList.toggle('hidden',v!=='tabla');
     el('pv-cal').classList.toggle('hidden',v!=='cal');
@@ -2529,19 +2546,11 @@
     if(v==='trello')renderCliTrello();
     if(v==='gantt')renderCliGantt();
   }
-  function fillCliGanttPlats(){const s=el('gc-plat');if(!s)return;const cur=s.value;
+  function populatePPlat(){const s=el('gc-plat');if(!s)return;const cur=s.value;
     const plats=[...new Set(cliParrillaItems(true).filter(a=>a.plat).map(a=>a.plat))].sort();
-    s.innerHTML='<option value="">Todas las plataformas</option>'+plats.map(p=>`<option value="${esc(p)}">${esc(p)}</option>`).join('');
+    s.innerHTML='<option value="">Toda plataforma</option>'+plats.map(p=>`<option value="${esc(p)}">${esc(p)}</option>`).join('');
     if(plats.includes(cur))s.value=cur;}
-  function renderCliGantt(){
-    fillCliGanttPlats();
-    let items=cliParrillaItems();
-    const plat=el('gc-plat')?el('gc-plat').value:'';
-    const find=(el('gc-find')?el('gc-find').value:'').trim().toLowerCase().replace(/^#/,'');
-    if(plat)items=items.filter(a=>(a.plat||'')===plat);
-    if(find)items=items.filter(a=>String(a.id).toLowerCase().includes(find)||(a.que||'').toLowerCase().includes(find));
-    renderGantt2(items, el('cli-gantt-v'), false);
-  }
+  function renderCliGantt(){renderGantt2(cliParrillaItems(), el('cli-gantt-v'), false);}
   function parseFecha(s){const m=String(s||'').toLowerCase().match(/(\d{1,2}) de ([a-záé]+) de (\d{4})/);if(m){const mi=MES_LC.indexOf(m[2]);if(mi>=0)return {y:+m[3],m:mi,d:+m[1]};}return null;}
   function cliItemDate(a){return pCalMode==='entrega'?parseFecha(a.entrega):itemDate(a);}
   function renderCliCal(){
@@ -2800,8 +2809,8 @@
   el('g-cli').addEventListener('change',renderGantt);
   el('g-plat').addEventListener('change',renderGantt);
   el('g-find').addEventListener('input',renderGantt);
-  el('gc-plat').addEventListener('change',renderCliGantt);
-  el('gc-find').addEventListener('input',renderCliGantt);
+  el('gc-plat').addEventListener('change',()=>{pPlat=el('gc-plat').value;setPView(pView);});
+  el('gc-find').addEventListener('input',()=>{pFind=el('gc-find').value;setPView(pView);});
   document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
   el('menuBtn').addEventListener('click',toggleSide);
   el('sideOverlay').addEventListener('click',closeSide);
