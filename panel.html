@@ -219,10 +219,10 @@
 
   /* Tables */
   .tablecard{background:#fff;border:1px solid var(--line);border-radius:15px;overflow:hidden}
-  .tablewrap{overflow-x:auto}
+  .tablewrap{overflow:auto}
   table{width:100%;border-collapse:collapse;font-size:13.5px}
   th,td{text-align:left;padding:11px 15px;border-bottom:1px solid var(--line);white-space:nowrap}
-  th{background:#fafafe;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600}
+  th{background:#fafafe;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600;z-index:2}
   tr:last-child td{border-bottom:none}
   tbody tr:hover{background:#fafaff}
   .num{text-align:right;font-variant-numeric:tabular-nums}
@@ -430,6 +430,35 @@
   .det-link svg{width:15px;height:15px;flex-shrink:0}
   .det-link span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .det-file{font-size:13px;font-weight:500;color:var(--ink);background:#f1f1f6;border:1px solid var(--line);border-radius:9px;padding:7px 12px}
+  /* Detalle de pieza: panel editable y amigable */
+  .det-body{max-height:68vh;overflow:auto;padding-right:4px}
+  .det-edit{display:grid;grid-template-columns:1fr 1fr;gap:12px 16px}
+  .det-edit .f{display:flex;flex-direction:column;gap:5px;margin:0}
+  .det-edit label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+  .det-edit select,.det-edit input{border:1px solid var(--line);border-radius:10px;padding:9px 11px;font-size:13.5px;font-family:inherit;color:var(--ink);background:#fff}
+  .det-edit select:focus,.det-edit input:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
+  .det-statussel{font-weight:700}
+  .det-statussel.todo{color:#475569}.det-statussel.proc{color:#1d4ed8}.det-statussel.review{color:#9a6400}.det-statussel.chg{color:#be123c}.det-statussel.pub{color:#3f6212}.det-statussel.published{color:#16151c}
+  .det-ta{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13.5px;font-family:inherit;color:var(--ink);resize:vertical;min-height:62px;box-sizing:border-box}
+  .det-ta:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
+  .det-revrow{display:flex;gap:8px;align-items:center}
+  .det-revrow .link-input{flex:1}
+  .cmt-list{display:flex;flex-direction:column;gap:10px;margin-bottom:12px}
+  .cmt{display:flex;gap:9px}
+  .cmt .a{width:26px;height:26px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-weight:700}
+  .cmt-b{background:#f6f5fb;border:1px solid var(--line);border-radius:10px;padding:7px 11px;flex:1;min-width:0}
+  .cmt-h{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:2px}
+  .cmt-h b{font-size:12.5px;color:var(--ink)}
+  .cmt-h span{font-size:10.5px;color:var(--muted)}
+  .cmt-b p{margin:0;font-size:13px;line-height:1.5;color:var(--ink)}
+  .cmt-empty{font-size:12.5px;color:var(--muted);font-style:italic}
+  .cmt-add{display:flex;flex-direction:column;gap:8px}
+  .cmt-add textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:9px 11px;font-size:13px;font-family:inherit;resize:vertical;min-height:50px;box-sizing:border-box}
+  .cmt-add textarea:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
+  .cmt-add-row{display:flex;gap:8px;align-items:center}
+  .cmt-add-row select{border:1px solid var(--line);border-radius:9px;padding:7px 10px;font-size:13px;font-family:inherit}
+  .mbtn.ghost{background:var(--brand-soft);color:var(--brand-deep);border:1px solid transparent}
+  .mbtn.sm{padding:8px 14px;font-size:13px}
   .chip button:hover{color:#e11d48}
   .modactions{display:flex;justify-content:flex-end;gap:10px;margin-top:14px}
   .mbtn{border:none;border-radius:11px;padding:11px 20px;font-size:13.5px;font-weight:600;cursor:pointer;transition:.15s}
@@ -1135,7 +1164,7 @@
             </div>
           </div>
           <div class="pview-panel" id="pv-tabla">
-            <div class="tablecard"><div class="tablewrap"><table>
+            <div class="tablecard"><div class="tablewrap fit-scroll"><table>
               <thead><tr><th>Tipo</th><th>Qué</th><th>Responsable</th><th class="col-fecha">Entrega interna</th><th class="col-fecha">A cliente</th><th>Detalle</th><th>Estado</th></tr></thead>
               <tbody id="cli-parrilla-rows"></tbody>
             </table></div></div>
@@ -1275,10 +1304,11 @@
   <div class="modal det-modal">
     <button class="modal-close" onclick="closeModal('ov-det')" aria-label="Cerrar">×</button>
     <h3 id="det-view-title">Detalle</h3>
-    <p class="msub">Información para trabajar de esta actividad.</p>
+    <p class="msub">Edita estado, responsable, fechas, link de revisión y comentarios · guarda al final.</p>
     <div id="det-view-body" class="det-body"></div>
     <div class="modactions">
-      <button class="mbtn save" onclick="closeModal('ov-det')">Cerrar</button>
+      <button class="mbtn cancel" onclick="closeModal('ov-det')">Cerrar</button>
+      <button class="mbtn save" onclick="saveDetalle(curDetId)">Guardar cambios</button>
     </div>
   </div>
 </div>
@@ -1776,30 +1806,54 @@
   const linkCell=h=>h?'<a class="lk" href="#">Link</a>':'<span class="dash">—</span>';
   function hasDet(a){return !!(a&&((a.det&&String(a.det).trim())||(a.links&&a.links.length)||(a.files&&a.files.length)||a.link));}
   function detCell(a){return hasDet(a)?`<a class="lk" href="#" onclick="verDetalle('${a.id}');return false;">Ver</a>`:'<span class="dash">—</span>';}
+  let curDetId=null;
   function verDetalle(id){
     const a=acts.find(x=>x.id===id);if(!a)return;
-    const links=(a.links||[]).map(l=>{const u=/^https?:\/\//i.test(l)?l:'https://'+l;return `<a class="det-link" href="${esc(u)}" target="_blank" rel="noopener">${ICONS.link}<span>${esc(l)}</span></a>`;}).join('');
-    const files=(a.files||[]).map(f=>`<span class="det-file">📎 ${esc(f)}</span>`).join('');
-    const detTxt=a.det&&String(a.det).trim();
+    curDetId=id;
+    const ev=s=>esc(s==null?'':String(s));
     const ficha=`<div class="det-ficha">
       <div class="df"><span class="df-l">Cliente</span><span class="df-v">${esc(accName(a.acc))}${a.cuenta==='prospecto'?' · prospecto':''}</span></div>
-      <div class="df"><span class="df-l">Tipo</span><span class="df-v">${tipoLabel(a.tipo)}</span></div>
-      ${a.plat?`<div class="df"><span class="df-l">Plataforma</span><span class="df-v">${esc(a.plat)}</span></div>`:''}
-      ${a.formato?`<div class="df"><span class="df-l">Formato</span><span class="df-v">${esc(a.formato)}</span></div>`:''}
-      <div class="df"><span class="df-l">Responsable</span><span class="df-v">${people[a.quien]?esc(people[a.quien].n):a.quien}</span></div>
-      <div class="df"><span class="df-l">Estado</span><span class="df-v"><select class="det-est pill ${EST[a.estado][1]}" onchange="cambiarEstado('${a.id}',this.value)">${KCOLS.map(s=>`<option value="${s}"${a.estado===s?' selected':''}>${EST[s][0]}</option>`).join('')}</select></span></div>
-      ${a.entrega?`<div class="df"><span class="df-l">Entrega interna</span><span class="df-v${isOverdue(a)?' venc':''}">${isOverdue(a)?'⚠ ':''}${esc(sinAnio(a.entrega))}</span></div>`:''}
-      ${a.due?`<div class="df"><span class="df-l">A cliente</span><span class="df-v">${esc(sinAnio(a.due))}</span></div>`:''}
+      <div class="df"><span class="df-l">Tipo</span><span class="df-v">${tipoLabel(a.tipo)}${a.cant>1?' · '+a.cant:''}</span></div>
+      <div class="df"><span class="df-l">Plataforma</span><span class="df-v">${a.plat?esc(a.plat):'—'}</span></div>
+      <div class="df"><span class="df-l">Formato</span><span class="df-v">${a.formato?esc(a.formato):'—'}</span></div>
     </div>`;
+    const estSel=`<div class="f"><label>Estado</label><select id="d-estado" class="det-statussel ${EST[a.estado][1]}">${KCOLS.map(s=>`<option value="${s}"${a.estado===s?' selected':''}>${EST[s][0]}</option>`).join('')}</select></div>`;
+    const quienSel=`<div class="f"><label>Responsable</label><select id="d-quien">${Object.keys(people).map(k=>`<option value="${k}"${a.quien===k?' selected':''}>${esc(people[k].n)}</option>`).join('')}</select></div>`;
+    const fechas=`<div class="f"><label>Entrega interna</label><input id="d-entrega" value="${ev(a.entrega)}" placeholder="Ej. Viernes, 12 de junio de 2026"></div>
+      <div class="f"><label>Envío a cliente</label><input id="d-due" value="${ev(a.due)}" placeholder="Ej. Lunes, 22 de junio de 2026"></div>`;
+    const rev=a.revLink?(/^https?:\/\//i.test(a.revLink)?a.revLink:'https://'+a.revLink):'';
+    const cmts=(a.comentarios||[]);
+    const cmtList=cmts.length?cmts.map(c=>{const p=people[c.por];return `<div class="cmt"><span class="a" style="background:${p?p.c:'#888'}">${esc(c.por||'?')}</span><div class="cmt-b"><div class="cmt-h"><b>${p?esc(p.n):esc(c.por||'')}</b><span>${esc(c.fecha||'')}</span></div><p>${esc(c.txt).replace(/\n/g,'<br>')}</p></div></div>`;}).join(''):'<div class="cmt-empty">Sin comentarios del equipo todavía.</div>';
     el('det-view-title').textContent=a.que||'Detalle';
     el('det-view-body').innerHTML=
       ficha
-      +(a.cliente?`<div class="det-sec"><h5>Comentarios del cliente</h5><p class="det-cli">${esc(a.cliente).replace(/\n/g,'<br>')}</p></div>`:'')
-      +(detTxt?`<div class="det-sec"><h5>Información para trabajar</h5><p>${esc(a.det).replace(/\n/g,'<br>')}</p></div>`:'')
-      +(links?`<div class="det-sec"><h5>Links</h5><div class="det-links">${links}</div></div>`:'')
-      +(files?`<div class="det-sec"><h5>Archivos</h5><div class="det-links">${files}</div></div>`:'')
-      +(!detTxt&&!links&&!files&&a.link?`<div class="det-sec"><p class="det-empty">Esta actividad tiene un enlace registrado.</p></div>`:'');
+      +`<div class="det-edit">${estSel}${quienSel}${fechas}</div>`
+      +`<div class="det-sec"><h5>🔗 Link de revisión</h5><div class="det-revrow"><input id="d-revlink" class="link-input" placeholder="Pega el link de Canva / Drive para revisar" value="${ev(a.revLink)}">${rev?`<a class="det-link" href="${esc(rev)}" target="_blank" rel="noopener">${ICONS.link}<span>Abrir</span></a>`:''}</div></div>`
+      +`<div class="det-sec"><h5>Información para trabajar</h5><textarea id="d-det" class="det-ta" placeholder="Contexto, instrucciones, notas internas…">${ev(a.det)}</textarea></div>`
+      +`<div class="det-sec"><h5>Comentarios del cliente</h5><textarea id="d-cliente" class="det-ta" placeholder="Feedback del cliente (por ejemplo, para Cambios)…">${ev(a.cliente)}</textarea></div>`
+      +`<div class="det-sec"><h5>Comentarios del equipo</h5><div class="cmt-list" id="d-cmt-list">${cmtList}</div>`
+        +`<div class="cmt-add"><textarea id="d-newcmt" placeholder="Escribe un comentario para el equipo…"></textarea><div class="cmt-add-row"><select id="d-cmt-por">${Object.keys(people).map(k=>`<option value="${k}">${esc(people[k].n)}</option>`).join('')}</select><button type="button" class="mbtn ghost sm" onclick="addComentario('${a.id}')">Agregar comentario</button></div></div></div>`;
+    const ds=el('d-estado'); if(ds)ds.onchange=()=>{ds.className='det-statussel '+(EST[ds.value]?EST[ds.value][1]:'');};
     openModal('ov-det');
+  }
+  function addComentario(id){
+    const a=acts.find(x=>x.id===id);if(!a)return;
+    const ta=el('d-newcmt'); const txt=ta?ta.value.trim():''; if(!txt){toast('Escribe un comentario');return;}
+    const por=el('d-cmt-por')?el('d-cmt-por').value:'AN';
+    (a.comentarios=a.comentarios||[]).push({por,txt,fecha:new Date().toLocaleDateString('es-MX',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})});
+    persist(); verDetalle(id);
+  }
+  function saveDetalle(id){
+    const a=acts.find(x=>x.id===id);if(!a)return;
+    if(el('d-estado'))a.estado=el('d-estado').value;
+    if(el('d-quien'))a.quien=el('d-quien').value;
+    if(el('d-entrega'))a.entrega=el('d-entrega').value.trim();
+    if(el('d-due'))a.due=el('d-due').value.trim();
+    if(el('d-revlink')){a.revLink=el('d-revlink').value.trim();a.link=a.link||!!a.revLink;}
+    if(el('d-det'))a.det=el('d-det').value.trim();
+    if(el('d-cliente'))a.cliente=el('d-cliente').value.trim();
+    persist(); renderAll(); if(curClient){populatePResp();populatePPlat();setPView(pView);}
+    closeModal('ov-det'); toast('Cambios guardados ✓');
   }
   const bucket=s=>s==='todo'?'todo':s==='proc'?'proc':(s==='review'||s==='cambios'||s==='publicar')?'review':null;
 
@@ -2155,7 +2209,7 @@
   function cambiarEstado(id,ne){const a=acts.find(x=>x.id===id);if(!a||!ne||a.estado===ne)return;a.estado=ne;persist();renderAll();if(curClient){populatePResp();populatePPlat();setPView(pView);}if(el('ov-det').classList.contains('open'))verDetalle(id);}
   // Ajusta la altura del cuerpo para que termine en la base de la pantalla:
   // así el scroll vive dentro del gráfico y filtros + leyenda quedan inmóviles.
-  function gxFit(){document.querySelectorAll('.gx-body,.kanban').forEach(b=>{
+  function gxFit(){document.querySelectorAll('.gx-body,.kanban,.fit-scroll').forEach(b=>{
     if(!b.offsetParent){b.style.maxHeight='';return;}
     const top=b.getBoundingClientRect().top;
     b.style.maxHeight=Math.max(window.innerHeight-top-28,300)+'px';});}
@@ -2588,6 +2642,7 @@
     if(v==='cal')renderCliCal();
     if(v==='trello')renderCliTrello();
     if(v==='gantt')renderCliGantt();
+    requestAnimationFrame(gxFit);
   }
   function populatePPlat(){const s=el('gc-plat');if(!s)return;const cur=s.value;
     const plats=[...new Set(cliParrillaItems(true).filter(a=>a.plat).map(a=>a.plat))].sort();
