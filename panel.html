@@ -552,8 +552,11 @@
   .cmt-add{display:flex;flex-direction:column;gap:8px}
   .cmt-add textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:9px 11px;font-size:13px;font-family:inherit;resize:vertical;min-height:50px;box-sizing:border-box}
   .cmt-add textarea:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
-  .cmt-add-row{display:flex;gap:8px;align-items:center}
+  .cmt-add-row{display:flex;gap:8px;align-items:center;justify-content:flex-end}
   .cmt-add-row select{border:1px solid var(--line);border-radius:9px;padding:7px 10px;font-size:13px;font-family:inherit}
+  .cmt-send{border:1px solid var(--line);background:#fff;color:var(--brand-deep);font-family:inherit;font-size:12.5px;font-weight:600;border-radius:9px;padding:7px 15px;cursor:pointer;transition:.15s var(--ease)}
+  .cmt-send:hover{background:var(--brand-soft);border-color:var(--brand)}
+  .ae-revblock{margin-top:20px;padding-top:18px;border-top:1px solid var(--line)}
   .mbtn.ghost{background:var(--brand-soft);color:var(--brand-deep);border:1px solid transparent}
   .mbtn.sm{padding:8px 14px;font-size:13px}
   .chip button:hover{color:#e11d48}
@@ -1989,12 +1992,12 @@
       <div class="ae-field ae-deliver"><label>Sube tu entregable <span class="ae-tag">lo más importante</span></label>${attListHTML(a.finalLinks,'finalLinks',id,true)}${attAdd('finalLinks')}<div class="ae-uploaded">Fecha en que se sube: <b>${esc(a.subidoFecha||hoyFecha())}</b></div></div>
       <div class="ae-field"><label>Estado <span class="ae-mini">se guarda la fecha al cambiarlo</span></label><select id="ae-estado" class="ae-statussel ${EST[a.estado][1]}" onchange="aeSelEstado('${id}')">${KCOLS.map(s=>`<option value="${s}"${a.estado===s?' selected':''}>${EST[s][0]}</option>`).join('')}</select></div>
       <div class="ae-field"><label>Comentarios sobre la entrega</label><div class="cmt-list">${cmtZone(cmtItems(a.comentarios,'comentarios',id))}</div>
-        <div class="cmt-add"><textarea id="ae-newcmt" class="big" placeholder="Cuéntale al equipo cómo va la entrega: avances, dudas o cambios…"></textarea><div class="cmt-add-row"><button type="button" class="mbtn save sm" onclick="addEntregaCmt('${id}')">Agregar comentario</button></div></div></div>
-      <div class="ae-field"><label>Comentarios de revisión</label><div class="cmt-list">${cmtZone(revSeed(a,id)+cmtItems(a.revComentarios,'revComentarios',id))}</div>
-        <div class="cmt-add"><textarea id="ae-revcmt" class="big" placeholder="Notas de revisión o cambios solicitados…"></textarea><div class="cmt-add-row"><button type="button" class="mbtn ghost sm" onclick="addRevisionCmt('${id}')">Agregar comentario</button></div></div></div>
+        <div class="cmt-add"><textarea id="ae-newcmt" class="big" placeholder="Cuéntale al equipo cómo va la entrega… (Enter para enviar)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();addEntregaCmt('${id}')}"></textarea><div class="cmt-add-row"><button type="button" class="cmt-send" onclick="addEntregaCmt('${id}')">Agregar comentario</button></div></div></div>
     </div>`;
+    const revblock=`<div class="ae-revblock"><div class="ae-field"><label>Comentarios de revisión</label><div class="cmt-list">${cmtZone(revSeed(a,id)+cmtItems(a.revComentarios,'revComentarios',id))}</div>
+        <div class="cmt-add"><textarea id="ae-revcmt" class="big" placeholder="Notas de revisión o cambios solicitados… (Enter para enviar)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();addRevisionCmt('${id}')}"></textarea><div class="cmt-add-row"><button type="button" class="cmt-send" onclick="addRevisionCmt('${id}')">Agregar comentario</button></div></div></div></div>`;
     el('ae-head').innerHTML=head;
-    el('ae-body').innerHTML=`<div class="ae-grid">${left}${right}</div>`;
+    el('ae-body').innerHTML=`<div class="ae-grid">${left}${right}</div>${revblock}`;
     aeInitPickers(['ae-entrega','ae-due']);
     openModal('ov-act-edit');
   }
