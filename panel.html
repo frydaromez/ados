@@ -65,7 +65,7 @@
 
   /* Main */
   .main{flex:1;min-width:0;display:flex;flex-direction:column;margin-left:76px}
-  .topbar{display:flex;align-items:stretch;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:18px 32px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.82);backdrop-filter:saturate(160%) blur(14px);position:sticky;top:0;z-index:5}
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:11px 28px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.82);backdrop-filter:saturate(160%) blur(14px);position:sticky;top:0;z-index:5}
   .topbar.compact{align-items:center;padding-top:22px;padding-bottom:22px}
   .topbar.compact .head-left{align-self:center}
   .head-left{display:flex;flex-direction:column;justify-content:flex-end;min-width:0;padding-bottom:4px}
@@ -166,7 +166,7 @@
   .tbtn.primary .plus{color:rgba(255,255,255,.85)}
   .tbtn.primary:hover{background:var(--brand-deep);border-color:var(--brand-deep);box-shadow:0 12px 26px -8px rgba(106,60,240,.6)}
   .tbtn.primary:hover .plus{color:#fff}
-  .content{padding:22px 26px 24px;overflow:auto}
+  .content{padding:18px 26px 16px;overflow:auto}
   .content.tight-top{padding-top:12px}
 
   /* KPIs */
@@ -262,6 +262,8 @@
   .dstat.todo{background:#eef1f6;color:#475569}
   .dstat.proc{background:#e2ecfd;color:#1d4ed8}
   .dstat.review{background:#fef3da;color:#9a6400}
+  .dstat.chg{background:#fde2e7;color:#be123c}
+  .det-est{font-family:inherit;font-size:12px;font-weight:600;border:1px solid var(--line);border-radius:999px;padding:3px 26px 3px 11px;cursor:pointer;outline:none;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='3'><path d='M6 9l6 6 6-6'/></svg>");background-repeat:no-repeat;background-position:right 9px center}
   /* banner compacto en Operación: prioriza la vista de actividades */
   .detail-head.compact{padding:8px 16px;gap:12px;margin-bottom:8px}
   .detail-head.compact .avatar{width:38px;height:38px;border-radius:11px;font-size:15px}
@@ -287,12 +289,20 @@
   .metric{background:#fafafe;border:1px solid var(--line);border-radius:12px;padding:13px}
   .metric .val{font-size:20px;font-weight:700}.metric .lbl{font-size:12px;color:var(--muted)}
 
-  /* Kanban */
-  .kanban{display:flex;gap:13px;overflow-x:auto;padding-bottom:8px}
-  .kcol{flex:0 0 230px;background:#f7f7fc;border:1px solid var(--line);border-radius:14px;padding:11px}
-  .kcol h4{margin:2px 4px 10px;font-size:12.5px;display:flex;align-items:center;justify-content:space-between}
+  /* Kanban: scroll con encabezados de estado fijos + tarjetas con color de estado tenue */
+  .kanban{display:flex;gap:13px;overflow:auto;padding-bottom:4px;align-items:flex-start}
+  .kcol{flex:0 0 224px;background:#f7f7fc;border:1px solid var(--line);border-radius:14px;padding:0 10px 10px}
+  .kcol h4{position:sticky;top:0;z-index:2;margin:0 -10px 9px;padding:10px 14px;font-size:12.5px;font-weight:700;display:flex;align-items:center;justify-content:space-between;gap:6px;background:#f3f2fa;border-bottom:1px solid var(--line);border-radius:14px 14px 0 0}
   .kcol h4 .c{font-size:11px;color:var(--muted);background:#fff;border:1px solid var(--line);border-radius:999px;padding:1px 7px}
-  .kcard{background:#fff;border:1px solid var(--line);border-radius:11px;padding:11px 12px;margin-bottom:9px;box-shadow:0 2px 5px -3px rgba(0,0,0,.15)}
+  .kcol.kover{outline:2px dashed var(--brand);outline-offset:-2px}
+  .kcard{position:relative;background:#fff;border:1px solid var(--line);border-left:3px solid #cbd5e1;border-radius:10px;padding:9px 11px;margin-bottom:8px;box-shadow:0 2px 5px -3px rgba(0,0,0,.15)}
+  .kcard.kdragging{opacity:.4}
+  .kcard.st-todo{background:#f7f8fb;border-left-color:#94a3b8}
+  .kcard.st-proc{background:#eef5ff;border-left-color:#3b82f6}
+  .kcard.st-review{background:#fff8ec;border-left-color:#f59e0b}
+  .kcard.st-cambios{background:#fdecef;border-left-color:#e11d48}
+  .kcard.st-publicar{background:#f0f7e9;border-left-color:#65a30d}
+  .kcard.st-publicado{background:#f0f0f4;border-left-color:#16151c}
   .kcard .cli{font-size:11.5px;color:var(--muted);font-weight:600}
   .kcard .ttl{font-size:13.5px;font-weight:600;margin:3px 0 7px}
   .kcard .ft{display:flex;align-items:center;justify-content:space-between;font-size:11.5px;color:var(--muted)}
@@ -712,6 +722,11 @@
   .pf-find::placeholder{color:#a7a4b8;font-weight:500}
   .pf-find:focus{background:var(--brand-soft)}
   .pf-div{width:1px;height:18px;background:var(--line);flex-shrink:0}
+  /* leyenda del gantt embebida en la barra de filtros (sin fila aparte) */
+  .pf-legend{display:flex;align-items:center;min-width:0;overflow:hidden}
+  .pf-legend .gx-legend{background:none;border:none;padding:0;margin:0;backdrop-filter:none;gap:14px;flex-wrap:nowrap;font-size:11px}
+  .pf-legend .gx-hint{display:none}
+  .gx-filters .gx-fgroup{margin-left:auto}
   .pnav-btn{width:34px;height:34px;border:1px solid var(--line);background:#fff;border-radius:10px;cursor:pointer;font-size:18px;line-height:1;color:var(--ink);display:flex;align-items:center;justify-content:center;transition:transform .2s var(--ease-spring),border-color .18s var(--ease),color .18s var(--ease)}
   .pnav-btn:hover{border-color:var(--brand);color:var(--brand);transform:translateY(-1px)}
   .pnav-btn:active{transform:scale(.92)}
@@ -873,7 +888,8 @@
   .eq-q{font-size:13px;font-weight:600;color:var(--ink);margin:3px 0 6px}
   .eq-ft{display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--muted)}
   .eq-st{display:inline-flex;align-items:center;gap:5px;font-weight:600}
-  .kanban .kcard{cursor:pointer;transition:transform .2s var(--ease-spring),box-shadow .2s var(--ease)}
+  .kanban .kcard{cursor:grab;transition:transform .2s var(--ease-spring),box-shadow .2s var(--ease)}
+  .kanban .kcard:active{cursor:grabbing}
   .kanban .kcard:hover{transform:translateY(-2px);box-shadow:0 12px 24px -12px rgba(40,25,90,.4)}
   @media(max-width:760px){.pcal{gap:5px;padding:9px}.pcal-cell{min-height:74px}.pcal-ev{font-size:10px;padding:2px 5px}}
 
@@ -1035,13 +1051,14 @@
       <!-- GANTT GENERAL (vista de la estratega) -->
       <section class="view hidden" id="view-gantt">
         <div class="gx-filters">
+          <div class="pf-legend" id="gantt-legend"></div>
           <div class="gx-fgroup">
             <span class="gx-fico">▦</span>
             <select class="gx-fsel" id="g-cli"><option value="">Todos los clientes</option></select>
             <span class="gx-fdiv"></span>
             <select class="gx-fsel" id="g-plat"><option value="">Todas las plataformas</option></select>
             <span class="gx-fdiv"></span>
-            <input type="text" class="gx-fsearch" id="g-find" placeholder="Buscar pieza o ID…" autocomplete="off">
+            <input type="text" class="gx-fsearch" id="g-find" placeholder="Buscar pieza, ID, persona…" autocomplete="off">
           </div>
           <button type="button" class="tbtn primary" onclick="openImport()"><span class="plus">↑</span> Subir parrilla</button>
         </div>
@@ -1104,6 +1121,7 @@
               <button type="button" class="seg-opt active" data-cm="pub">Publicación</button>
               <button type="button" class="seg-opt" data-cm="entrega">Entrega</button>
             </div>
+            <div class="pf-legend" id="cli-gantt-v-legend"></div>
             <div class="pfilters">
               <select class="pf-sel" id="pview-tipo"><option value="">Todo tipo</option><option value="parrilla">Parrilla</option><option value="extra">Extras</option></select>
               <span class="pf-div"></span>
@@ -1769,7 +1787,7 @@
       ${a.plat?`<div class="df"><span class="df-l">Plataforma</span><span class="df-v">${esc(a.plat)}</span></div>`:''}
       ${a.formato?`<div class="df"><span class="df-l">Formato</span><span class="df-v">${esc(a.formato)}</span></div>`:''}
       <div class="df"><span class="df-l">Responsable</span><span class="df-v">${people[a.quien]?esc(people[a.quien].n):a.quien}</span></div>
-      <div class="df"><span class="df-l">Estado</span><span class="df-v">${pill(a.estado)}</span></div>
+      <div class="df"><span class="df-l">Estado</span><span class="df-v"><select class="det-est pill ${EST[a.estado][1]}" onchange="cambiarEstado('${a.id}',this.value)">${KCOLS.map(s=>`<option value="${s}"${a.estado===s?' selected':''}>${EST[s][0]}</option>`).join('')}</select></span></div>
       ${a.entrega?`<div class="df"><span class="df-l">Entrega interna</span><span class="df-v${isOverdue(a)?' venc':''}">${isOverdue(a)?'⚠ ':''}${esc(sinAnio(a.entrega))}</span></div>`:''}
       ${a.due?`<div class="df"><span class="df-l">A cliente</span><span class="df-v">${esc(sinAnio(a.due))}</span></div>`:''}
     </div>`;
@@ -1894,8 +1912,8 @@
     const items=madreItems();
     el('madre-board').innerHTML=KCOLS.map(s=>{
       const col=items.filter(a=>a.estado===s);
-      const cards=col.map(a=>`<div class="kcard" onclick="verDetalle('${a.id}')"><div class="cli">${accName(a.acc)}</div><div class="ttl">${a.cant>1?a.cant+' ':''}${esc(a.que)}</div>${kdates(a)}<div class="ft"><span>${esc(a.formato||tipoLabel(a.tipo))}</span><span class="who"><span class="a" style="background:${people[a.quien]?people[a.quien].c:'#888'}">${a.quien}</span></span></div></div>`).join('')||'<div style="font-size:12px;color:#b8bac6;padding:6px 4px">—</div>';
-      return `<div class="kcol"><h4>${EST[s][0]} <span class="c">${col.length}</span></h4>${cards}</div>`;
+      const cards=col.map(a=>`<div class="kcard st-${a.estado}" draggable="true" data-id="${a.id}" onclick="verDetalle('${a.id}')"><div class="cli">${accName(a.acc)}</div><div class="ttl">${a.cant>1?a.cant+' ':''}${esc(a.que)}</div>${kdates(a)}<div class="ft"><span>${esc(a.formato||tipoLabel(a.tipo))}</span><span class="who"><span class="a" style="background:${people[a.quien]?people[a.quien].c:'#888'}">${a.quien}</span></span></div></div>`).join('')||'<div style="font-size:12px;color:#b8bac6;padding:6px 4px">—</div>';
+      return `<div class="kcol" data-est="${s}"><h4>${EST[s][0]} <span class="c">${col.length}</span></h4>${cards}</div>`;
     }).join('');
   }
   const MES_LC=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
@@ -2020,8 +2038,8 @@
     const items=acts.filter(a=>a.tipo==='parrilla'&&!a.fin&&(!cli||a.acc===cli));
     el('kanban').innerHTML=KCOLS.map(s=>{
       const col=items.filter(a=>a.estado===s);
-      const cards=col.map(a=>`<div class="kcard" onclick="verDetalle('${a.id}')"><div class="cli">${accName(a.acc)}</div><div class="ttl">${a.cant>1?a.cant+' ':''}${esc(a.que)}</div>${kdates(a)}<div class="ft"><span>${esc(a.formato||tipoLabel(a.tipo))}</span><span class="who"><span class="a" style="background:${people[a.quien]?people[a.quien].c:'#888'}">${a.quien}</span></span></div></div>`).join('')||'<div style="font-size:12px;color:#b8bac6;padding:6px 4px">—</div>';
-      return `<div class="kcol"><h4>${EST[s][0]} <span class="c">${col.length}</span></h4>${cards}</div>`;
+      const cards=col.map(a=>`<div class="kcard st-${a.estado}" draggable="true" data-id="${a.id}" onclick="verDetalle('${a.id}')"><div class="cli">${accName(a.acc)}</div><div class="ttl">${a.cant>1?a.cant+' ':''}${esc(a.que)}</div>${kdates(a)}<div class="ft"><span>${esc(a.formato||tipoLabel(a.tipo))}</span><span class="who"><span class="a" style="background:${people[a.quien]?people[a.quien].c:'#888'}">${a.quien}</span></span></div></div>`).join('')||'<div style="font-size:12px;color:#b8bac6;padding:6px 4px">—</div>';
+      return `<div class="kcol" data-est="${s}"><h4>${EST[s][0]} <span class="c">${col.length}</span></h4>${cards}</div>`;
     }).join('');
   }
 
@@ -2120,17 +2138,27 @@
       return `<div class="gx-row"><div class="gx-label" onclick="verDetalle('${x.a.id}')"><div class="gx-name"><b>${esc(x.a.que)}</b><span class="pill ${est[1]} gx-pill">${overdue?'⚠ ':''}${est[0]}</span></div><div class="gx-sub">${esc(x.a.plat||tipoLabel(x.a.tipo))} · <span class="gx-who"><i style="background:${pcol}"></i>${esc(pname)}</span></div><div class="gx-id">${showCli?esc(accName(x.a.acc))+' · ':''}#${esc(String(x.a.id))}</div></div><div class="gx-track" style="width:${trackW}px">${friCols}${todayLine}<div class="gx-bar ${est[1]}" data-gid="${x.a.id}" data-span="${span}" style="left:${left}px;width:${width}px" title="${tip}"></div>${startMk}${revDot}${cliDot}</div></div>`;
     }).join('');
     const head=`<div class="gx-row gx-head"><div class="gx-label"><div class="gx-name"><b style="font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em">Pieza</b></div><div class="gx-sub">Plataforma · responsable</div></div><div class="gx-track" style="width:${trackW}px"><div class="gx-months">${months}</div><div class="gx-days">${days}</div></div></div>`;
-    const legend=`<div class="gx-legend"><span><i class="gx-lstart"></i>Se pidió</span><span><i class="gx-ldot rev"></i>Revisión interna</span><span><i class="gx-ldot cli"></i>Envío al cliente</span><span><i class="gx-ltoday"></i>Hoy</span><span class="gx-hint">↔ arrastra una barra para mover sus fechas</span></div>`;
     const innerW=209+trackW;
-    host.innerHTML=`<div class="gx">${legend}<div class="gx-body"><div class="gx-inner" style="width:${innerW}px">${head}${rows}</div></div></div>`;
+    // la leyenda va, si existe, en el slot junto a los filtros (ahorra una fila)
+    const slot=document.getElementById(host.id+'-legend');
+    if(slot)slot.innerHTML=GX_LEGEND;
+    host.innerHTML=`<div class="gx">${slot?'':GX_LEGEND}<div class="gx-body"><div class="gx-inner" style="width:${innerW}px">${head}${rows}</div></div></div>`;
     requestAnimationFrame(gxFit);
   }
+  const GX_LEGEND='<div class="gx-legend"><span><i class="gx-lstart"></i>Se pidió</span><span><i class="gx-ldot rev"></i>Revisión interna</span><span><i class="gx-ldot cli"></i>Envío al cliente</span><span><i class="gx-ltoday"></i>Hoy</span><span class="gx-hint">↔ arrastra una barra para mover sus fechas</span></div>';
+  // Tablero: arrastrar una tarjeta a otra columna cambia su estado
+  let kDragId=null;
+  document.addEventListener('dragstart',e=>{const c=e.target.closest('.kcard[draggable]');if(!c)return;kDragId=c.dataset.id;try{e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',kDragId);}catch(_){}c.classList.add('kdragging');});
+  document.addEventListener('dragend',e=>{const c=e.target.closest('.kcard');if(c)c.classList.remove('kdragging');document.querySelectorAll('.kcol.kover').forEach(x=>x.classList.remove('kover'));kDragId=null;});
+  document.addEventListener('dragover',e=>{if(!kDragId)return;const col=e.target.closest('.kcol[data-est]');if(!col)return;e.preventDefault();try{e.dataTransfer.dropEffect='move';}catch(_){}if(!col.classList.contains('kover')){document.querySelectorAll('.kcol.kover').forEach(x=>x.classList.remove('kover'));col.classList.add('kover');}});
+  document.addEventListener('drop',e=>{if(!kDragId)return;const col=e.target.closest('.kcol[data-est]');if(!col)return;e.preventDefault();cambiarEstado(kDragId,col.dataset.est);kDragId=null;});
+  function cambiarEstado(id,ne){const a=acts.find(x=>x.id===id);if(!a||!ne||a.estado===ne)return;a.estado=ne;persist();renderAll();if(curClient){populatePResp();populatePPlat();setPView(pView);}if(el('ov-det').classList.contains('open'))verDetalle(id);}
   // Ajusta la altura del cuerpo para que termine en la base de la pantalla:
   // así el scroll vive dentro del gráfico y filtros + leyenda quedan inmóviles.
-  function gxFit(){document.querySelectorAll('.gx-body').forEach(b=>{
+  function gxFit(){document.querySelectorAll('.gx-body,.kanban').forEach(b=>{
     if(!b.offsetParent){b.style.maxHeight='';return;}
     const top=b.getBoundingClientRect().top;
-    b.style.maxHeight=Math.max(window.innerHeight-top-42,300)+'px';});}
+    b.style.maxHeight=Math.max(window.innerHeight-top-28,300)+'px';});}
   window.addEventListener('resize',()=>requestAnimationFrame(gxFit));
 
   // ===== FINALIZADOS =====
@@ -2472,13 +2500,14 @@
     }
     el('detail-head').classList.add('compact');
     const mine=acts.filter(a=>a.acc===c.id&&!a.fin&&a.estado!=='publicado');
-    const t=mine.filter(a=>bucket(a.estado)==='todo').length,p=mine.filter(a=>bucket(a.estado)==='proc').length,r=mine.filter(a=>bucket(a.estado)==='review').length;
+    const t=mine.filter(a=>a.estado==='todo').length,p=mine.filter(a=>a.estado==='proc').length,r=mine.filter(a=>a.estado==='review').length,ch=mine.filter(a=>a.estado==='cambios').length;
     el('detail-head').innerHTML=`${av}
       <div class="dh-meta"><h2>${c.name}</h2><div class="role">${esc(desc)}</div></div>
       <div class="right">
         <div class="dstat todo"><div class="v">${t}</div><div class="l">Por hacer</div></div>
         <div class="dstat proc"><div class="v">${p}</div><div class="l">En proceso</div></div>
         <div class="dstat review"><div class="v">${r}</div><div class="l">Por revisar</div></div>
+        <div class="dstat chg"><div class="v">${ch}</div><div class="l">Cambios</div></div>
       </div>`;
   }
   function openClient(id){ openAcc(id,'cliente'); }
@@ -2552,6 +2581,7 @@
     el('pv-cal').classList.toggle('hidden',v!=='cal');
     el('pv-trello').classList.toggle('hidden',v!=='trello');
     el('pv-gantt2').classList.toggle('hidden',v!=='gantt');
+    if(v!=='gantt'){const lg=el('cli-gantt-v-legend');if(lg)lg.innerHTML='';}
     el('pview-nav').style.display = v==='cal' ? '' : 'none';
     el('pcal-mode').style.display = v==='cal' ? '' : 'none';
     if(v==='tabla')renderCliParrillaTable();
@@ -2594,9 +2624,10 @@
     const items=cliParrillaItems();
     host.innerHTML=KCOLS.map(s=>{
       const col=items.filter(a=>a.estado===s);
-      const cards=col.map(a=>`<div class="kcard" onclick="verDetalle('${a.id}')"><div class="ttl">${a.cant>1?a.cant+' ':''}${esc(a.que)}</div>${kdates(a)}<div class="ft"><span>${esc(a.formato||tipoLabel(a.tipo))}</span><span class="who"><span class="a" style="background:${people[a.quien]?people[a.quien].c:'#888'}">${a.quien}</span></span></div></div>`).join('')||'<div style="font-size:12px;color:#b8bac6;padding:6px 4px">—</div>';
-      return `<div class="kcol"><h4>${EST[s][0]} <span class="c">${col.length}</span></h4>${cards}</div>`;
+      const cards=col.map(a=>`<div class="kcard st-${a.estado}" draggable="true" data-id="${a.id}" onclick="verDetalle('${a.id}')"><div class="ttl">${a.cant>1?a.cant+' ':''}${esc(a.que)}</div>${kdates(a)}<div class="ft"><span>${esc(a.formato||tipoLabel(a.tipo))}</span><span class="who"><span class="a" style="background:${people[a.quien]?people[a.quien].c:'#888'}">${a.quien}</span></span></div></div>`).join('')||'<div style="font-size:12px;color:#b8bac6;padding:6px 4px">—</div>';
+      return `<div class="kcol" data-est="${s}"><h4>${EST[s][0]} <span class="c">${col.length}</span></h4>${cards}</div>`;
     }).join('');
+    requestAnimationFrame(gxFit);
   }
   // ===== Importar parrilla (pegar desde Sheets) =====
   const PERSON_COLORS=["#0ea5e9","#8155ff","#e0457a","#10b981","#f59e0b","#a855f7","#ef4444","#14b8a6","#6366f1"];
