@@ -467,8 +467,24 @@
   .ae-edit-mini:hover{color:var(--brand-deep);opacity:1}
   .ae-uploaded{font-size:11px;color:#b6b3c6;margin-top:10px}
   .ae-uploaded b{color:var(--muted);font-weight:600}
-  .ae-deliver{background:#e9e8f1;border:1px solid #d6d4e3;border-radius:14px;padding:14px 16px}
-  .ae-deliver>label{color:var(--ink);font-size:12px}
+  .ae-deliver{background:linear-gradient(135deg,#f5f1ff,#ebe2ff);border:1.5px solid #cbb6ff;border-radius:15px;padding:15px 16px;box-shadow:0 10px 26px -18px rgba(129,85,255,.5);transition:transform .22s var(--ease-spring),box-shadow .22s var(--ease),border-color .2s var(--ease)}
+  .ae-deliver:hover{transform:translateY(-2px);border-color:var(--brand);box-shadow:0 18px 36px -16px rgba(129,85,255,.55)}
+  .ae-deliver>label{color:var(--brand-deep);font-size:12px}
+  /* micro-interacciones dopaminérgicas al entregar */
+  @keyframes aeGlow{0%{box-shadow:0 0 0 0 rgba(129,85,255,.5)}55%{box-shadow:0 0 0 12px rgba(129,85,255,0)}100%{box-shadow:0 10px 26px -18px rgba(129,85,255,.5)}}
+  @keyframes attPop{0%{opacity:0;transform:scale(.88) translateY(7px)}60%{transform:scale(1.04)}100%{opacity:1;transform:none}}
+  @keyframes cmtPop{0%{opacity:0;transform:translateY(9px) scale(.97)}100%{opacity:1;transform:none}}
+  .ae-deliver.ae-just{animation:aeGlow .8s var(--ease-out)}
+  .ae-deliver.ae-just .att:last-child{animation:attPop .42s var(--ease-spring)}
+  .ae-cmtjust .cmt:last-child{animation:cmtPop .42s var(--ease-spring)}
+  .att-addbtn,.att-filebtn{transition:transform .15s var(--ease-spring),background .15s var(--ease),border-color .15s var(--ease),color .15s var(--ease),box-shadow .15s var(--ease)}
+  .att-addbtn:hover{transform:translateY(-1px) scale(1.04);box-shadow:0 8px 18px -7px rgba(129,85,255,.6)}
+  .att-addbtn:active{transform:scale(.95)}
+  .att-filebtn:hover{transform:translateY(-1px)}
+  .cmt-send{transition:transform .15s var(--ease-spring),background .15s var(--ease),border-color .15s var(--ease)}
+  .cmt-send:active{transform:scale(.96)}
+  .cmt-add textarea,.det-ta{transition:border-color .18s var(--ease),box-shadow .22s var(--ease),transform .18s var(--ease)}
+  .cmt-add textarea:focus,.det-ta:focus{box-shadow:0 0 0 3px var(--brand-soft),0 10px 24px -14px rgba(129,85,255,.45)}
   .det-ta.tall{min-height:104px}
   .cmt-add textarea.big{min-height:92px}
   /* adjuntos con nombre */
@@ -1954,7 +1970,7 @@
     openModal('ov-det');
   }
   // ===== ACTIVIDAD / SUBIR (panel ancho, editable) =====
-  let curActId=null;
+  let curActId=null, aeFlash=false, aeCmtFlash=false;
   const hoyStr=()=>new Date().toLocaleDateString('es-MX',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
   function registrarEstado(a,ne){a.estado=ne;a.estadoFecha=hoyStr();(a.hist=a.hist||[]).push({e:ne,f:a.estadoFecha});}
   function abrirActividad(id){
@@ -1962,8 +1978,8 @@
     curActId=id;
     const ev=s=>esc(s==null?'':String(s));
     const head=`<div class="ae-head-top">
-        <h3 class="ae-name">${esc(a.que||'Actividad')}</h3>
         <span class="ae-chip mono">#${esc(String(a.id))}</span>
+        <h3 class="ae-name">${esc(a.que||'Actividad')}</h3>
         ${a.plat?`<span class="ae-chip">${esc(a.plat)}</span>`:''}
         <span class="ae-chip soft">${tipoLabel(a.tipo)}</span>
       </div>
@@ -1998,7 +2014,10 @@
     const revblock=`<div class="ae-revblock"><div class="ae-field"><label>Comentarios de revisión</label>${cmtBox(revSeed(a,id)+cmtItems(a.revComentarios,'revComentarios',id))}
         <div class="cmt-add"><textarea id="ae-revcmt" class="big" placeholder="Notas de revisión o cambios solicitados… (Enter para enviar)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();addRevisionCmt('${id}')}"></textarea><div class="cmt-add-row"><button type="button" class="cmt-send" onclick="addRevisionCmt('${id}')">Agregar comentario</button></div></div></div></div>`;
     el('ae-head').innerHTML=head;
-    el('ae-body').innerHTML=`<div class="ae-grid">${left}${right}</div>${revblock}`;
+    const body=el('ae-body');
+    body.innerHTML=`<div class="ae-grid">${left}${right}</div>${revblock}`;
+    if(aeFlash){const d=body.querySelector('.ae-deliver');if(d)d.classList.add('ae-just');aeFlash=false;}
+    if(aeCmtFlash){body.classList.add('ae-cmtjust');setTimeout(()=>body.classList.remove('ae-cmtjust'),600);aeCmtFlash=false;}
     aeInitPickers(['ae-entrega','ae-due']);
     openModal('ov-act-edit');
   }
@@ -2009,11 +2028,11 @@
   function aeSelEstado(id){const a=acts.find(x=>x.id===id);if(!a)return;const sel=el('ae-estado');if(!sel)return;const s=sel.value;aeStash(a);if(a.estado!==s)registrarEstado(a,s);sel.className='ae-statussel '+(EST[s]?EST[s][1]:'');persist();}
   function aeToggleDet(){const ro=el('ae-det-ro'),ta=el('ae-det'),btn=el('ae-det-edit');if(!ta)return;if(ro)ro.style.display='none';ta.style.display='';ta.focus();if(btn)btn.style.display='none';}
   function aeToggleMat(){const ro=el('ae-mat-ro'),ed=el('ae-mat-ed'),btn=el('ae-mat-edit');if(!ed)return;if(ro)ro.style.display='none';ed.style.display='';if(btn)btn.style.display='none';}
-  function addAtt(id,kind){const a=acts.find(x=>x.id===id);if(!a)return;const url=(el('att-'+kind+'-url')||{}).value;const v=(url||'').trim();if(!v){toast('Pega un link');return;}const nm=((el('att-'+kind+'-name')||{}).value||'').trim();aeStash(a);(a[kind]=a[kind]||[]).push({name:nm||v,url:v,type:'link'});if(kind==='links')a.link=true;if(kind==='finalLinks'&&!a.subidoFecha)a.subidoFecha=hoyFecha();persist();abrirActividad(id);}
-  function addAttFile(id,kind,input){const a=acts.find(x=>x.id===id);if(!a||!input.files||!input.files[0])return;const f=input.files[0];aeStash(a);(a[kind]=a[kind]||[]).push({name:f.name,type:'file'});if(kind==='finalLinks'&&!a.subidoFecha)a.subidoFecha=hoyFecha();persist();abrirActividad(id);}
+  function addAtt(id,kind){const a=acts.find(x=>x.id===id);if(!a)return;const url=(el('att-'+kind+'-url')||{}).value;const v=(url||'').trim();if(!v){toast('Pega un link');return;}const nm=((el('att-'+kind+'-name')||{}).value||'').trim();aeStash(a);(a[kind]=a[kind]||[]).push({name:nm||v,url:v,type:'link'});if(kind==='links')a.link=true;if(kind==='finalLinks'){if(!a.subidoFecha)a.subidoFecha=hoyFecha();aeFlash=true;toast('¡Entregable subido!');}persist();abrirActividad(id);}
+  function addAttFile(id,kind,input){const a=acts.find(x=>x.id===id);if(!a||!input.files||!input.files[0])return;const f=input.files[0];aeStash(a);(a[kind]=a[kind]||[]).push({name:f.name,type:'file'});if(kind==='finalLinks'){if(!a.subidoFecha)a.subidoFecha=hoyFecha();aeFlash=true;toast('¡Entregable subido!');}persist();abrirActividad(id);}
   function delAtt(id,kind,i){const a=acts.find(x=>x.id===id);if(!a||!a[kind])return;aeStash(a);a[kind].splice(i,1);persist();abrirActividad(id);}
-  function addEntregaCmt(id){const a=acts.find(x=>x.id===id);if(!a)return;const ta=el('ae-newcmt');const txt=ta?ta.value.trim():'';if(!txt){toast('Escribe un comentario');return;}aeStash(a);(a.comentarios=a.comentarios||[]).push({por:a.quien||'AN',txt,fecha:hoyStr()});persist();abrirActividad(id);}
-  function addRevisionCmt(id){const a=acts.find(x=>x.id===id);if(!a)return;const ta=el('ae-revcmt');const txt=ta?ta.value.trim():'';if(!txt){toast('Escribe un comentario');return;}aeStash(a);(a.revComentarios=a.revComentarios||[]).push({por:'AN',txt,fecha:hoyStr()});persist();abrirActividad(id);}
+  function addEntregaCmt(id){const a=acts.find(x=>x.id===id);if(!a)return;const ta=el('ae-newcmt');const txt=ta?ta.value.trim():'';if(!txt){toast('Escribe un comentario');return;}aeStash(a);(a.comentarios=a.comentarios||[]).push({por:a.quien||'AN',txt,fecha:hoyStr()});aeCmtFlash=true;persist();abrirActividad(id);}
+  function addRevisionCmt(id){const a=acts.find(x=>x.id===id);if(!a)return;const ta=el('ae-revcmt');const txt=ta?ta.value.trim():'';if(!txt){toast('Escribe un comentario');return;}aeStash(a);(a.revComentarios=a.revComentarios||[]).push({por:'AN',txt,fecha:hoyStr()});aeCmtFlash=true;persist();abrirActividad(id);}
   function saveActividad(id){const a=acts.find(x=>x.id===id);if(!a)return;aeStash(a);persist();renderAll();if(curClient){populatePResp();populatePPlat();setPView(pView);}closeModal('ov-act-edit');toast('Cambios guardados');}
   const bucket=s=>s==='todo'?'todo':s==='proc'?'proc':(s==='review'||s==='cambios'||s==='publicar')?'review':null;
 
