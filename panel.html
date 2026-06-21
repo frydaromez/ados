@@ -432,9 +432,11 @@
   .ae-statussel.chg{background-color:#fde2e7;color:#be123c;border-color:#f8c5d2}
   .ae-statussel.pub{background-color:#e8f0e2;color:#3f6212;border-color:#cfe3bf}
   .ae-statussel.published{background-color:#e7e7ec;color:#16151c;border-color:#d2d2da}
-  .ae-edit{margin-left:auto;border:1px solid var(--line);background:#fff;color:var(--brand-deep);font-family:inherit;font-size:10.5px;font-weight:700;border-radius:7px;padding:3px 10px;cursor:pointer;text-transform:none;letter-spacing:0;transition:.15s var(--ease)}
+  .ae-edit{margin-left:auto;border:1px solid var(--line);background:#fff;color:var(--brand-deep);font-family:inherit;font-size:11px;font-weight:700;border-radius:8px;padding:5px 12px;cursor:pointer;text-transform:none;letter-spacing:0;transition:.15s var(--ease)}
   .ae-edit:hover{background:var(--brand-soft);border-color:var(--brand)}
-  .ae-readonly{font-size:14px;line-height:1.55;color:var(--ink);background:#faf9ff;border:1px solid var(--line);border-radius:11px;padding:12px 14px;white-space:pre-line}
+  .ae-edit.below{margin-left:0;align-self:flex-start;margin-top:2px}
+  .ae-readonly{font-size:14px;line-height:1.6;color:var(--ink);background:#faf9ff;border:1px solid var(--line);border-radius:12px;padding:13px 15px;white-space:pre-line}
+  .ae-readonly.big{min-height:120px}
   .cmt-quick{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:9px}
   .cmt-qchip{font-family:inherit;font-size:12px;font-weight:600;color:var(--brand-deep);background:var(--brand-soft);border:1px solid transparent;border-radius:999px;padding:5px 12px;cursor:pointer;transition:.15s var(--ease)}
   .cmt-qchip:hover{background:var(--brand);color:#fff}
@@ -446,7 +448,10 @@
   .ae-field{display:flex;flex-direction:column;gap:8px}
   .ae-field>label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);display:flex;align-items:center;gap:8px}
   .ae-tag{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:#9a6400;background:#fef3da;border-radius:6px;padding:2px 8px;margin-left:4px}
-  .ae-dates{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .ae-dates{display:flex;flex-direction:column;gap:16px}
+  .ae-dates .due-wrap input{flex:1;min-width:0;border:1px solid var(--line);border-radius:10px;padding:11px 13px;font-size:14px;font-family:inherit;color:var(--ink);background:#fff;transition:border-color .15s,box-shadow .15s}
+  .ae-dates .due-wrap input:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
+  .ae-mini{font-weight:500;text-transform:none;letter-spacing:0;color:#b6b3c6;font-size:10.5px;margin-left:6px}
   .ae-deliver{background:#fbf7ff;border:1px solid #e1d4ff;border-radius:14px;padding:15px 16px}
   .det-ta.tall{min-height:104px}
   .cmt-add textarea.big{min-height:92px}
@@ -1938,23 +1943,30 @@
       <div class="ae-head-meta">
         <div class="ae-meta"><span class="ae-meta-l">Responsable</span><select id="ae-quien" class="ae-quien">${Object.keys(people).map(k=>`<option value="${k}"${a.quien===k?' selected':''}>${esc(people[k].n)}</option>`).join('')}</select></div>
         <div class="ae-meta"><span class="ae-meta-l">Cuenta</span><span class="ae-meta-v">${esc(accName(a.acc))}</span></div>
-        <div class="ae-meta"><span class="ae-meta-l">Estado <em>se guarda la fecha al cambiarlo</em></span><select id="ae-estado" class="ae-statussel ${EST[a.estado][1]}" onchange="aeSelEstado('${id}')">${KCOLS.map(s=>`<option value="${s}"${a.estado===s?' selected':''}>${EST[s][0]}</option>`).join('')}</select></div>
       </div>`;
-    const dateField=(fid,label,val,hint)=>`<div class="ae-field"><label>${label}</label><div class="due-wrap"><input id="${fid}" value="${ev(val)}" placeholder="${hint}" autocomplete="off"><button type="button" class="cal-btn" data-fp="${fid}" title="Abrir calendario">${CAL_SVG}</button><input type="text" id="${fid}-fp" style="position:absolute;width:0;height:0;opacity:0;pointer-events:none"></div></div>`;
+    const dateField=(fid,label,val)=>`<div class="ae-field"><label>${label}</label><div class="due-wrap"><input id="${fid}" value="${ev(val)}" placeholder="Escribe o elige la fecha" autocomplete="off"><button type="button" class="cal-btn" data-fp="${fid}" title="Abrir calendario">${CAL_SVG}</button><input type="text" id="${fid}-fp" style="position:absolute;width:0;height:0;opacity:0;pointer-events:none"></div></div>`;
     const attAdd=kind=>`<div class="att-add"><input id="att-${kind}-name" class="att-name-in" placeholder="Nombre (opcional)"><input id="att-${kind}-url" class="att-url-in" placeholder="Pega un link…"><button type="button" class="att-addbtn" onclick="addAtt('${id}','${kind}')">+ Link</button><label class="att-filebtn">+ Archivo<input type="file" hidden onchange="addAttFile('${id}','${kind}',this)"></label></div>`;
     const left=`<div class="ae-col">
-      <div class="ae-ctx-title">Lo que se pidió</div>
-      <div class="ae-field"><label>¿Qué hay que hacer? ${a.tipo==='parrilla'?'<span class="det-tag">de la estratega</span>':''}<button type="button" class="ae-edit" id="ae-det-edit" onclick="aeToggleDet()">Editar</button></label><div id="ae-det-ro" class="ae-readonly">${a.det?esc(a.det).replace(/\n/g,'<br>'):'<span class="det-muted">Sin información de la solicitud.</span>'}</div><textarea id="ae-det" class="det-ta tall" style="display:none" placeholder="Aquí va el contexto e instrucciones para trabajar la pieza…">${ev(a.det)}</textarea></div>
-      <div class="ae-field"><label>Material de apoyo</label>${attListHTML(a.links,'links',id,true)}${attAdd('links')}</div>
-      <div class="ae-dates">${dateField('ae-entrega','Lista para revisión',a.entrega,'Escribe o elige la fecha')}${dateField('ae-due','Se envía al cliente',a.due,'Escribe o elige la fecha')}</div>
+      <div class="ae-ctx-title">Lo que se pidió ${a.tipo==='parrilla'?'<span class="det-tag">de la estratega</span>':''}</div>
+      <div class="ae-field">
+        <div id="ae-det-ro" class="ae-readonly big">${a.det?esc(a.det).replace(/\n/g,'<br>'):'<span class="det-muted">Sin indicaciones en la solicitud.</span>'}</div>
+        <textarea id="ae-det" class="det-ta tall" style="display:none" placeholder="Escribe las indicaciones para trabajar la pieza…">${ev(a.det)}</textarea>
+        <button type="button" class="ae-edit below" id="ae-det-edit" onclick="aeToggleDet()">Editar indicaciones</button>
+      </div>
+      <div class="ae-field"><label>Material de apoyo</label>
+        <div id="ae-mat-ro">${attListHTML(a.links,'links',id,false)}</div>
+        <div id="ae-mat-ed" style="display:none">${attListHTML(a.links,'links',id,true)}${attAdd('links')}</div>
+        <button type="button" class="ae-edit below" id="ae-mat-edit" onclick="aeToggleMat()">Editar material</button>
+      </div>
+      <div class="ae-dates">${dateField('ae-entrega','Se pidió para el',a.entrega)}${dateField('ae-due','Se envía al cliente',a.due)}</div>
     </div>`;
     const right=`<div class="ae-col">
       <div class="ae-ctx-title">Tu entrega</div>
       <div class="ae-field ae-deliver"><label>Sube tu entregable <span class="ae-tag">lo más importante</span></label>${attListHTML(a.finalLinks,'finalLinks',id,true)}${attAdd('finalLinks')}</div>
+      <div class="ae-field"><label>Estado <span class="ae-mini">se guarda la fecha al cambiarlo</span></label><select id="ae-estado" class="ae-statussel ${EST[a.estado][1]}" onchange="aeSelEstado('${id}')">${KCOLS.map(s=>`<option value="${s}"${a.estado===s?' selected':''}>${EST[s][0]}</option>`).join('')}</select></div>
       <div class="ae-field"><label>Comentarios sobre la entrega</label><div class="cmt-list" id="ae-cmt-list">${cmtThread(a)}</div>
         <div class="cmt-add">
-          <div class="cmt-quick">${['Listo para revisión','Apliqué los cambios','Subí una nueva versión','Tengo una duda','Pendiente de material'].map(t=>`<button type="button" class="cmt-qchip" onclick="cmtQuick('${t}')">${t}</button>`).join('')}</div>
-          <textarea id="ae-newcmt" class="big" placeholder="Cuéntale al equipo cómo va: avances, dudas o cambios… o toca una sugerencia de arriba."></textarea>
+          <textarea id="ae-newcmt" class="big" placeholder="Cuéntale al equipo cómo va: avances, dudas o cambios…"></textarea>
           <div class="cmt-add-row"><span class="cmt-as">Comentar como</span><select id="ae-cmt-por">${Object.keys(people).map(k=>`<option value="${k}">${esc(people[k].n)}</option>`).join('')}</select><button type="button" class="mbtn save sm" onclick="addComentarioAct('${id}')">Agregar comentario</button></div>
         </div></div>
     </div>`;
@@ -1969,6 +1981,7 @@
   function aeStash(a){if(el('ae-quien'))a.quien=el('ae-quien').value;if(el('ae-entrega'))a.entrega=el('ae-entrega').value.trim();if(el('ae-due'))a.due=el('ae-due').value.trim();if(el('ae-det'))a.det=el('ae-det').value.trim();}
   function aeSelEstado(id){const a=acts.find(x=>x.id===id);if(!a)return;const sel=el('ae-estado');if(!sel)return;const s=sel.value;aeStash(a);if(a.estado!==s)registrarEstado(a,s);sel.className='ae-statussel '+(EST[s]?EST[s][1]:'');persist();}
   function aeToggleDet(){const ro=el('ae-det-ro'),ta=el('ae-det'),btn=el('ae-det-edit');if(!ta)return;if(ro)ro.style.display='none';ta.style.display='';ta.focus();if(btn)btn.style.display='none';}
+  function aeToggleMat(){const ro=el('ae-mat-ro'),ed=el('ae-mat-ed'),btn=el('ae-mat-edit');if(!ed)return;if(ro)ro.style.display='none';ed.style.display='';if(btn)btn.style.display='none';}
   function cmtQuick(t){const ta=el('ae-newcmt');if(!ta)return;ta.value=ta.value.trim()?ta.value.trim()+' '+t:t;ta.focus();}
   function addAtt(id,kind){const a=acts.find(x=>x.id===id);if(!a)return;const url=(el('att-'+kind+'-url')||{}).value;const v=(url||'').trim();if(!v){toast('Pega un link');return;}const nm=((el('att-'+kind+'-name')||{}).value||'').trim();aeStash(a);(a[kind]=a[kind]||[]).push({name:nm||v,url:v,type:'link'});if(kind==='links')a.link=true;persist();abrirActividad(id);}
   function addAttFile(id,kind,input){const a=acts.find(x=>x.id===id);if(!a||!input.files||!input.files[0])return;const f=input.files[0];aeStash(a);(a[kind]=a[kind]||[]).push({name:f.name,type:'file'});persist();abrirActividad(id);}
