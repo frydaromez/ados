@@ -906,6 +906,24 @@
   .est-stat b{font-size:12.5px;font-weight:800;color:var(--brand-deep)}
   .est-stat.dim{color:var(--muted)}
   .est-cliname{font-size:12px;font-weight:700;color:var(--ink);white-space:nowrap;padding-right:6px}
+  .est-id{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;font-weight:700;color:var(--brand-deep);background:var(--brand-soft);border-radius:6px;padding:3px 7px;white-space:nowrap}
+  .est-refcell{display:flex;flex-direction:column;gap:4px;align-items:flex-start;min-width:130px}
+  .est-ref{font-size:12px;font-weight:600;color:var(--brand-deep);text-decoration:none;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .est-ref:hover{text-decoration:underline}
+  .est-reflink{border:1px dashed var(--line);background:none;color:var(--muted);font-family:inherit;font-size:10.5px;font-weight:600;border-radius:7px;padding:3px 9px;cursor:pointer}
+  .est-reflink:hover{border-color:var(--brand);color:var(--brand-deep);background:var(--brand-soft)}
+  /* colores tenues por plataforma */
+  .pl-fb{background:#e7f0ff!important;color:#1d4ed8}
+  .pl-ig{background:#ffe9f3!important;color:#be1d6b}
+  .pl-tt{background:#e6e6ec!important;color:#1c1c22}
+  .pl-li{background:#e7f6ec!important;color:#1c7d4d}
+  .est-in.pl-fb,.est-in.pl-ig,.est-in.pl-tt,.est-in.pl-li{font-weight:700;border-color:transparent}
+  .est-stat.pl-fb b,.est-stat.pl-ig b,.est-stat.pl-tt b,.est-stat.pl-li b{color:inherit}
+  /* copy/guion que recibe el equipo en su Actividad */
+  .ae-copys{display:flex;flex-direction:column;gap:9px}
+  .ae-copy{background:#faf9ff;border:1px solid var(--line);border-radius:11px;padding:10px 13px}
+  .ae-copyl{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--brand-deep)}
+  .ae-copy p{margin:4px 0 0;font-size:13.5px;line-height:1.5;color:var(--ink);white-space:pre-line}
   .pnav-btn{width:34px;height:34px;border:1px solid var(--line);background:#fff;border-radius:10px;cursor:pointer;font-size:18px;line-height:1;color:var(--ink);display:flex;align-items:center;justify-content:center;transition:transform .2s var(--ease-spring),border-color .18s var(--ease),color .18s var(--ease)}
   .pnav-btn:hover{border-color:var(--brand);color:var(--brand);transform:translateY(-1px)}
   .pnav-btn:active{transform:scale(.92)}
@@ -1251,8 +1269,11 @@
           <div class="est-fgroup">
             <span class="gx-fico">▦</span>
             <select class="pf-sel" id="est-cli"></select>
+            <span class="pf-div"></span>
+            <select class="pf-sel" id="est-tipo"><option value="parrilla">Solo parrilla</option><option value="">Parrilla y extras</option><option value="extra">Solo extras</option></select>
             <span class="est-count" id="est-count"></span>
           </div>
+          <datalist id="dl-formato"><option value="Post"><option value="Reel"><option value="Carrusel"><option value="Historia"><option value="Video"><option value="Idea visual"></datalist>
           <div class="seg" id="est-seg">
             <button type="button" class="seg-opt active" data-ev="tabla">Parrilla</button>
             <button type="button" class="seg-opt" data-ev="cal">Dispersión</button>
@@ -2020,6 +2041,9 @@
     el('det-view-body').innerHTML=
       ficha
       +`<div class="det-sec"><h5>¿Qué hay que hacer? ${a.tipo==='parrilla'?'<span class="det-tag">de la estratega</span>':''}</h5><p>${a.det?esc(a.det).replace(/\n/g,'<br>'):'<span class="det-muted">Sin información.</span>'}</p></div>`
+      +(a.copyOut?`<div class="det-sec"><h5>Copy out</h5><p>${esc(a.copyOut).replace(/\n/g,'<br>')}</p></div>`:'')
+      +(a.copyIn?`<div class="det-sec"><h5>Copy in</h5><p>${esc(a.copyIn).replace(/\n/g,'<br>')}</p></div>`:'')
+      +(a.guion?`<div class="det-sec"><h5>Guion</h5><p>${esc(a.guion).replace(/\n/g,'<br>')}</p></div>`:'')
       +(finals.length?`<div class="det-sec"><h5>Entregable final</h5>${attListHTML(finals,'finalLinks',id,false)}</div>`:'')
       +`<div class="det-sec"><h5>Material de apoyo</h5>${attListHTML(a.links,'links',id,false)}</div>`
       +`<div class="det-sec"><h5>Comentarios sobre la entrega</h5>${cmtBox(cmtItems(a.comentarios))||'<p class="det-muted">Sin comentarios.</p>'}</div>`
@@ -2053,6 +2077,11 @@
         <textarea id="ae-det" class="det-ta grow" style="display:none" placeholder="Escribe las indicaciones para trabajar la pieza…">${ev(a.det)}</textarea>
         <div class="ae-editrow"><button type="button" class="ae-edit-mini" id="ae-det-edit" onclick="aeToggleDet()">editar</button></div>
       </div>
+      ${(a.copyOut||a.copyIn||a.guion)?`<div class="ae-copys">
+        ${a.copyOut?`<div class="ae-copy"><span class="ae-copyl">Copy out</span><p>${esc(a.copyOut).replace(/\n/g,'<br>')}</p></div>`:''}
+        ${a.copyIn?`<div class="ae-copy"><span class="ae-copyl">Copy in</span><p>${esc(a.copyIn).replace(/\n/g,'<br>')}</p></div>`:''}
+        ${a.guion?`<div class="ae-copy"><span class="ae-copyl">Guion</span><p>${esc(a.guion).replace(/\n/g,'<br>')}</p></div>`:''}
+      </div>`:''}
       <div class="ae-field">
         <label>Material de apoyo</label>
         <div id="ae-mat-ro">${attListHTML(a.links,'links',id,false)}</div>
@@ -2888,9 +2917,10 @@
     if(plats.includes(cur))s.value=cur;}
   function renderCliGantt(){renderGantt2(cliParrillaItems(), el('cli-gantt-v'), false);}
   // ===== VISTA ESTRATEGIA (exclusiva) =====
-  let estCli='', estView='tabla';
+  let estCli='', estView='tabla', estTipo='parrilla';
   const teamVisible=a=>a.visible!=='estratega';
-  function estItems(){return acts.filter(a=>(a.tipo==='parrilla'||a.tipo==='extra')&&!a.fin&&(!estCli||a.acc===estCli));}
+  const platClass=p=>{const k=(p||'').toLowerCase();if(/insta|^ig/.test(k))return 'pl-ig';if(/face|^fb/.test(k))return 'pl-fb';if(/tik|^tt/.test(k))return 'pl-tt';if(/linked|^li\b/.test(k))return 'pl-li';return '';};
+  function estItems(){return acts.filter(a=>(a.tipo==='parrilla'||a.tipo==='extra')&&!a.fin&&(!estCli||a.acc===estCli)&&(!estTipo||a.tipo===estTipo));}
   function fillEstCli(){const s=el('est-cli');if(!s)return;const cur=estCli;s.innerHTML='<option value="">Todos los clientes</option>'+clients.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('');s.value=(cur&&clients.find(c=>c.id===cur))?cur:'';estCli=s.value;}
   function renderEstrategia(){
     if(!el('est-cli'))return;
@@ -2899,29 +2929,34 @@
     const priv=items.filter(a=>a.visible==='estratega').length;
     el('est-count').textContent=items.length+' pieza'+(items.length!==1?'s':'')+(priv?` · ${priv} privada${priv!==1?'s':''}`:'');
     // contadores por plataforma y por formato (para verificar lo contratado)
-    const tally=(arr,key)=>{const m={};arr.forEach(a=>{const k=(a[key]||'').trim()||'—';m[k]=(m[k]||0)+1;});return Object.keys(m).sort((x,y)=>m[y]-m[x]).map(k=>`<span class="est-stat"><b>${m[k]}</b>${esc(k)}</span>`).join('');};
+    const tally=(arr,key,col)=>{const m={};arr.forEach(a=>{const k=(a[key]||'').trim()||'—';m[k]=(m[k]||0)+1;});return Object.keys(m).sort((x,y)=>m[y]-m[x]).map(k=>`<span class="est-stat ${col?platClass(k):''}"><b>${m[k]}</b>${esc(k)}</span>`).join('');};
     const par=items.filter(a=>a.tipo==='parrilla').length, ext=items.filter(a=>a.tipo==='extra').length;
-    el('est-stats').innerHTML=`<div class="est-statgrp"><span class="est-statlbl">Plataforma</span>${tally(items,'plat')||'<span class="est-stat dim">—</span>'}</div>`
+    el('est-stats').innerHTML=`<div class="est-statgrp"><span class="est-statlbl">Plataforma</span>${tally(items,'plat',true)||'<span class="est-stat dim">—</span>'}</div>`
       +`<div class="est-statgrp"><span class="est-statlbl">Formato</span>${tally(items,'formato')||'<span class="est-stat dim">—</span>'}</div>`
       +`<div class="est-statgrp"><span class="est-statlbl">Tipo</span><span class="est-stat"><b>${par}</b>Parrilla</span><span class="est-stat"><b>${ext}</b>Extra</span></div>`;
     const peopleOpts=v=>Object.keys(people).map(k=>`<option value="${k}"${v===k?' selected':''}>${esc(people[k].n)}</option>`).join('');
     const cliCol=!estCli;
-    const head=`<tr>${cliCol?'<th>Cliente</th>':''}<th>Pieza</th><th>Plataforma</th><th>Tipo</th><th>Copy out</th><th>Copy in</th><th>Guion (reel)</th><th>Responsable</th><th>Revisión interna</th><th>Envío a cliente</th><th>Visible</th><th></th></tr>`;
+    const head=`<tr><th>ID</th>${cliCol?'<th>Cliente</th>':''}<th>Pieza</th><th>Plataforma</th><th>Formato</th><th>Tipo</th><th>Copy out</th><th>Copy in</th><th>Guion (reel)</th><th>Idea visual / referencia</th><th>Responsable</th><th>Revisión interna</th><th>Envío a cliente</th><th>Visible</th><th></th></tr>`;
+    const refLink=a=>{const l=(a.links&&a.links[0])?attNorm(a.links[0]):null;return l?(l.url?`<a class="est-ref" href="${esc(/^https?:\/\//i.test(l.url)?l.url:'https://'+l.url)}" target="_blank" rel="noopener">${esc(l.name||'Ver')}</a>`:esc(l.name)):'';};
     const rows=items.map(a=>`<tr class="${a.visible==='estratega'?'est-priv':''}">
+      <td><span class="est-id">#${esc(String(a.id))}</span></td>
       ${cliCol?`<td class="est-cliname">${esc(accName(a.acc))}</td>`:''}
       <td><input class="est-in" value="${esc(a.que||'')}" onchange="estSet('${a.id}','que',this.value)"></td>
-      <td><input class="est-in sm" value="${esc(a.plat||'')}" onchange="estSet('${a.id}','plat',this.value)"></td>
+      <td><input class="est-in sm ${platClass(a.plat)}" value="${esc(a.plat||'')}" onchange="estSet('${a.id}','plat',this.value)"></td>
+      <td><input class="est-in sm" list="dl-formato" value="${esc(a.formato||'')}" placeholder="Idea visual…" onchange="estSet('${a.id}','formato',this.value)"></td>
       <td><select class="est-sel" onchange="estSet('${a.id}','tipo',this.value)"><option value="parrilla"${a.tipo==='parrilla'?' selected':''}>Parrilla</option><option value="extra"${a.tipo==='extra'?' selected':''}>Extra</option></select></td>
       <td><textarea class="est-ta" onchange="estSet('${a.id}','copyOut',this.value)" placeholder="Copy de publicación…">${esc(a.copyOut||'')}</textarea></td>
       <td><textarea class="est-ta" onchange="estSet('${a.id}','copyIn',this.value)" placeholder="Copy interno / brief…">${esc(a.copyIn||'')}</textarea></td>
       <td><textarea class="est-ta" onchange="estSet('${a.id}','guion',this.value)" placeholder="Solo si es reel…">${esc(a.guion||'')}</textarea></td>
+      <td><div class="est-refcell">${refLink(a)}<button type="button" class="est-reflink" onclick="estAddRef('${a.id}')">+ link/nota</button></div></td>
       <td><select class="est-sel" onchange="estSet('${a.id}','quien',this.value)">${peopleOpts(a.quien)}</select></td>
-      <td><input class="est-in date" value="${esc(a.entrega||'')}" onchange="estSet('${a.id}','entrega',this.value)" placeholder="Viernes…"></td>
-      <td><input class="est-in date" value="${esc(a.due||'')}" onchange="estSet('${a.id}','due',this.value)" placeholder="Fecha…"></td>
+      <td><input class="est-in date" data-id="${a.id}" data-fld="entrega" value="${esc(a.entrega||'')}" onchange="estSet('${a.id}','entrega',this.value)" placeholder="Elige viernes…"></td>
+      <td><input class="est-in date" data-id="${a.id}" data-fld="due" value="${esc(a.due||'')}" onchange="estSet('${a.id}','due',this.value)" placeholder="Elige fecha…"></td>
       <td><button type="button" class="est-vis ${a.visible==='equipo'?'on':''}" onclick="estToggleVis('${a.id}')">${a.visible==='equipo'?'Equipo':'Solo yo'}</button></td>
       <td><button type="button" class="lk-x" title="Eliminar" onclick="estDel('${a.id}')">×</button></td>
     </tr>`).join('');
     el('est-tablewrap').innerHTML=items.length?`<table class="est-table"><thead>${head}</thead><tbody>${rows}</tbody></table>`:`<div class="empty" style="padding:34px">${estCli?'Esta parrilla está vacía. Sube un documento (Excel/CSV) o agrega piezas con “+ Pieza”.':'Sin piezas. Elige un cliente y sube su parrilla.'}</div>`;
+    if(window.flatpickr&&items.length){flatpickr('#est-tablewrap .est-in.date',{locale:(flatpickr.l10ns&&flatpickr.l10ns.es)?'es':'default',dateFormat:'l, j \\d\\e F \\d\\e Y',allowInput:true,onChange:(d,s,inst)=>{const e=inst.element;const v=s?s.charAt(0).toUpperCase()+s.slice(1):'';e.value=v;estSet(e.dataset.id,e.dataset.fld,v);}});}
     el('est-panel').classList.toggle('hidden',estView!=='tabla');
     el('est-calpanel').classList.toggle('hidden',estView!=='cal');
     document.querySelectorAll('#est-seg .seg-opt').forEach(o=>o.classList.toggle('active',o.dataset.ev===estView));
@@ -2931,6 +2966,7 @@
   function estSet(id,field,val){const a=acts.find(x=>x.id===id);if(!a)return;a[field]=(val||'').trim?val.trim():val;persist();}
   function estToggleVis(id){const a=acts.find(x=>x.id===id);if(!a)return;a.visible=a.visible==='equipo'?'estratega':'equipo';persist();renderEstrategia();renderAll();toast(a.visible==='equipo'?'Pieza visible para el equipo':'Pieza solo para ti');}
   function estDel(id){const i=acts.findIndex(x=>x.id===id);if(i<0)return;acts.splice(i,1);persist();renderEstrategia();renderAll();}
+  function estAddRef(id){const a=acts.find(x=>x.id===id);if(!a)return;const v=prompt('Pega el link de la idea visual / referencia (o una nota para el equipo):');if(v==null)return;const t=v.trim();if(!t)return;const isUrl=/^https?:\/\//i.test(t)||/[a-z0-9.-]+\.[a-z]{2,}\//i.test(t);(a.links=a.links||[]).push({name:t,url:isUrl?t:'',type:'link'});a.link=true;persist();renderEstrategia();toast('Referencia agregada · la verá el equipo en su Actividad');}
   function estAddRow(){if(!estCli){toast('Elige un cliente');return;}acts.unshift({id:uid(),cuenta:'cliente',acc:estCli,tipo:'parrilla',cant:1,que:'Nueva pieza',formato:'',plat:'',pub:0,quien:'AN',due:'',estado:'todo',det:'',link:false,links:[],finalLinks:[],comentarios:[],revComentarios:[],entrega:'',cliente:'',fin:false,reg:new Date().toISOString().slice(0,10),regPor:'AN',visible:'estratega',copyOut:'',copyIn:'',guion:''});persist();renderEstrategia();}
   function estApplyViernes(){if(!estCli){toast('Elige un cliente para aplicar a su parrilla');return;}const items=estItems();if(!items.length){toast('No hay piezas');return;}const f=prompt('¿Qué viernes de revisión interna para toda la parrilla?\n(ej. Viernes, 12 de junio de 2026)',items[0].entrega||'');if(f==null)return;const v=f.trim();items.forEach(a=>a.entrega=v);persist();renderEstrategia();renderAll();toast('Viernes aplicado a toda la parrilla');}
   function renderEstCal(){
@@ -2947,6 +2983,7 @@
     host.innerHTML=h;
   }
   function estField(h){const k=normalize(h).toLowerCase();
+    if(/^id$|^id |folio|clave|codigo|^#/.test(k))return 'idCol';
     if(/copy.?out|caption|publicacion|copy de salida|texto final|copy salida/.test(k))return 'copyOut';
     if(/copy.?in|copy interno|brief|concepto|copy entrada/.test(k))return 'copyIn';
     if(/guion|script/.test(k))return 'guion';
@@ -2978,10 +3015,11 @@
     const map={};Object.keys(rows[0]).forEach(h=>{const f=estField(h);if(f)map[h]=f;});
     let n=0;
     rows.forEach(r=>{
-      const o={que:'',plat:'',tipo:'parrilla',formato:'',copyOut:'',copyIn:'',guion:'',quien:'',entrega:'',due:'',estado:''};
+      const o={idCol:'',que:'',plat:'',tipo:'parrilla',formato:'',copyOut:'',copyIn:'',guion:'',quien:'',entrega:'',due:'',estado:''};
       Object.keys(r).forEach(h=>{const f=map[h];if(f)o[f]=String(r[h]==null?'':r[h]).trim();});
       if(!o.que)return;
-      acts.unshift({id:uid(),cuenta:'cliente',acc:estCli,tipo:/extra/i.test(o.tipo)?'extra':'parrilla',cant:1,que:o.que,formato:o.formato,plat:o.plat,pub:0,quien:o.quien?personEnsure(o.quien):'AN',due:o.due,estado:o.estado?mapEstado(o.estado):'todo',det:'',link:false,links:[],finalLinks:[],comentarios:[],revComentarios:[],entrega:o.entrega,cliente:'',fin:false,reg:new Date().toISOString().slice(0,10),regPor:'AN',visible:'estratega',copyOut:o.copyOut,copyIn:o.copyIn,guion:o.guion});
+      const pid=(o.idCol&&!acts.find(x=>String(x.id)===o.idCol.replace(/^#/,'')))?o.idCol.replace(/^#/,''):uid();
+      acts.unshift({id:pid,cuenta:'cliente',acc:estCli,tipo:/extra/i.test(o.tipo)?'extra':'parrilla',cant:1,que:o.que,formato:o.formato,plat:o.plat,pub:0,quien:o.quien?personEnsure(o.quien):'AN',due:o.due,estado:o.estado?mapEstado(o.estado):'todo',det:'',link:false,links:[],finalLinks:[],comentarios:[],revComentarios:[],entrega:o.entrega,cliente:'',fin:false,reg:new Date().toISOString().slice(0,10),regPor:'AN',visible:'estratega',copyOut:o.copyOut,copyIn:o.copyIn,guion:o.guion});
       n++;
     });
     persist();renderEstrategia();renderAll();
@@ -3236,6 +3274,7 @@
   el('pcal-next').addEventListener('click',()=>{pCalM++;if(pCalM>11){pCalM=0;pCalY++;}renderCliCal();});
   document.querySelectorAll('#nav a, #nav2 a').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();showView(a.dataset.view);}));
   el('est-cli').addEventListener('change',()=>{estCli=el('est-cli').value;renderEstrategia();});
+  el('est-tipo').addEventListener('change',()=>{estTipo=el('est-tipo').value;renderEstrategia();});
   el('est-seg').addEventListener('click',e=>{const b=e.target.closest('.seg-opt');if(b){estView=b.dataset.ev;renderEstrategia();}});
   el('est-file').addEventListener('change',e=>{const f=e.target.files[0];if(f)estUpload(f);e.target.value='';});
   ['f-cuenta','f-acc','f-tipo','f-quien','f-estado'].forEach(id=>el(id).addEventListener('change',renderMadre));
