@@ -941,6 +941,39 @@
   .ep-reflist{display:grid;grid-template-columns:1fr 1fr;gap:8px}
   .ep-reflist:not(:empty){margin-bottom:9px}
   #ov-zoom{z-index:120}
+  /* ===== Calendario de contenido (Dispersión, estilo Notion) ===== */
+  .ec-bar{display:flex;align-items:center;gap:16px;margin-bottom:14px;flex-wrap:wrap}
+  .ec-legend{display:flex;gap:14px;flex-wrap:wrap;margin-left:auto}
+  .ec-legi{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;color:var(--muted)}
+  .ec-wrap{display:flex;flex-direction:column;gap:22px;max-height:calc(100vh - 230px);overflow:auto;padding-right:4px}
+  .ec-month{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px 18px 18px;box-shadow:0 1px 2px rgba(24,20,50,.04),0 14px 38px -26px rgba(40,25,90,.25)}
+  .ec-mhead{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px}
+  .ec-mhead b{font-family:var(--font-head);font-size:19px;font-weight:800;color:var(--ink);letter-spacing:-.01em}
+  .ec-mtot{font-size:11.5px;font-weight:600;color:var(--muted)}
+  .ec-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+  .ec-dow{text-align:left;padding:0 4px 6px;font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+  .ec-dow.wknd{color:#c7c4d6}
+  .ec-cell{min-height:96px;border:1px solid #f1eff8;border-radius:11px;padding:6px;display:flex;flex-direction:column;gap:4px;background:#fff;transition:border-color .15s var(--ease),background .15s var(--ease)}
+  .ec-cell:hover{border-color:var(--line);background:#fcfbff}
+  .ec-cell.ec-empty{border:none;background:none}
+  .ec-cell.ec-wknd{background:#fafafc}
+  .ec-cell.ec-today{border-color:var(--brand);box-shadow:inset 0 0 0 1px var(--brand)}
+  .ec-d{font-size:12px;font-weight:700;color:#6a6a78;padding:1px 3px}
+  .ec-cell.ec-today .ec-d{color:#fff;background:#e11d48;border-radius:7px;width:21px;height:18px;display:flex;align-items:center;justify-content:center}
+  .ec-ev{display:flex;align-items:center;gap:6px;border-radius:8px;padding:4px 8px;font-size:11.5px;font-weight:600;color:#3a3a44;background:#f3f2f8;cursor:pointer;overflow:hidden;transition:transform .12s var(--ease-spring),filter .15s var(--ease)}
+  .ec-ev:hover{transform:translateX(1px);filter:brightness(.97)}
+  .ec-ev .ec-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;background:#94a3b8}
+  .ec-evt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .ec-ev.ec-priv{opacity:.78;border:1px dashed #cbb6ff}
+  .ec-dot.pl-fb,.ec-ev.pl-fb .ec-dot{background:#1d4ed8}
+  .ec-dot.pl-ig,.ec-ev.pl-ig .ec-dot{background:#be1d6b}
+  .ec-dot.pl-tt,.ec-ev.pl-tt .ec-dot{background:#1c1c22}
+  .ec-dot.pl-li,.ec-ev.pl-li .ec-dot{background:#1c7d4d}
+  .ec-ev.pl-fb{background:#e7f0ff;color:#1d4ed8}
+  .ec-ev.pl-ig{background:#ffe9f3;color:#be1d6b}
+  .ec-ev.pl-tt{background:#e6e6ec;color:#1c1c22}
+  .ec-ev.pl-li{background:#e7f6ec;color:#1c7d4d}
+  @media(max-width:760px){.ec-cell{min-height:64px}.ec-ev{font-size:10px;padding:3px 6px}}
   .pnav-btn{width:34px;height:34px;border:1px solid var(--line);background:#fff;border-radius:10px;cursor:pointer;font-size:18px;line-height:1;color:var(--ink);display:flex;align-items:center;justify-content:center;transition:transform .2s var(--ease-spring),border-color .18s var(--ease),color .18s var(--ease)}
   .pnav-btn:hover{border-color:var(--brand);color:var(--brand);transform:translateY(-1px)}
   .pnav-btn:active{transform:scale(.92)}
@@ -1288,7 +1321,6 @@
             <select class="pf-sel" id="est-cli"></select>
             <span class="pf-div"></span>
             <select class="pf-sel" id="est-tipo"><option value="parrilla">Solo parrilla</option><option value="">Parrilla y extras</option><option value="extra">Solo extras</option></select>
-            <span class="est-count" id="est-count"></span>
           </div>
           <datalist id="dl-formato"><option value="Post"><option value="Reel"><option value="Carrusel"><option value="Historia"><option value="Video"><option value="Idea visual"></datalist>
           <div class="seg" id="est-seg">
@@ -1302,7 +1334,10 @@
         </div>
         <div class="est-stats" id="est-stats"></div>
         <div id="est-panel"><div class="fit-scroll" id="est-tablewrap"></div></div>
-        <div id="est-calpanel" class="hidden"><div class="pcal" id="est-cal"></div></div>
+        <div id="est-calpanel" class="hidden">
+          <div class="ec-bar"><div class="seg" id="ec-mode"><button type="button" class="seg-opt active" data-cm="entrega">Por revisión interna</button><button type="button" class="seg-opt" data-cm="due">Por envío a cliente</button></div><div class="ec-legend" id="ec-legend"></div></div>
+          <div id="est-cal" class="ec-wrap"></div>
+        </div>
       </section>
 
       <!-- FINALIZADOS -->
@@ -3003,8 +3038,6 @@
     if(!el('est-cli'))return;
     fillEstCli();
     const items=estItems();
-    const priv=items.filter(a=>a.visible==='estratega').length;
-    el('est-count').textContent=items.length+' pieza'+(items.length!==1?'s':'')+(priv?` · ${priv} privada${priv!==1?'s':''}`:'');
     // contadores por plataforma y por formato (para verificar lo contratado)
     const tally=(arr,key,col)=>{const m={};arr.forEach(a=>{const k=(a[key]||'').trim()||'—';m[k]=(m[k]||0)+1;});return Object.keys(m).sort((x,y)=>m[y]-m[x]).map(k=>`<span class="est-stat ${col?platClass(k):''}"><b>${m[k]}</b>${esc(k)}</span>`).join('');};
     const par=items.filter(a=>a.tipo==='parrilla').length, ext=items.filter(a=>a.tipo==='extra').length;
@@ -3067,18 +3100,28 @@
     persist();renderEstrategia();closeModal('ov-estpieza');toast('Pieza agregada (privada)');
   }
   function estApplyViernes(){if(!estCli){toast('Elige un cliente para aplicar a su parrilla');return;}const items=estItems();if(!items.length){toast('No hay piezas');return;}const f=prompt('¿Qué viernes de revisión interna para toda la parrilla?\n(ej. Viernes, 12 de junio de 2026)',items[0].entrega||'');if(f==null)return;const v=f.trim();items.forEach(a=>a.entrega=v);persist();renderEstrategia();renderAll();toast('Viernes aplicado a toda la parrilla');}
+  let estCalMode='entrega';
+  const estDate=a=>parseFecha(estCalMode==='due'?a.due:a.entrega);
   function renderEstCal(){
     const host=el('est-cal');if(!host)return;const items=estItems();
-    let y=new Date().getFullYear(),m=new Date().getMonth();
-    for(const a of items){const dt=parseFecha(a.entrega);if(dt){y=dt.y;m=dt.m;break;}}
-    const byDay={};items.forEach(a=>{const dt=parseFecha(a.entrega);if(dt&&dt.y===y&&dt.m===m){(byDay[dt.d]=byDay[dt.d]||[]).push(a);}});
-    const startDow=(new Date(y,m,1).getDay()+6)%7,dim=new Date(y,m+1,0).getDate();
-    let h=`<div class="est-callabel" style="grid-column:1/-1">${MESES[m]} ${y} · viernes de revisión</div>`+DOW_MIN.map((d,i)=>`<div class="pcal-dow${i===4?' fri':''}">${d}</div>`).join('');
-    for(let i=0;i<startDow;i++)h+='<div class="pcal-cell empty"></div>';
-    for(let d=1;d<=dim;d++){const wd=new Date(y,m,d).getDay();const evs=byDay[d]||[];
-      const chips=evs.map(a=>`<div class="pcal-ev${a.visible==='estratega'?' est-privev':''}" title="${esc(a.que)}${a.visible==='estratega'?' · solo tú':''}" onclick="abrirActividad('${a.id}')"><span class="pcal-dot ${EST[a.estado][1]}"></span><span class="pcal-evt">${esc(a.que)}</span></div>`).join('');
-      h+=`<div class="pcal-cell${wd===5?' fri':''}"><div class="pcal-d">${d}</div>${chips}</div>`;}
-    host.innerHTML=h;
+    el('ec-legend').innerHTML=['Instagram','Facebook','TikTok','LinkedIn'].map(p=>`<span class="ec-legi"><span class="ec-dot ${platClass(p)}"></span>${p}</span>`).join('');
+    const dated=items.map(a=>({a,dt:estDate(a)})).filter(x=>x.dt);
+    if(!dated.length){host.innerHTML='<div class="empty" style="padding:36px">Aún no hay fechas para mostrar. Asigna la fecha en la tabla y aquí verás la dispersión.</div>';return;}
+    let minK=Infinity,maxK=-Infinity;const byKey={};
+    dated.forEach(x=>{const k=x.dt.y*12+x.dt.m;minK=Math.min(minK,k);maxK=Math.max(maxK,k);const kk=x.dt.y+'-'+x.dt.m+'-'+x.dt.d;(byKey[kk]=byKey[kk]||[]).push(x.a);});
+    const today=new Date(),tY=today.getFullYear(),tM=today.getMonth(),tD=today.getDate();
+    let html='';
+    for(let k=minK;k<=maxK;k++){const y=Math.floor(k/12),m=k%12;
+      const startDow=(new Date(y,m,1).getDay()+6)%7,dim=new Date(y,m+1,0).getDate();
+      const total=Object.keys(byKey).filter(kk=>kk.startsWith(y+'-'+m+'-')).reduce((s,kk)=>s+byKey[kk].length,0);
+      let cells=DOW_MIN.map((d,i)=>`<div class="ec-dow${i>4?' wknd':''}">${d}</div>`).join('');
+      for(let i=0;i<startDow;i++)cells+='<div class="ec-cell ec-empty"></div>';
+      for(let d=1;d<=dim;d++){const wd=new Date(y,m,d).getDay();const evs=byKey[y+'-'+m+'-'+d]||[];const isToday=y===tY&&m===tM&&d===tD;
+        const chips=evs.map(a=>`<div class="ec-ev ${platClass(a.plat)}${a.visible==='estratega'?' ec-priv':''}" title="${esc(a.que)}${a.plat?' · '+esc(a.plat):''}${a.visible==='estratega'?' · solo tú':''}" onclick="abrirActividad('${a.id}')"><span class="ec-dot ${platClass(a.plat)}"></span><span class="ec-evt">${esc(a.que)}</span></div>`).join('');
+        cells+=`<div class="ec-cell${isToday?' ec-today':''}${(wd===0||wd===6)?' ec-wknd':''}"><div class="ec-d">${d}</div>${chips}</div>`;}
+      html+=`<div class="ec-month"><div class="ec-mhead"><b>${MESES[m]} ${y}</b><span class="ec-mtot">${total} pieza${total!==1?'s':''}</span></div><div class="ec-grid">${cells}</div></div>`;
+    }
+    host.innerHTML=html;
   }
   function estField(h){const k=normalize(h).toLowerCase();
     if(/^id$|^id |folio|clave|codigo|^#/.test(k))return 'idCol';
@@ -3218,7 +3261,7 @@
     revision:["Revisión","Todo lo que está por revisar"],
     parrilla:["Parrilla","Vista de la estratega · mes completo"],
     gantt:["Gantt","Entrega interna → envío a cliente · arrastra para mover · todos los clientes"],
-    estrategia:["Estrategia","Vista exclusiva · sube la parrilla por cliente y distribúyela al equipo"],
+    estrategia:["Estrategia",""],
     finalizados:["Finalizados","Histórico · nada se pierde"],
     cliente:["",""], prospecto:["",""]
   };
@@ -3374,6 +3417,7 @@
   el('est-cli').addEventListener('change',()=>{estCli=el('est-cli').value;renderEstrategia();});
   el('est-tipo').addEventListener('change',()=>{estTipo=el('est-tipo').value;renderEstrategia();});
   el('est-seg').addEventListener('click',e=>{const b=e.target.closest('.seg-opt');if(b){estView=b.dataset.ev;renderEstrategia();}});
+  el('ec-mode').addEventListener('click',e=>{const b=e.target.closest('.seg-opt');if(b){estCalMode=b.dataset.cm;document.querySelectorAll('#ec-mode .seg-opt').forEach(o=>o.classList.toggle('active',o===b));renderEstCal();}});
   el('est-file').addEventListener('change',e=>{const f=e.target.files[0];if(f)estUpload(f);e.target.value='';});
   ['f-cuenta','f-acc','f-tipo','f-quien','f-estado'].forEach(id=>el(id).addEventListener('change',renderMadre));
   el('f-fin').addEventListener('click',function(){madreFin=!madreFin;this.classList.toggle('active',madreFin);this.textContent=madreFin?'Ocultar finalizadas':'Incluir finalizadas';renderMadre();});
