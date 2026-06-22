@@ -899,6 +899,13 @@
   .est-vis:hover{border-color:var(--brand)}
   .est-callabel{font-size:13px;font-weight:700;color:var(--brand-deep);padding:2px 2px 8px}
   .pcal-ev.est-privev{opacity:.7;border:1px dashed #cbb6ff}
+  .est-stats{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;margin-bottom:12px}
+  .est-statgrp{display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .est-statlbl{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--brand-deep);margin-right:2px}
+  .est-stat{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;color:#4a4a57;background:#fff;border:1px solid var(--line);border-radius:999px;padding:3px 10px}
+  .est-stat b{font-size:12.5px;font-weight:800;color:var(--brand-deep)}
+  .est-stat.dim{color:var(--muted)}
+  .est-cliname{font-size:12px;font-weight:700;color:var(--ink);white-space:nowrap;padding-right:6px}
   .pnav-btn{width:34px;height:34px;border:1px solid var(--line);background:#fff;border-radius:10px;cursor:pointer;font-size:18px;line-height:1;color:var(--ink);display:flex;align-items:center;justify-content:center;transition:transform .2s var(--ease-spring),border-color .18s var(--ease),color .18s var(--ease)}
   .pnav-btn:hover{border-color:var(--brand);color:var(--brand);transform:translateY(-1px)}
   .pnav-btn:active{transform:scale(.92)}
@@ -1256,6 +1263,7 @@
             <label class="tbtn primary est-upload">Subir documento<input type="file" id="est-file" accept=".xlsx,.xls,.csv" hidden></label>
           </div>
         </div>
+        <div class="est-stats" id="est-stats"></div>
         <div id="est-panel"><div class="fit-scroll" id="est-tablewrap"></div></div>
         <div id="est-calpanel" class="hidden"><div class="pcal" id="est-cal"></div></div>
       </section>
@@ -2882,17 +2890,25 @@
   // ===== VISTA ESTRATEGIA (exclusiva) =====
   let estCli='', estView='tabla';
   const teamVisible=a=>a.visible!=='estratega';
-  function estItems(){return acts.filter(a=>a.acc===estCli&&(a.tipo==='parrilla'||a.tipo==='extra')&&!a.fin);}
-  function fillEstCli(){const s=el('est-cli');if(!s)return;const cur=s.value||estCli||(clients[0]&&clients[0].id);s.innerHTML=clients.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('');if(clients.find(c=>c.id===cur))s.value=cur;estCli=s.value;}
+  function estItems(){return acts.filter(a=>(a.tipo==='parrilla'||a.tipo==='extra')&&!a.fin&&(!estCli||a.acc===estCli));}
+  function fillEstCli(){const s=el('est-cli');if(!s)return;const cur=estCli;s.innerHTML='<option value="">Todos los clientes</option>'+clients.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('');s.value=(cur&&clients.find(c=>c.id===cur))?cur:'';estCli=s.value;}
   function renderEstrategia(){
     if(!el('est-cli'))return;
     fillEstCli();
     const items=estItems();
     const priv=items.filter(a=>a.visible==='estratega').length;
     el('est-count').textContent=items.length+' pieza'+(items.length!==1?'s':'')+(priv?` · ${priv} privada${priv!==1?'s':''}`:'');
+    // contadores por plataforma y por formato (para verificar lo contratado)
+    const tally=(arr,key)=>{const m={};arr.forEach(a=>{const k=(a[key]||'').trim()||'—';m[k]=(m[k]||0)+1;});return Object.keys(m).sort((x,y)=>m[y]-m[x]).map(k=>`<span class="est-stat"><b>${m[k]}</b>${esc(k)}</span>`).join('');};
+    const par=items.filter(a=>a.tipo==='parrilla').length, ext=items.filter(a=>a.tipo==='extra').length;
+    el('est-stats').innerHTML=`<div class="est-statgrp"><span class="est-statlbl">Plataforma</span>${tally(items,'plat')||'<span class="est-stat dim">—</span>'}</div>`
+      +`<div class="est-statgrp"><span class="est-statlbl">Formato</span>${tally(items,'formato')||'<span class="est-stat dim">—</span>'}</div>`
+      +`<div class="est-statgrp"><span class="est-statlbl">Tipo</span><span class="est-stat"><b>${par}</b>Parrilla</span><span class="est-stat"><b>${ext}</b>Extra</span></div>`;
     const peopleOpts=v=>Object.keys(people).map(k=>`<option value="${k}"${v===k?' selected':''}>${esc(people[k].n)}</option>`).join('');
-    const head=`<tr><th>Pieza</th><th>Plataforma</th><th>Tipo</th><th>Copy out</th><th>Copy in</th><th>Guion (reel)</th><th>Responsable</th><th>Revisión interna</th><th>Envío a cliente</th><th>Visible</th><th></th></tr>`;
+    const cliCol=!estCli;
+    const head=`<tr>${cliCol?'<th>Cliente</th>':''}<th>Pieza</th><th>Plataforma</th><th>Tipo</th><th>Copy out</th><th>Copy in</th><th>Guion (reel)</th><th>Responsable</th><th>Revisión interna</th><th>Envío a cliente</th><th>Visible</th><th></th></tr>`;
     const rows=items.map(a=>`<tr class="${a.visible==='estratega'?'est-priv':''}">
+      ${cliCol?`<td class="est-cliname">${esc(accName(a.acc))}</td>`:''}
       <td><input class="est-in" value="${esc(a.que||'')}" onchange="estSet('${a.id}','que',this.value)"></td>
       <td><input class="est-in sm" value="${esc(a.plat||'')}" onchange="estSet('${a.id}','plat',this.value)"></td>
       <td><select class="est-sel" onchange="estSet('${a.id}','tipo',this.value)"><option value="parrilla"${a.tipo==='parrilla'?' selected':''}>Parrilla</option><option value="extra"${a.tipo==='extra'?' selected':''}>Extra</option></select></td>
@@ -2905,7 +2921,7 @@
       <td><button type="button" class="est-vis ${a.visible==='equipo'?'on':''}" onclick="estToggleVis('${a.id}')">${a.visible==='equipo'?'Equipo':'Solo yo'}</button></td>
       <td><button type="button" class="lk-x" title="Eliminar" onclick="estDel('${a.id}')">×</button></td>
     </tr>`).join('');
-    el('est-tablewrap').innerHTML=items.length?`<table class="est-table"><thead>${head}</thead><tbody>${rows}</tbody></table>`:'<div class="empty" style="padding:34px">Esta parrilla está vacía. Sube un documento (Excel/CSV) o agrega piezas con “+ Pieza”.</div>';
+    el('est-tablewrap').innerHTML=items.length?`<table class="est-table"><thead>${head}</thead><tbody>${rows}</tbody></table>`:`<div class="empty" style="padding:34px">${estCli?'Esta parrilla está vacía. Sube un documento (Excel/CSV) o agrega piezas con “+ Pieza”.':'Sin piezas. Elige un cliente y sube su parrilla.'}</div>`;
     el('est-panel').classList.toggle('hidden',estView!=='tabla');
     el('est-calpanel').classList.toggle('hidden',estView!=='cal');
     document.querySelectorAll('#est-seg .seg-opt').forEach(o=>o.classList.toggle('active',o.dataset.ev===estView));
@@ -2916,7 +2932,7 @@
   function estToggleVis(id){const a=acts.find(x=>x.id===id);if(!a)return;a.visible=a.visible==='equipo'?'estratega':'equipo';persist();renderEstrategia();renderAll();toast(a.visible==='equipo'?'Pieza visible para el equipo':'Pieza solo para ti');}
   function estDel(id){const i=acts.findIndex(x=>x.id===id);if(i<0)return;acts.splice(i,1);persist();renderEstrategia();renderAll();}
   function estAddRow(){if(!estCli){toast('Elige un cliente');return;}acts.unshift({id:uid(),cuenta:'cliente',acc:estCli,tipo:'parrilla',cant:1,que:'Nueva pieza',formato:'',plat:'',pub:0,quien:'AN',due:'',estado:'todo',det:'',link:false,links:[],finalLinks:[],comentarios:[],revComentarios:[],entrega:'',cliente:'',fin:false,reg:new Date().toISOString().slice(0,10),regPor:'AN',visible:'estratega',copyOut:'',copyIn:'',guion:''});persist();renderEstrategia();}
-  function estApplyViernes(){const items=estItems();if(!items.length){toast('No hay piezas');return;}const f=prompt('¿Qué viernes de revisión interna para toda la parrilla?\n(ej. Viernes, 12 de junio de 2026)',items[0].entrega||'');if(f==null)return;const v=f.trim();items.forEach(a=>a.entrega=v);persist();renderEstrategia();renderAll();toast('Viernes aplicado a toda la parrilla');}
+  function estApplyViernes(){if(!estCli){toast('Elige un cliente para aplicar a su parrilla');return;}const items=estItems();if(!items.length){toast('No hay piezas');return;}const f=prompt('¿Qué viernes de revisión interna para toda la parrilla?\n(ej. Viernes, 12 de junio de 2026)',items[0].entrega||'');if(f==null)return;const v=f.trim();items.forEach(a=>a.entrega=v);persist();renderEstrategia();renderAll();toast('Viernes aplicado a toda la parrilla');}
   function renderEstCal(){
     const host=el('est-cal');if(!host)return;const items=estItems();
     let y=new Date().getFullYear(),m=new Date().getMonth();
