@@ -924,6 +924,16 @@
   .ae-copy{background:#faf9ff;border:1px solid var(--line);border-radius:11px;padding:10px 13px}
   .ae-copyl{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--brand-deep)}
   .ae-copy p{margin:4px 0 0;font-size:13.5px;line-height:1.5;color:var(--ink);white-space:pre-line}
+  .platsel{font-weight:700;border-radius:8px;padding:7px 9px}
+  .est-copycell{position:relative}
+  .est-copycell .est-ta{padding-right:26px;width:210px}
+  .est-zoom{position:absolute;top:5px;right:5px;width:22px;height:22px;border:none;background:rgba(255,255,255,.85);color:#a9a6bb;border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:.55;transition:.15s var(--ease)}
+  .est-copycell:hover .est-zoom{opacity:1}
+  .est-zoom:hover{color:var(--brand-deep);background:var(--brand-soft)}
+  .est-zoom svg{width:13px;height:13px}
+  .zoom-modal{width:760px;max-width:94vw}
+  .zoom-ta{width:100%;box-sizing:border-box;min-height:340px;border:1px solid var(--line);border-radius:12px;padding:14px 16px;font-size:15px;line-height:1.6;font-family:inherit;color:var(--ink);resize:vertical}
+  .zoom-ta:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
   .pnav-btn{width:34px;height:34px;border:1px solid var(--line);background:#fff;border-radius:10px;cursor:pointer;font-size:18px;line-height:1;color:var(--ink);display:flex;align-items:center;justify-content:center;transition:transform .2s var(--ease-spring),border-color .18s var(--ease),color .18s var(--ease)}
   .pnav-btn:hover{border-color:var(--brand);color:var(--brand);transform:translateY(-1px)}
   .pnav-btn:active{transform:scale(.92)}
@@ -1503,6 +1513,20 @@
     <div id="det-view-body" class="det-body"></div>
     <div class="modactions">
       <button class="mbtn save" onclick="closeModal('ov-det')">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Zoom: redactar copy/guion en grande -->
+<div class="overlay" id="ov-zoom">
+  <div class="modal zoom-modal">
+    <button class="modal-close" onclick="closeModal('ov-zoom')" aria-label="Cerrar">×</button>
+    <h3 id="zoom-title">Redactar</h3>
+    <p class="msub" id="zoom-sub"></p>
+    <textarea id="zoom-ta" class="zoom-ta" placeholder="Escribe aquí con todo el espacio…"></textarea>
+    <div class="modactions">
+      <button class="mbtn cancel" onclick="closeModal('ov-zoom')">Cancelar</button>
+      <button class="mbtn save" onclick="zoomSave()">Guardar</button>
     </div>
   </div>
 </div>
@@ -2920,6 +2944,13 @@
   let estCli='', estView='tabla', estTipo='parrilla';
   const teamVisible=a=>a.visible!=='estratega';
   const platClass=p=>{const k=(p||'').toLowerCase();if(/insta|^ig/.test(k))return 'pl-ig';if(/face|^fb/.test(k))return 'pl-fb';if(/tik|^tt/.test(k))return 'pl-tt';if(/linked|^li\b/.test(k))return 'pl-li';return '';};
+  const PLATS=['Instagram','Facebook','TikTok','LinkedIn','X','YouTube'];
+  function platOptions(cur){const list=PLATS.slice();if(cur&&!list.some(p=>p.toLowerCase()===cur.toLowerCase()))list.push(cur);return '<option value="">—</option>'+list.map(p=>`<option value="${esc(p)}"${(cur||'').toLowerCase()===p.toLowerCase()?' selected':''}>${esc(p)}</option>`).join('');}
+  function estSetPlat(id,sel){const a=acts.find(x=>x.id===id);if(!a)return;a.plat=sel.value;persist();renderEstrategia();}
+  const EXP_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>';
+  let zoomId=null,zoomFld=null;
+  function estZoom(id,fld,label){const a=acts.find(x=>x.id===id);if(!a)return;zoomId=id;zoomFld=fld;el('zoom-title').textContent=label;el('zoom-sub').textContent=`#${a.id} · ${esc(a.que||'')}${a.plat?' · '+esc(a.plat):''}`;el('zoom-ta').value=a[fld]||'';openModal('ov-zoom');setTimeout(()=>{const t=el('zoom-ta');if(t)t.focus();},60);}
+  function zoomSave(){const a=acts.find(x=>x.id===zoomId);if(a&&zoomFld){a[zoomFld]=el('zoom-ta').value;persist();renderEstrategia();}closeModal('ov-zoom');toast('Guardado');}
   function estItems(){return acts.filter(a=>(a.tipo==='parrilla'||a.tipo==='extra')&&!a.fin&&(!estCli||a.acc===estCli)&&(!estTipo||a.tipo===estTipo));}
   function fillEstCli(){const s=el('est-cli');if(!s)return;const cur=estCli;s.innerHTML='<option value="">Todos los clientes</option>'+clients.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('');s.value=(cur&&clients.find(c=>c.id===cur))?cur:'';estCli=s.value;}
   function renderEstrategia(){
@@ -2942,12 +2973,12 @@
       <td><span class="est-id">#${esc(String(a.id))}</span></td>
       ${cliCol?`<td class="est-cliname">${esc(accName(a.acc))}</td>`:''}
       <td><input class="est-in" value="${esc(a.que||'')}" onchange="estSet('${a.id}','que',this.value)"></td>
-      <td><input class="est-in sm ${platClass(a.plat)}" value="${esc(a.plat||'')}" onchange="estSet('${a.id}','plat',this.value)"></td>
+      <td><select class="est-sel platsel ${platClass(a.plat)}" onchange="estSetPlat('${a.id}',this)">${platOptions(a.plat)}</select></td>
       <td><input class="est-in sm" list="dl-formato" value="${esc(a.formato||'')}" placeholder="Idea visual…" onchange="estSet('${a.id}','formato',this.value)"></td>
       <td><select class="est-sel" onchange="estSet('${a.id}','tipo',this.value)"><option value="parrilla"${a.tipo==='parrilla'?' selected':''}>Parrilla</option><option value="extra"${a.tipo==='extra'?' selected':''}>Extra</option></select></td>
-      <td><textarea class="est-ta" onchange="estSet('${a.id}','copyOut',this.value)" placeholder="Copy de publicación…">${esc(a.copyOut||'')}</textarea></td>
-      <td><textarea class="est-ta" onchange="estSet('${a.id}','copyIn',this.value)" placeholder="Copy interno / brief…">${esc(a.copyIn||'')}</textarea></td>
-      <td><textarea class="est-ta" onchange="estSet('${a.id}','guion',this.value)" placeholder="Solo si es reel…">${esc(a.guion||'')}</textarea></td>
+      <td><div class="est-copycell"><textarea class="est-ta" onchange="estSet('${a.id}','copyOut',this.value)" placeholder="Copy de publicación…">${esc(a.copyOut||'')}</textarea><button type="button" class="est-zoom" title="Ampliar para redactar" onclick="estZoom('${a.id}','copyOut','Copy out')">${EXP_SVG}</button></div></td>
+      <td><div class="est-copycell"><textarea class="est-ta" onchange="estSet('${a.id}','copyIn',this.value)" placeholder="Copy interno / brief…">${esc(a.copyIn||'')}</textarea><button type="button" class="est-zoom" title="Ampliar para redactar" onclick="estZoom('${a.id}','copyIn','Copy in')">${EXP_SVG}</button></div></td>
+      <td><div class="est-copycell"><textarea class="est-ta" onchange="estSet('${a.id}','guion',this.value)" placeholder="Solo si es reel…">${esc(a.guion||'')}</textarea><button type="button" class="est-zoom" title="Ampliar para redactar" onclick="estZoom('${a.id}','guion','Guion')">${EXP_SVG}</button></div></td>
       <td><div class="est-refcell">${refLink(a)}<button type="button" class="est-reflink" onclick="estAddRef('${a.id}')">+ link/nota</button></div></td>
       <td><select class="est-sel" onchange="estSet('${a.id}','quien',this.value)">${peopleOpts(a.quien)}</select></td>
       <td><input class="est-in date" data-id="${a.id}" data-fld="entrega" value="${esc(a.entrega||'')}" onchange="estSet('${a.id}','entrega',this.value)" placeholder="Elige viernes…"></td>
