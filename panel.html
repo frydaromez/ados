@@ -953,18 +953,19 @@
   .ec-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
   .ec-dow{text-align:left;padding:0 4px 6px;font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
   .ec-dow.wknd{color:#c7c4d6}
-  .ec-cell{min-height:96px;border:1px solid #f1eff8;border-radius:11px;padding:6px;display:flex;flex-direction:column;gap:4px;background:#fff;transition:border-color .15s var(--ease),background .15s var(--ease)}
+  .ec-cell{min-height:112px;border:1px solid #f1eff8;border-radius:11px;padding:6px;display:flex;flex-direction:column;gap:4px;background:#fff;transition:border-color .15s var(--ease),background .15s var(--ease)}
   .ec-cell:hover{border-color:var(--line);background:#fcfbff}
   .ec-cell.ec-empty{border:none;background:none}
   .ec-cell.ec-wknd{background:#fafafc}
   .ec-cell.ec-today{border-color:var(--brand);box-shadow:inset 0 0 0 1px var(--brand)}
   .ec-d{font-size:12px;font-weight:700;color:#6a6a78;padding:1px 3px}
   .ec-cell.ec-today .ec-d{color:#fff;background:#e11d48;border-radius:7px;width:21px;height:18px;display:flex;align-items:center;justify-content:center}
-  .ec-ev{display:flex;align-items:center;gap:6px;border-radius:8px;padding:4px 8px;font-size:11.5px;font-weight:600;color:#3a3a44;background:#f3f2f8;cursor:pointer;overflow:hidden;transition:transform .12s var(--ease-spring),filter .15s var(--ease)}
+  .ec-ev{display:block;border-radius:9px;padding:5px 8px;background:#f3f2f8;color:#3a3a44;cursor:pointer;overflow:hidden;transition:transform .12s var(--ease-spring),filter .15s var(--ease)}
   .ec-ev:hover{transform:translateX(1px);filter:brightness(.97)}
-  .ec-ev .ec-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;background:#94a3b8}
-  .ec-evt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .ec-ev.ec-priv{opacity:.78;border:1px dashed #cbb6ff}
+  .ec-evt{font-size:11.5px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .ec-evsub{display:flex;align-items:center;gap:5px;font-size:9.5px;font-weight:600;opacity:.9;margin-top:1px;overflow:hidden;white-space:nowrap}
+  .ec-evid{margin-left:auto;font-family:ui-monospace,Menlo,monospace;font-size:9px;opacity:.85;flex-shrink:0}
+  .ec-ev.ec-priv{opacity:.82;outline:1px dashed #cbb6ff;outline-offset:-1px}
   .ec-dot.pl-fb,.ec-ev.pl-fb .ec-dot{background:#1d4ed8}
   .ec-dot.pl-ig,.ec-ev.pl-ig .ec-dot{background:#be1d6b}
   .ec-dot.pl-tt,.ec-ev.pl-tt .ec-dot{background:#1c1c22}
@@ -1321,11 +1322,13 @@
             <select class="pf-sel" id="est-cli"></select>
             <span class="pf-div"></span>
             <select class="pf-sel" id="est-tipo"><option value="parrilla">Solo parrilla</option><option value="">Parrilla y extras</option><option value="extra">Solo extras</option></select>
+            <span class="pf-div"></span>
+            <select class="pf-sel" id="est-plat"><option value="">Toda plataforma</option><option value="Instagram">Instagram</option><option value="Facebook">Facebook</option><option value="TikTok">TikTok</option><option value="LinkedIn">LinkedIn</option><option value="X">X</option><option value="YouTube">YouTube</option></select>
           </div>
           <datalist id="dl-formato"><option value="Post"><option value="Reel"><option value="Carrusel"><option value="Historia"><option value="Video"><option value="Idea visual"></datalist>
           <div class="seg" id="est-seg">
             <button type="button" class="seg-opt active" data-ev="tabla">Parrilla</button>
-            <button type="button" class="seg-opt" data-ev="cal">Dispersión</button>
+            <button type="button" class="seg-opt" data-ev="cal">Calendario</button>
           </div>
           <div class="est-actions">
             <button type="button" class="tbtn" onclick="estAddRow()"><span class="plus">+</span> Pieza</button>
@@ -3021,7 +3024,7 @@
     if(plats.includes(cur))s.value=cur;}
   function renderCliGantt(){renderGantt2(cliParrillaItems(), el('cli-gantt-v'), false);}
   // ===== VISTA ESTRATEGIA (exclusiva) =====
-  let estCli='', estView='tabla', estTipo='parrilla';
+  let estCli='', estView='tabla', estTipo='parrilla', estPlat='';
   const teamVisible=a=>a.visible!=='estratega';
   const platClass=p=>{const k=(p||'').toLowerCase();if(/insta|^ig/.test(k))return 'pl-ig';if(/face|^fb/.test(k))return 'pl-fb';if(/tik|^tt/.test(k))return 'pl-tt';if(/linked|^li\b/.test(k))return 'pl-li';return '';};
   const PLATS=['Instagram','Facebook','TikTok','LinkedIn','X','YouTube'];
@@ -3032,7 +3035,7 @@
   function estZoom(id,fld,label){const a=acts.find(x=>x.id===id);if(!a)return;zoomId=id;zoomFld=fld;zoomTarget=null;el('zoom-title').textContent=label;el('zoom-sub').textContent=`#${a.id} · ${esc(a.que||'')}${a.plat?' · '+esc(a.plat):''}`;el('zoom-ta').value=a[fld]||'';openModal('ov-zoom');setTimeout(()=>{const t=el('zoom-ta');if(t)t.focus();},60);}
   function openZoom(targetId,label){const t=el(targetId);if(!t)return;zoomId=null;zoomFld=null;zoomTarget=targetId;el('zoom-title').textContent=label;el('zoom-sub').textContent='';el('zoom-ta').value=t.value||'';openModal('ov-zoom');setTimeout(()=>{const z=el('zoom-ta');if(z)z.focus();},60);}
   function zoomSave(){if(zoomTarget){const t=el(zoomTarget);if(t)t.value=el('zoom-ta').value;zoomTarget=null;closeModal('ov-zoom');return;}const a=acts.find(x=>x.id===zoomId);if(a&&zoomFld){a[zoomFld]=el('zoom-ta').value;persist();renderEstrategia();}closeModal('ov-zoom');toast('Guardado');}
-  function estItems(){return acts.filter(a=>(a.tipo==='parrilla'||a.tipo==='extra')&&!a.fin&&(!estCli||a.acc===estCli)&&(!estTipo||a.tipo===estTipo));}
+  function estItems(){return acts.filter(a=>(a.tipo==='parrilla'||a.tipo==='extra')&&!a.fin&&(!estCli||a.acc===estCli)&&(!estTipo||a.tipo===estTipo)&&(!estPlat||(a.plat||'').toLowerCase()===estPlat.toLowerCase()));}
   function fillEstCli(){const s=el('est-cli');if(!s)return;const cur=estCli;s.innerHTML='<option value="">Todos los clientes</option>'+clients.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('');s.value=(cur&&clients.find(c=>c.id===cur))?cur:'';estCli=s.value;}
   function renderEstrategia(){
     if(!el('est-cli'))return;
@@ -3117,7 +3120,7 @@
       let cells=DOW_MIN.map((d,i)=>`<div class="ec-dow${i>4?' wknd':''}">${d}</div>`).join('');
       for(let i=0;i<startDow;i++)cells+='<div class="ec-cell ec-empty"></div>';
       for(let d=1;d<=dim;d++){const wd=new Date(y,m,d).getDay();const evs=byKey[y+'-'+m+'-'+d]||[];const isToday=y===tY&&m===tM&&d===tD;
-        const chips=evs.map(a=>`<div class="ec-ev ${platClass(a.plat)}${a.visible==='estratega'?' ec-priv':''}" title="${esc(a.que)}${a.plat?' · '+esc(a.plat):''}${a.visible==='estratega'?' · solo tú':''}" onclick="abrirActividad('${a.id}')"><span class="ec-dot ${platClass(a.plat)}"></span><span class="ec-evt">${esc(a.que)}</span></div>`).join('');
+        const chips=evs.map(a=>{const pc=platClass(a.plat);const fmt=esc(a.formato||tipoLabel(a.tipo));return `<div class="ec-ev ${pc}${a.visible==='estratega'?' ec-priv':''}" title="${esc(a.que)}${a.plat?' · '+esc(a.plat):''} · ${fmt}${a.visible==='estratega'?' · solo tú':''}" onclick="abrirActividad('${a.id}')"><div class="ec-evt">${esc(a.que)}</div><div class="ec-evsub">${a.plat?esc(a.plat)+' · ':''}${fmt}<span class="ec-evid">#${esc(String(a.id))}</span></div></div>`;}).join('');
         cells+=`<div class="ec-cell${isToday?' ec-today':''}${(wd===0||wd===6)?' ec-wknd':''}"><div class="ec-d">${d}</div>${chips}</div>`;}
       html+=`<div class="ec-month"><div class="ec-mhead"><b>${MESES[m]} ${y}</b><span class="ec-mtot">${total} pieza${total!==1?'s':''}</span></div><div class="ec-grid">${cells}</div></div>`;
     }
@@ -3416,6 +3419,7 @@
   document.querySelectorAll('#nav a, #nav2 a').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();showView(a.dataset.view);}));
   el('est-cli').addEventListener('change',()=>{estCli=el('est-cli').value;renderEstrategia();});
   el('est-tipo').addEventListener('change',()=>{estTipo=el('est-tipo').value;renderEstrategia();});
+  el('est-plat').addEventListener('change',()=>{estPlat=el('est-plat').value;renderEstrategia();});
   el('est-seg').addEventListener('click',e=>{const b=e.target.closest('.seg-opt');if(b){estView=b.dataset.ev;renderEstrategia();}});
   el('ec-mode').addEventListener('click',e=>{const b=e.target.closest('.seg-opt');if(b){estCalMode=b.dataset.cm;document.querySelectorAll('#ec-mode .seg-opt').forEach(o=>o.classList.toggle('active',o===b));renderEstCal();}});
   el('est-file').addEventListener('change',e=>{const f=e.target.files[0];if(f)estUpload(f);e.target.value='';});
