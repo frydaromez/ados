@@ -946,26 +946,29 @@
   .ec-legend{display:flex;gap:14px;flex-wrap:wrap;margin-left:auto}
   .ec-legi{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;color:var(--muted)}
   .ec-wrap{display:flex;flex-direction:column;gap:22px;max-height:calc(100vh - 230px);overflow:auto;padding-right:4px}
-  .ec-month{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px 18px 18px;box-shadow:0 1px 2px rgba(24,20,50,.04),0 14px 38px -26px rgba(40,25,90,.25)}
-  .ec-mhead{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px}
+  .ec-month{background:#fff;border:1px solid var(--line);border-radius:16px;padding:0 18px 18px;box-shadow:0 1px 2px rgba(24,20,50,.04),0 14px 38px -26px rgba(40,25,90,.25);position:relative}
+  .ec-mhead{position:sticky;top:0;z-index:4;display:flex;align-items:baseline;justify-content:space-between;background:#fff;padding:14px 0 11px;border-bottom:1px solid #f1eff8;border-radius:16px 16px 0 0}
   .ec-mhead b{font-family:var(--font-head);font-size:19px;font-weight:800;color:var(--ink);letter-spacing:-.01em}
   .ec-mtot{font-size:11.5px;font-weight:600;color:var(--muted)}
   .ec-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
-  .ec-dow{text-align:left;padding:0 4px 6px;font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+  .ec-grid.ec-dowrow{position:sticky;top:51px;z-index:3;background:#fff;padding:8px 0 6px}
+  .ec-dow{text-align:left;padding:0 4px;font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
   .ec-dow.wknd{color:#c7c4d6}
-  .ec-cell{min-height:112px;border:1px solid #f1eff8;border-radius:11px;padding:6px;display:flex;flex-direction:column;gap:4px;background:#fff;transition:border-color .15s var(--ease),background .15s var(--ease)}
+  .ec-cell{min-height:118px;border:1px solid #f1eff8;border-radius:11px;padding:6px;display:flex;flex-direction:column;gap:4px;background:#fff;transition:border-color .15s var(--ease),background .15s var(--ease)}
   .ec-cell:hover{border-color:var(--line);background:#fcfbff}
-  .ec-cell.ec-empty{border:none;background:none}
+  .ec-cell.ec-empty{border:none;background:none;min-height:0}
   .ec-cell.ec-wknd{background:#fafafc}
   .ec-cell.ec-today{border-color:var(--brand);box-shadow:inset 0 0 0 1px var(--brand)}
+  .ec-cell.ec-cdue{background:#fff7ec;border-color:#f3dcab}
+  .ec-duetag{font-size:8.5px;font-weight:800;text-transform:uppercase;letter-spacing:.03em;color:#9a6400;background:#fbe6bf;border-radius:5px;padding:2px 6px;align-self:flex-start}
   .ec-d{font-size:12px;font-weight:700;color:#6a6a78;padding:1px 3px}
   .ec-cell.ec-today .ec-d{color:#fff;background:#e11d48;border-radius:7px;width:21px;height:18px;display:flex;align-items:center;justify-content:center}
-  .ec-ev{display:block;border-radius:9px;padding:5px 8px;background:#f3f2f8;color:#3a3a44;cursor:pointer;overflow:hidden;transition:transform .12s var(--ease-spring),filter .15s var(--ease)}
-  .ec-ev:hover{transform:translateX(1px);filter:brightness(.97)}
-  .ec-evt{font-size:11.5px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .ec-evsub{display:flex;align-items:center;gap:5px;font-size:9.5px;font-weight:600;opacity:.9;margin-top:1px;overflow:hidden;white-space:nowrap}
-  .ec-evid{margin-left:auto;font-family:ui-monospace,Menlo,monospace;font-size:9px;opacity:.85;flex-shrink:0}
-  .ec-ev.ec-priv{opacity:.82;outline:1px dashed #cbb6ff;outline-offset:-1px}
+  .ec-ev{display:block;border-radius:9px;padding:6px 9px;background:#f3f2f8;color:#3a3a44;cursor:pointer;overflow:hidden;transition:transform .12s var(--ease-spring),filter .15s var(--ease)}
+  .ec-ev:hover{transform:translateY(-1px);filter:brightness(.98);box-shadow:0 6px 14px -8px rgba(40,25,90,.4)}
+  .ec-evt{font-size:12px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.25}
+  .ec-evid{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;font-weight:800;opacity:.95}
+  .ec-evsub{font-size:9.5px;font-weight:700;opacity:.85;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-transform:uppercase;letter-spacing:.02em}
+  .ec-ev.ec-priv{opacity:.85;outline:1px dashed #cbb6ff;outline-offset:-1px}
   .ec-dot.pl-fb,.ec-ev.pl-fb .ec-dot{background:#1d4ed8}
   .ec-dot.pl-ig,.ec-ev.pl-ig .ec-dot{background:#be1d6b}
   .ec-dot.pl-tt,.ec-ev.pl-tt .ec-dot{background:#1c1c22}
@@ -1338,7 +1341,6 @@
         <div class="est-stats" id="est-stats"></div>
         <div id="est-panel"><div class="fit-scroll" id="est-tablewrap"></div></div>
         <div id="est-calpanel" class="hidden">
-          <div class="ec-bar"><div class="seg" id="ec-mode"><button type="button" class="seg-opt active" data-cm="entrega">Por revisión interna</button><button type="button" class="seg-opt" data-cm="due">Por envío a cliente</button></div><div class="ec-legend" id="ec-legend"></div></div>
           <div id="est-cal" class="ec-wrap"></div>
         </div>
       </section>
@@ -3103,26 +3105,25 @@
     persist();renderEstrategia();closeModal('ov-estpieza');toast('Pieza agregada (privada)');
   }
   function estApplyViernes(){if(!estCli){toast('Elige un cliente para aplicar a su parrilla');return;}const items=estItems();if(!items.length){toast('No hay piezas');return;}const f=prompt('¿Qué viernes de revisión interna para toda la parrilla?\n(ej. Viernes, 12 de junio de 2026)',items[0].entrega||'');if(f==null)return;const v=f.trim();items.forEach(a=>a.entrega=v);persist();renderEstrategia();renderAll();toast('Viernes aplicado a toda la parrilla');}
-  let estCalMode='entrega';
-  const estDate=a=>parseFecha(estCalMode==='due'?a.due:a.entrega);
   function renderEstCal(){
     const host=el('est-cal');if(!host)return;const items=estItems();
-    el('ec-legend').innerHTML=['Instagram','Facebook','TikTok','LinkedIn'].map(p=>`<span class="ec-legi"><span class="ec-dot ${platClass(p)}"></span>${p}</span>`).join('');
-    const dated=items.map(a=>({a,dt:estDate(a)})).filter(x=>x.dt);
-    if(!dated.length){host.innerHTML='<div class="empty" style="padding:36px">Aún no hay fechas para mostrar. Asigna la fecha en la tabla y aquí verás la dispersión.</div>';return;}
-    let minK=Infinity,maxK=-Infinity;const byKey={};
-    dated.forEach(x=>{const k=x.dt.y*12+x.dt.m;minK=Math.min(minK,k);maxK=Math.max(maxK,k);const kk=x.dt.y+'-'+x.dt.m+'-'+x.dt.d;(byKey[kk]=byKey[kk]||[]).push(x.a);});
+    const byKey={},dueDays={};const months=new Set();
+    items.forEach(a=>{const e=parseFecha(a.entrega);if(e){const kk=e.y+'-'+e.m+'-'+e.d;(byKey[kk]=byKey[kk]||[]).push(a);months.add(e.y*12+e.m);}
+      const d=parseFecha(a.due);if(d){const dk=d.y+'-'+d.m+'-'+d.d;dueDays[dk]=(dueDays[dk]||0)+1;months.add(d.y*12+d.m);}});
+    if(!months.size){host.innerHTML='<div class="empty" style="padding:36px">Aún no hay fechas para mostrar. Asigna la fecha en la tabla y aquí verás el calendario.</div>';return;}
+    const ks=[...months].sort((x,y)=>x-y),minK=ks[0],maxK=ks[ks.length-1];
     const today=new Date(),tY=today.getFullYear(),tM=today.getMonth(),tD=today.getDate();
     let html='';
     for(let k=minK;k<=maxK;k++){const y=Math.floor(k/12),m=k%12;
       const startDow=(new Date(y,m,1).getDay()+6)%7,dim=new Date(y,m+1,0).getDate();
       const total=Object.keys(byKey).filter(kk=>kk.startsWith(y+'-'+m+'-')).reduce((s,kk)=>s+byKey[kk].length,0);
-      let cells=DOW_MIN.map((d,i)=>`<div class="ec-dow${i>4?' wknd':''}">${d}</div>`).join('');
+      let dows=DOW_MIN.map((d,i)=>`<div class="ec-dow${i>4?' wknd':''}">${d}</div>`).join('');
+      let cells='';
       for(let i=0;i<startDow;i++)cells+='<div class="ec-cell ec-empty"></div>';
-      for(let d=1;d<=dim;d++){const wd=new Date(y,m,d).getDay();const evs=byKey[y+'-'+m+'-'+d]||[];const isToday=y===tY&&m===tM&&d===tD;
-        const chips=evs.map(a=>{const pc=platClass(a.plat);const fmt=esc(a.formato||tipoLabel(a.tipo));return `<div class="ec-ev ${pc}${a.visible==='estratega'?' ec-priv':''}" title="${esc(a.que)}${a.plat?' · '+esc(a.plat):''} · ${fmt}${a.visible==='estratega'?' · solo tú':''}" onclick="abrirActividad('${a.id}')"><div class="ec-evt">${esc(a.que)}</div><div class="ec-evsub">${a.plat?esc(a.plat)+' · ':''}${fmt}<span class="ec-evid">#${esc(String(a.id))}</span></div></div>`;}).join('');
-        cells+=`<div class="ec-cell${isToday?' ec-today':''}${(wd===0||wd===6)?' ec-wknd':''}"><div class="ec-d">${d}</div>${chips}</div>`;}
-      html+=`<div class="ec-month"><div class="ec-mhead"><b>${MESES[m]} ${y}</b><span class="ec-mtot">${total} pieza${total!==1?'s':''}</span></div><div class="ec-grid">${cells}</div></div>`;
+      for(let d=1;d<=dim;d++){const wd=new Date(y,m,d).getDay();const key=y+'-'+m+'-'+d;const evs=byKey[key]||[];const isToday=y===tY&&m===tM&&d===tD;const due=dueDays[key]||0;
+        const chips=evs.map(a=>{const pc=platClass(a.plat);const fmt=esc(a.formato||tipoLabel(a.tipo));return `<div class="ec-ev ${pc}${a.visible==='estratega'?' ec-priv':''}" title="${esc(a.que)}${a.plat?' · '+esc(a.plat):''} · ${fmt}${a.visible==='estratega'?' · solo tú':''}" onclick="abrirActividad('${a.id}')"><div class="ec-evt"><span class="ec-evid">#${esc(String(a.id))}</span> ${esc(a.que)}</div><div class="ec-evsub">${a.plat?esc(a.plat)+' · ':''}${fmt}</div></div>`;}).join('');
+        cells+=`<div class="ec-cell${isToday?' ec-today':''}${(wd===0||wd===6)?' ec-wknd':''}${due?' ec-cdue':''}">${due?`<div class="ec-duetag">Entrega a cliente${due>1?' · '+due:''}</div>`:''}<div class="ec-d">${d}</div>${chips}</div>`;}
+      html+=`<div class="ec-month"><div class="ec-mhead"><b>${MESES[m]} ${y}</b><span class="ec-mtot">${total} pieza${total!==1?'s':''}</span></div><div class="ec-grid ec-dowrow">${dows}</div><div class="ec-grid">${cells}</div></div>`;
     }
     host.innerHTML=html;
   }
@@ -3421,7 +3422,6 @@
   el('est-tipo').addEventListener('change',()=>{estTipo=el('est-tipo').value;renderEstrategia();});
   el('est-plat').addEventListener('change',()=>{estPlat=el('est-plat').value;renderEstrategia();});
   el('est-seg').addEventListener('click',e=>{const b=e.target.closest('.seg-opt');if(b){estView=b.dataset.ev;renderEstrategia();}});
-  el('ec-mode').addEventListener('click',e=>{const b=e.target.closest('.seg-opt');if(b){estCalMode=b.dataset.cm;document.querySelectorAll('#ec-mode .seg-opt').forEach(o=>o.classList.toggle('active',o===b));renderEstCal();}});
   el('est-file').addEventListener('change',e=>{const f=e.target.files[0];if(f)estUpload(f);e.target.value='';});
   ['f-cuenta','f-acc','f-tipo','f-quien','f-estado'].forEach(id=>el(id).addEventListener('change',renderMadre));
   el('f-fin').addEventListener('click',function(){madreFin=!madreFin;this.classList.toggle('active',madreFin);this.textContent=madreFin?'Ocultar finalizadas':'Incluir finalizadas';renderMadre();});
