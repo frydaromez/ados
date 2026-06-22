@@ -878,7 +878,7 @@
   .est-bar{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
   .est-fgroup{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.72);backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:12px;padding:5px 12px;box-shadow:0 8px 24px -18px rgba(60,40,120,.5)}
   .est-fgroup .pf-sel{font-size:14px;font-weight:700}
-  .est-count{font-size:12px;font-weight:600;color:var(--muted);white-space:nowrap}
+  .est-count{font-size:12px;font-weight:600;color:var(--muted);white-space:nowrap;margin-left:6px;padding-left:12px;border-left:1px solid var(--line)}
   .est-actions{display:flex;align-items:center;gap:8px;margin-left:auto;flex-wrap:wrap}
   .est-upload{cursor:pointer}
   #est-tablewrap{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:auto;max-height:calc(100vh - 230px);box-shadow:0 14px 40px -26px rgba(60,40,120,.4)}
@@ -1290,7 +1290,6 @@
             <button type="button" class="seg-opt" data-ev="cal">Dispersión</button>
           </div>
           <div class="est-actions">
-            <button type="button" class="tbtn" onclick="estApplyViernes()">Aplicar viernes a toda la parrilla</button>
             <button type="button" class="tbtn" onclick="estAddRow()"><span class="plus">+</span> Pieza</button>
             <label class="tbtn primary est-upload">Subir documento<input type="file" id="est-file" accept=".xlsx,.xls,.csv" hidden></label>
           </div>
@@ -1524,7 +1523,8 @@
     <button class="modal-close" onclick="closeModal('ov-estpieza')" aria-label="Cerrar">×</button>
     <h3>+ Nueva pieza</h3>
     <p class="msub">Se agrega a la parrilla del cliente como <b>privada (solo tú)</b>; libérala al equipo cuando quieras.</p>
-    <div class="cap-row" style="grid-template-columns:2fr 1fr 1fr">
+    <div class="cap-row" style="grid-template-columns:1fr 2fr 1fr 1fr">
+      <div class="f"><label>Cliente</label><select id="ep-cli"></select></div>
       <div class="f"><label>Pieza</label><input id="ep-que" placeholder="Ej. Arte aniversario" autocomplete="off"></div>
       <div class="f"><label>Plataforma</label><select id="ep-plat"></select></div>
       <div class="f"><label>Formato</label><input id="ep-formato" list="dl-formato" placeholder="Idea visual…" autocomplete="off"></div>
@@ -3027,18 +3027,20 @@
   function estToggleVis(id){const a=acts.find(x=>x.id===id);if(!a)return;a.visible=a.visible==='equipo'?'estratega':'equipo';persist();renderEstrategia();renderAll();toast(a.visible==='equipo'?'Pieza visible para el equipo':'Pieza solo para ti');}
   function estDel(id){const i=acts.findIndex(x=>x.id===id);if(i<0)return;acts.splice(i,1);persist();renderEstrategia();renderAll();}
   function estAddRef(id){const a=acts.find(x=>x.id===id);if(!a)return;const v=prompt('Pega el link de la idea visual / referencia (o una nota para el equipo):');if(v==null)return;const t=v.trim();if(!t)return;const isUrl=/^https?:\/\//i.test(t)||/[a-z0-9.-]+\.[a-z]{2,}\//i.test(t);(a.links=a.links||[]).push({name:t,url:isUrl?t:'',type:'link'});a.link=true;persist();renderEstrategia();toast('Referencia agregada · la verá el equipo en su Actividad');}
-  function estAddRow(){if(!estCli){toast('Elige un cliente para agregar su pieza');return;}
+  function estAddRow(){
+    el('ep-cli').innerHTML=clients.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('');
+    el('ep-cli').value=(estCli&&clients.find(c=>c.id===estCli))?estCli:(clients[0]&&clients[0].id||'');
     el('ep-que').value='';el('ep-plat').innerHTML=platOptions('');el('ep-formato').value='';el('ep-tipo').value=estTipo==='extra'?'extra':'parrilla';
     el('ep-quien').innerHTML=Object.keys(people).map(k=>`<option value="${k}">${esc(people[k].n)}</option>`).join('');
     el('ep-entrega').value='';el('ep-due').value='';el('ep-copyout').value='';el('ep-copyin').value='';el('ep-guion').value='';el('ep-ref').value='';
     openModal('ov-estpieza');aeInitPickers(['ep-entrega','ep-due']);setTimeout(()=>{const q=el('ep-que');if(q)q.focus();},60);
   }
   function estSavePieza(){
-    if(!estCli){toast('Elige un cliente');return;}
+    const acc=el('ep-cli').value;if(!acc){toast('Elige un cliente');return;}
     const que=el('ep-que').value.trim();if(!que){toast('Escribe el nombre de la pieza');return;}
     const ref=el('ep-ref').value.trim();
     const links=ref?[{name:ref,url:(/^https?:\/\//i.test(ref)||/[a-z0-9.-]+\.[a-z]{2,}\//i.test(ref))?ref:'',type:'link'}]:[];
-    acts.unshift({id:uid(),cuenta:'cliente',acc:estCli,tipo:el('ep-tipo').value,cant:1,que,formato:el('ep-formato').value.trim(),plat:el('ep-plat').value,pub:0,quien:el('ep-quien').value,due:el('ep-due').value.trim(),estado:'todo',det:'',link:links.length>0,links,finalLinks:[],comentarios:[],revComentarios:[],entrega:el('ep-entrega').value.trim(),cliente:'',fin:false,reg:new Date().toISOString().slice(0,10),regPor:'AN',visible:'estratega',copyOut:el('ep-copyout').value.trim(),copyIn:el('ep-copyin').value.trim(),guion:el('ep-guion').value.trim()});
+    acts.unshift({id:uid(),cuenta:'cliente',acc,tipo:el('ep-tipo').value,cant:1,que,formato:el('ep-formato').value.trim(),plat:el('ep-plat').value,pub:0,quien:el('ep-quien').value,due:el('ep-due').value.trim(),estado:'todo',det:'',link:links.length>0,links,finalLinks:[],comentarios:[],revComentarios:[],entrega:el('ep-entrega').value.trim(),cliente:'',fin:false,reg:new Date().toISOString().slice(0,10),regPor:'AN',visible:'estratega',copyOut:el('ep-copyout').value.trim(),copyIn:el('ep-copyin').value.trim(),guion:el('ep-guion').value.trim()});
     persist();renderEstrategia();closeModal('ov-estpieza');toast('Pieza agregada (privada)');
   }
   function estApplyViernes(){if(!estCli){toast('Elige un cliente para aplicar a su parrilla');return;}const items=estItems();if(!items.length){toast('No hay piezas');return;}const f=prompt('¿Qué viernes de revisión interna para toda la parrilla?\n(ej. Viernes, 12 de junio de 2026)',items[0].entrega||'');if(f==null)return;const v=f.trim();items.forEach(a=>a.entrega=v);persist();renderEstrategia();renderAll();toast('Viernes aplicado a toda la parrilla');}
