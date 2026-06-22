@@ -935,6 +935,12 @@
   .zoom-ta{width:100%;box-sizing:border-box;min-height:340px;border:1px solid var(--line);border-radius:12px;padding:14px 16px;font-size:15px;line-height:1.6;font-family:inherit;color:var(--ink);resize:vertical}
   .zoom-ta:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
   .due-wrap .ep-date{flex:1}
+  .estpieza-modal{width:1120px;max-width:96vw;max-height:94vh;overflow:auto}
+  .estpieza-modal textarea{min-height:56px}
+  .estpieza-modal .est-copycell textarea{width:100%;box-sizing:border-box;padding-right:28px}
+  .ep-reflist{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .ep-reflist:not(:empty){margin-bottom:9px}
+  #ov-zoom{z-index:120}
   .pnav-btn{width:34px;height:34px;border:1px solid var(--line);background:#fff;border-radius:10px;cursor:pointer;font-size:18px;line-height:1;color:var(--ink);display:flex;align-items:center;justify-content:center;transition:transform .2s var(--ease-spring),border-color .18s var(--ease),color .18s var(--ease)}
   .pnav-btn:hover{border-color:var(--brand);color:var(--brand);transform:translateY(-1px)}
   .pnav-btn:active{transform:scale(.92)}
@@ -1519,26 +1525,36 @@
 
 <!-- Modal + Nueva pieza (vista Estrategia) -->
 <div class="overlay" id="ov-estpieza">
-  <div class="modal modal-cap">
+  <div class="modal modal-cap estpieza-modal">
     <button class="modal-close" onclick="closeModal('ov-estpieza')" aria-label="Cerrar">×</button>
     <h3>+ Nueva pieza</h3>
     <p class="msub">Se agrega a la parrilla del cliente como <b>privada (solo tú)</b>; libérala al equipo cuando quieras.</p>
-    <div class="cap-row" style="grid-template-columns:1fr 2fr 1fr 1fr">
+    <div class="cap-row" style="grid-template-columns:.8fr 1.1fr 1.8fr 1fr">
+      <div class="f"><label>ID</label><input id="ep-id" autocomplete="off"></div>
       <div class="f"><label>Cliente</label><select id="ep-cli"></select></div>
       <div class="f"><label>Pieza</label><input id="ep-que" placeholder="Ej. Arte aniversario" autocomplete="off"></div>
       <div class="f"><label>Plataforma</label><select id="ep-plat"></select></div>
-      <div class="f"><label>Formato</label><input id="ep-formato" list="dl-formato" placeholder="Idea visual…" autocomplete="off"></div>
     </div>
-    <div class="cap-row" style="grid-template-columns:1fr 1fr 1.3fr 1.3fr">
+    <div class="cap-row" style="grid-template-columns:1fr 1fr 1fr 1fr 1fr">
+      <div class="f"><label>Formato</label><input id="ep-formato" list="dl-formato" placeholder="Ej. Post, Reel…" autocomplete="off"></div>
       <div class="f"><label>Tipo</label><select id="ep-tipo"><option value="parrilla">Parrilla</option><option value="extra">Extra</option></select></div>
       <div class="f"><label>Responsable</label><select id="ep-quien"></select></div>
       <div class="f"><label>Revisión interna</label><div class="due-wrap"><input id="ep-entrega" class="ep-date" placeholder="Elige o escribe" autocomplete="off"><button type="button" class="cal-btn" data-fp="ep-entrega" title="Calendario"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg></button><input type="text" id="ep-entrega-fp" style="position:absolute;width:0;height:0;opacity:0;pointer-events:none"></div></div>
       <div class="f"><label>Envío a cliente</label><div class="due-wrap"><input id="ep-due" class="ep-date" placeholder="Elige o escribe" autocomplete="off"><button type="button" class="cal-btn" data-fp="ep-due" title="Calendario"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg></button><input type="text" id="ep-due-fp" style="position:absolute;width:0;height:0;opacity:0;pointer-events:none"></div></div>
     </div>
-    <div class="cap-row"><div class="f"><label>Copy out</label><textarea id="ep-copyout" placeholder="Copy de publicación…"></textarea></div></div>
-    <div class="cap-row"><div class="f"><label>Copy in</label><textarea id="ep-copyin" placeholder="Copy interno / brief…"></textarea></div></div>
-    <div class="cap-row"><div class="f"><label>Guion (solo si es reel)</label><textarea id="ep-guion" placeholder="Guion…"></textarea></div></div>
-    <div class="cap-row"><div class="f"><label>Idea visual / referencia (link)</label><input id="ep-ref" class="link-input" placeholder="Pega un link de referencia…" autocomplete="off"></div></div>
+    <div class="cap-row" style="grid-template-columns:1fr 1fr">
+      <div class="f"><label>Copy out</label><div class="est-copycell"><textarea id="ep-copyout" placeholder="Copy de publicación…"></textarea><button type="button" class="est-zoom" title="Ampliar" onclick="openZoom('ep-copyout','Copy out')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></button></div></div>
+      <div class="f"><label>Copy in</label><div class="est-copycell"><textarea id="ep-copyin" placeholder="Copy interno / brief…"></textarea><button type="button" class="est-zoom" title="Ampliar" onclick="openZoom('ep-copyin','Copy in')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></button></div></div>
+    </div>
+    <div class="cap-row" style="grid-template-columns:1fr">
+      <div class="f"><label>Guion (solo si es reel)</label><div class="est-copycell"><textarea id="ep-guion" placeholder="Guion…"></textarea><button type="button" class="est-zoom" title="Ampliar" onclick="openZoom('ep-guion','Guion')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></button></div></div>
+    </div>
+    <div class="cap-row" style="grid-template-columns:1fr">
+      <div class="f"><label>Idea visual / referencias (links o notas · puedes agregar varias)</label>
+        <div id="ep-reflist" class="ep-reflist"></div>
+        <div class="att-add"><input id="ep-refname" class="att-name-in" placeholder="Nombre (opcional)" autocomplete="off"><input id="ep-refurl" class="att-url-in" placeholder="Pega un link o nota…" autocomplete="off"><button type="button" class="att-addbtn" onclick="epAddRef()">+ Agregar</button></div>
+      </div>
+    </div>
     <div class="modactions">
       <button class="mbtn cancel" onclick="closeModal('ov-estpieza')">Cancelar</button>
       <button class="mbtn save" onclick="estSavePieza()">Agregar pieza</button>
@@ -2977,9 +2993,10 @@
   function platOptions(cur){const list=PLATS.slice();if(cur&&!list.some(p=>p.toLowerCase()===cur.toLowerCase()))list.push(cur);return '<option value="">—</option>'+list.map(p=>`<option value="${esc(p)}"${(cur||'').toLowerCase()===p.toLowerCase()?' selected':''}>${esc(p)}</option>`).join('');}
   function estSetPlat(id,sel){const a=acts.find(x=>x.id===id);if(!a)return;a.plat=sel.value;persist();renderEstrategia();}
   const EXP_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>';
-  let zoomId=null,zoomFld=null;
-  function estZoom(id,fld,label){const a=acts.find(x=>x.id===id);if(!a)return;zoomId=id;zoomFld=fld;el('zoom-title').textContent=label;el('zoom-sub').textContent=`#${a.id} · ${esc(a.que||'')}${a.plat?' · '+esc(a.plat):''}`;el('zoom-ta').value=a[fld]||'';openModal('ov-zoom');setTimeout(()=>{const t=el('zoom-ta');if(t)t.focus();},60);}
-  function zoomSave(){const a=acts.find(x=>x.id===zoomId);if(a&&zoomFld){a[zoomFld]=el('zoom-ta').value;persist();renderEstrategia();}closeModal('ov-zoom');toast('Guardado');}
+  let zoomId=null,zoomFld=null,zoomTarget=null;
+  function estZoom(id,fld,label){const a=acts.find(x=>x.id===id);if(!a)return;zoomId=id;zoomFld=fld;zoomTarget=null;el('zoom-title').textContent=label;el('zoom-sub').textContent=`#${a.id} · ${esc(a.que||'')}${a.plat?' · '+esc(a.plat):''}`;el('zoom-ta').value=a[fld]||'';openModal('ov-zoom');setTimeout(()=>{const t=el('zoom-ta');if(t)t.focus();},60);}
+  function openZoom(targetId,label){const t=el(targetId);if(!t)return;zoomId=null;zoomFld=null;zoomTarget=targetId;el('zoom-title').textContent=label;el('zoom-sub').textContent='';el('zoom-ta').value=t.value||'';openModal('ov-zoom');setTimeout(()=>{const z=el('zoom-ta');if(z)z.focus();},60);}
+  function zoomSave(){if(zoomTarget){const t=el(zoomTarget);if(t)t.value=el('zoom-ta').value;zoomTarget=null;closeModal('ov-zoom');return;}const a=acts.find(x=>x.id===zoomId);if(a&&zoomFld){a[zoomFld]=el('zoom-ta').value;persist();renderEstrategia();}closeModal('ov-zoom');toast('Guardado');}
   function estItems(){return acts.filter(a=>(a.tipo==='parrilla'||a.tipo==='extra')&&!a.fin&&(!estCli||a.acc===estCli)&&(!estTipo||a.tipo===estTipo));}
   function fillEstCli(){const s=el('est-cli');if(!s)return;const cur=estCli;s.innerHTML='<option value="">Todos los clientes</option>'+clients.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('');s.value=(cur&&clients.find(c=>c.id===cur))?cur:'';estCli=s.value;}
   function renderEstrategia(){
@@ -3027,20 +3044,26 @@
   function estToggleVis(id){const a=acts.find(x=>x.id===id);if(!a)return;a.visible=a.visible==='equipo'?'estratega':'equipo';persist();renderEstrategia();renderAll();toast(a.visible==='equipo'?'Pieza visible para el equipo':'Pieza solo para ti');}
   function estDel(id){const i=acts.findIndex(x=>x.id===id);if(i<0)return;acts.splice(i,1);persist();renderEstrategia();renderAll();}
   function estAddRef(id){const a=acts.find(x=>x.id===id);if(!a)return;const v=prompt('Pega el link de la idea visual / referencia (o una nota para el equipo):');if(v==null)return;const t=v.trim();if(!t)return;const isUrl=/^https?:\/\//i.test(t)||/[a-z0-9.-]+\.[a-z]{2,}\//i.test(t);(a.links=a.links||[]).push({name:t,url:isUrl?t:'',type:'link'});a.link=true;persist();renderEstrategia();toast('Referencia agregada · la verá el equipo en su Actividad');}
+  let epRefs=[];
+  function renderEpRefs(){const h=el('ep-reflist');if(!h)return;h.innerHTML=epRefs.map((r,i)=>{const u=r.url?(/^https?:\/\//i.test(r.url)?r.url:'https://'+r.url):'';return `<div class="att"><span class="att-ico ${r.url?'link':'file'}">${r.url?'Link':'Nota'}</span>${u?`<a href="${esc(u)}" target="_blank" rel="noopener" class="att-name">${esc(r.name)}</a>`:`<span class="att-name">${esc(r.name)}</span>`}<button type="button" class="lk-x" onclick="epDelRef(${i})">×</button></div>`;}).join('');}
+  function epAddRef(){const url=(el('ep-refurl').value||'').trim();const nm=(el('ep-refname').value||'').trim();if(!url&&!nm){toast('Pega un link o escribe una nota');return;}epRefs.push({name:nm||url,url:(/^https?:\/\//i.test(url)||/[a-z0-9.-]+\.[a-z]{2,}\//i.test(url))?url:'',type:url?'link':'file'});el('ep-refname').value='';el('ep-refurl').value='';renderEpRefs();el('ep-refurl').focus();}
+  function epDelRef(i){epRefs.splice(i,1);renderEpRefs();}
   function estAddRow(){
+    epRefs=[];renderEpRefs();
+    el('ep-id').value=uid();
     el('ep-cli').innerHTML=clients.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('');
     el('ep-cli').value=(estCli&&clients.find(c=>c.id===estCli))?estCli:(clients[0]&&clients[0].id||'');
     el('ep-que').value='';el('ep-plat').innerHTML=platOptions('');el('ep-formato').value='';el('ep-tipo').value=estTipo==='extra'?'extra':'parrilla';
     el('ep-quien').innerHTML=Object.keys(people).map(k=>`<option value="${k}">${esc(people[k].n)}</option>`).join('');
-    el('ep-entrega').value='';el('ep-due').value='';el('ep-copyout').value='';el('ep-copyin').value='';el('ep-guion').value='';el('ep-ref').value='';
+    el('ep-entrega').value='';el('ep-due').value='';el('ep-copyout').value='';el('ep-copyin').value='';el('ep-guion').value='';el('ep-refname').value='';el('ep-refurl').value='';
     openModal('ov-estpieza');aeInitPickers(['ep-entrega','ep-due']);setTimeout(()=>{const q=el('ep-que');if(q)q.focus();},60);
   }
   function estSavePieza(){
     const acc=el('ep-cli').value;if(!acc){toast('Elige un cliente');return;}
     const que=el('ep-que').value.trim();if(!que){toast('Escribe el nombre de la pieza');return;}
-    const ref=el('ep-ref').value.trim();
-    const links=ref?[{name:ref,url:(/^https?:\/\//i.test(ref)||/[a-z0-9.-]+\.[a-z]{2,}\//i.test(ref))?ref:'',type:'link'}]:[];
-    acts.unshift({id:uid(),cuenta:'cliente',acc,tipo:el('ep-tipo').value,cant:1,que,formato:el('ep-formato').value.trim(),plat:el('ep-plat').value,pub:0,quien:el('ep-quien').value,due:el('ep-due').value.trim(),estado:'todo',det:'',link:links.length>0,links,finalLinks:[],comentarios:[],revComentarios:[],entrega:el('ep-entrega').value.trim(),cliente:'',fin:false,reg:new Date().toISOString().slice(0,10),regPor:'AN',visible:'estratega',copyOut:el('ep-copyout').value.trim(),copyIn:el('ep-copyin').value.trim(),guion:el('ep-guion').value.trim()});
+    let id=(el('ep-id').value||'').trim().replace(/^#/,'')||uid();if(acts.find(x=>String(x.id)===id))id=uid();
+    const links=epRefs.slice();
+    acts.unshift({id,cuenta:'cliente',acc,tipo:el('ep-tipo').value,cant:1,que,formato:el('ep-formato').value.trim(),plat:el('ep-plat').value,pub:0,quien:el('ep-quien').value,due:el('ep-due').value.trim(),estado:'todo',det:'',link:links.length>0,links,finalLinks:[],comentarios:[],revComentarios:[],entrega:el('ep-entrega').value.trim(),cliente:'',fin:false,reg:new Date().toISOString().slice(0,10),regPor:'AN',visible:'estratega',copyOut:el('ep-copyout').value.trim(),copyIn:el('ep-copyin').value.trim(),guion:el('ep-guion').value.trim()});
     persist();renderEstrategia();closeModal('ov-estpieza');toast('Pieza agregada (privada)');
   }
   function estApplyViernes(){if(!estCli){toast('Elige un cliente para aplicar a su parrilla');return;}const items=estItems();if(!items.length){toast('No hay piezas');return;}const f=prompt('¿Qué viernes de revisión interna para toda la parrilla?\n(ej. Viernes, 12 de junio de 2026)',items[0].entrega||'');if(f==null)return;const v=f.trim();items.forEach(a=>a.entrega=v);persist();renderEstrategia();renderAll();toast('Viernes aplicado a toda la parrilla');}
