@@ -2337,8 +2337,10 @@
     let min=Infinity,max=-Infinity;
     data.forEach(x=>{[x.ped,x.ent,x.cli].forEach(n=>{if(n!=null){min=Math.min(min,n);max=Math.max(max,n);}});});
     min=Math.min(min,todayN); max=Math.max(max,todayN);
-    while(new Date(min*86400000).getUTCDay()!==1) min--;   // arranca en lunes
-    max+=2;                                                // margen al final
+    // calendario de todo el año (de enero a diciembre del/los año(s) con datos)
+    const y0=new Date(min*86400000).getUTCFullYear(), y1=new Date(max*86400000).getUTCFullYear();
+    min=Math.floor(Date.UTC(y0,0,1)/86400000);
+    max=Math.floor(Date.UTC(y1,11,31)/86400000);
     const span=max-min+1, cw=GX_CELL, trackW=span*cw;
     const X=n=>(n-min)*cw, Xc=n=>(n-min+0.5)*cw;
     // encabezado: bandas de mes (la vista por semanas vive en Estrategia)
@@ -2376,7 +2378,7 @@
     const slot=document.getElementById(host.id+'-legend');
     if(slot)slot.innerHTML=GX_LEGEND;
     host.innerHTML=`<div class="gx">${slot?'':GX_LEGEND}<div class="gx-body"><div class="gx-inner" style="width:${innerW}px">${head}${rows}</div></div></div>`;
-    requestAnimationFrame(gxFit);
+    requestAnimationFrame(()=>{gxFit();const b=host.querySelector('.gx-body');if(b)b.scrollLeft=Math.max(0,(todayN-min)*cw-cw*4);});
   }
   const GX_LEGEND='<div class="gx-legend"><span><i class="gx-lstart"></i>Se pidió</span><span><i class="gx-ldot rev"></i>Revisión interna</span><span><i class="gx-ldot cli"></i>Envío al cliente</span><span><i class="gx-ltoday"></i>Hoy</span><span class="gx-hint">↔ arrastra una barra para mover sus fechas</span></div>';
   // Tablero: arrastrar una tarjeta a otra columna cambia su estado
