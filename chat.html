@@ -16,6 +16,7 @@ html,body{height:100%;overflow:hidden;font-family:'Inter',system-ui,-apple-syste
   --rev:#ffab40;--rev-bg:rgba(255,171,64,.1);
   --falta:#ff5757;--falta-bg:rgba(255,87,87,.1);
   --fin:#4caf7d;--fin-bg:rgba(76,175,125,.1);--urg:#ff5757;
+  --warn:#ffab40;--warn-bg:rgba(255,171,64,.1);
 }
 .hidden{display:none!important}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
@@ -112,6 +113,7 @@ html,body{height:100%;overflow:hidden;font-family:'Inter',system-ui,-apple-syste
 .act-head{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:6px}
 .act-qttyp{font-size:13px;font-weight:700;color:#fff}
 .act-urg{background:rgba(255,87,87,.12);color:var(--urg);font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;border:1px solid rgba(255,87,87,.3)}
+.act-falta{background:var(--warn-bg);color:var(--warn);font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;border:1px solid rgba(255,171,64,.3)}
 .act-st{font-size:10px;font-weight:700;padding:2px 8px;border-radius:5px;letter-spacing:.3px}
 .act-st.todo{background:var(--todo-bg);color:var(--todo);border:1px solid rgba(91,138,245,.3)}
 .act-st.proc{background:var(--proc-bg);color:var(--proc);border:1px solid rgba(165,107,255,.3)}
@@ -137,6 +139,7 @@ html,body{height:100%;overflow:hidden;font-family:'Inter',system-ui,-apple-syste
 .act-btn.nota:hover{color:#fff}
 .act-btn.reopen{background:var(--card2);color:var(--muted2);border:1px solid var(--b2)}
 .act-btn.reopen:hover{color:var(--muted)}
+.act-btn.dimmed{opacity:.45;cursor:default}
 .act-card-ts{font-size:10px;color:var(--muted2);text-align:right;margin-top:5px}
 
 /* compose */
@@ -488,7 +491,7 @@ const TEAM=[
   {name:'Lili',  bg:'#ffab40',init:'LI'},
 ];
 const AVC={Charly:'#5b8af5',Dess:'#a56bff',Fryda:'#7c5cfc',Gardenia:'#ff8aab',Lili:'#ffab40'};
-const STL={todo:'POR HACER',proc:'EN PROCESO',review:'POR REVISAR',falta:'FALTA INFO',fin:'FINALIZADA'};
+const STL={todo:'POR HACER',proc:'EN PROCESO',review:'POR REVISAR',fin:'FINALIZADA'};
 // ─── Seed ─────────────────────────────────────────
 const SEED_CLIENTS=[
   {id:'auren',name:'Auren',sector:'Industria Privada',color:'#5b8af5'},
@@ -500,7 +503,7 @@ const SEED_ACTS=[
   {id:'a1',clientId:'claa', qty:1,tipo:'Parrilla del mes', ctx:'Cambios de última hora antes de publicar',    hace:'Charly',   revisa:'Gardenia',fecha:hoy(),hora:'14:00',urgente:true, status:'todo',  comments:[{from:'Charly',  body:'Todo ok, solo nos falta un cambio',ts:D(0,10,58)}]},
   {id:'a2',clientId:'claa', qty:3,tipo:'Arte estático',     ctx:'Posts campaña de verano · 1080×1080',         hace:'Dess',     revisa:'Fryda',   fecha:hoy(),hora:'17:00',urgente:false,status:'proc',  comments:[{from:'Dess',    body:'Empezando con el primero',         ts:D(0,9,30)}]},
   {id:'a3',clientId:'auren',qty:1,tipo:'Reporte mensual',   ctx:'Métricas y análisis junio 2025',              hace:'Fryda',    revisa:'Charly',  fecha:hoy(),hora:'18:00',urgente:false,status:'review',comments:[{from:'Fryda',   body:'Listo para revisión',              ts:D(-1,17,30)},{from:'Charly',body:'Ya lo tengo',ts:D(-1,17,45)}]},
-  {id:'a4',clientId:'auren',qty:2,tipo:'Reel',              ctx:'Producto nuevo línea verano — necesito brief',hace:'Gardenia', revisa:'Lili',    fecha:hoy(),hora:'16:00',urgente:true, status:'falta', comments:[{from:'Gardenia',body:'Necesito el brief completo',         ts:D(0,8,0)}]},
+  {id:'a4',clientId:'auren',qty:2,tipo:'Reel',              ctx:'Producto nuevo línea verano — necesito brief',hace:'Gardenia', revisa:'Lili',    fecha:hoy(),hora:'16:00',urgente:true, status:'todo',faltaInfo:true,  comments:[{from:'Gardenia',body:'Necesito el brief completo',         ts:D(0,8,0)}]},
   {id:'a5',clientId:'jaga', qty:1,tipo:'Estrategia Q3',     ctx:'Plan de contenido y pauta Q3',                hace:'Charly',   revisa:'Fryda',   fecha:hoy(),hora:'23:59',urgente:false,status:'fin',   comments:[{from:'Charly',  body:'Aprobado por el cliente ✓',        ts:D(-1,14,0)}]},
   {id:'a6',clientId:'claa', qty:4,tipo:'Historia / Story',  ctx:'Serie educativa sobre el servicio',           hace:'Gardenia', revisa:'Dess',    fecha:hoy(),hora:'15:00',urgente:false,status:'todo',  comments:[]},
 ];
@@ -526,7 +529,14 @@ const SEED_NOTIFS=[
 
 // ─── State ───────────────────────────────────────
 let {clients,activities,messages}=(()=>{
-  try{const s=JSON.parse(localStorage.getItem('adsos-v4')||'{}');if(s.clients&&s.activities&&s.messages)return s;}catch(e){}
+  try{
+    const s=JSON.parse(localStorage.getItem('adsos-v4')||'{}');
+    if(s.clients&&s.activities&&s.messages){
+      // migrate falta state → faltaInfo badge on todo
+      s.activities.forEach(a=>{if(a.status==='falta'){a.status='todo';a.faltaInfo=true;}});
+      return s;
+    }
+  }catch(e){}
   return{clients:SEED_CLIENTS,activities:SEED_ACTS,messages:SEED_MSGS};
 })();
 let notifications=(()=>{try{const n=JSON.parse(localStorage.getItem('adsos-notifs2')||'null');if(Array.isArray(n))return n;}catch(e){}return SEED_NOTIFS;})();
@@ -604,23 +614,32 @@ function updateHdr(){
 function cardHtml(actId){
   const a=activities.find(x=>x.id===actId);
   if(!a)return'<div style="padding:12px;color:var(--muted2);font-size:12px">[eliminada]</div>';
-  const urg=a.urgente?`<span class="act-urg">🔥 URGENTE</span>`:'';
-  const st=`<span class="act-st ${a.status}">${STL[a.status]||a.status}</span>`;
+  const urg=a.urgente?`<span class="act-urg">URGENTE</span>`:'';
+  const faltaBadge=a.faltaInfo?`<span class="act-falta">FALTA INFO</span>`:'';
+  const st=`<span class="act-st ${a.status||'todo'}">${STL[a.status]||'POR HACER'}</span>`;
   const lc=a.comments?.length?a.comments[a.comments.length-1]:null;
   const cmt=lc?`<hr class="act-divider"><div class="act-cmt"><div class="act-cmt-dot"></div><div class="act-cmt-txt"><span class="act-cmt-from">${esc(lc.from)}:</span> ${esc(lc.body)}</div></div>`:'';
+  const hasLink=!!(a.link);
   let btns='';
-  if(a.status==='todo'||a.status==='proc'){btns+=`<button class="act-btn deliver" onclick="advanceAct('${a.id}')">✓ ENTREGAR · A REVISIÓN</button><button class="act-btn nota" onclick="openNote('${a.id}')">+ NOTA</button>`;}
-  else if(a.status==='review'){btns+=`<button class="act-btn approve" onclick="finAct('${a.id}')">✓ APROBAR</button><button class="act-btn nota" onclick="openNote('${a.id}')">+ NOTA</button>`;}
-  else if(a.status==='falta'){btns+=`<button class="act-btn deliver" onclick="advanceAct('${a.id}')">↗ ENTREGAR DE TODAS FORMAS</button><button class="act-btn nota" onclick="openNote('${a.id}')">+ NOTA</button>`;}
-  else if(a.status==='fin'){btns+=`<button class="act-btn reopen" onclick="reopenAct('${a.id}')">↩ Reabrir</button>`;}
+  if(a.status==='todo'||a.status==='proc'){
+    if(hasLink){
+      btns+=`<button class="act-btn deliver" onclick="advanceAct('${a.id}')">Enviar a revision</button>`;
+    }else{
+      btns+=`<button class="act-btn deliver dimmed" title="Agrega un entregable antes de enviar" onclick="noLinkWarn()">Enviar a revision</button>`;
+    }
+    btns+=`<button class="act-btn nota" onclick="openNote('${a.id}')">+ Nota</button>`;
+  }
+  else if(a.status==='review'){btns+=`<button class="act-btn approve" onclick="finAct('${a.id}')">Aprobar</button><button class="act-btn nota" onclick="openNote('${a.id}')">+ Nota</button>`;}
+  else if(a.status==='fin'){btns+=`<button class="act-btn reopen" onclick="reopenAct('${a.id}')">Reabrir</button>`;}
+  const linkRow=hasLink?`<div style="margin-top:6px"><a href="${esc(a.link)}" target="_blank" style="font-size:11px;color:var(--accent);text-decoration:none;word-break:break-all">Entregable adjunto</a></div>`:'';
   return`<div class="act-card">
-    <div class="act-head"><span class="act-qttyp">${esc(a.qty)}× ${esc(a.tipo)}</span>${urg}${st}</div>
+    <div class="act-head"><span class="act-qttyp">${esc(a.qty)}× ${esc(a.tipo)}</span>${urg}${faltaBadge}${st}</div>
     ${a.ctx?`<div class="act-ctx">${esc(a.ctx)}</div>`:''}
     <div class="act-meta">
       ${a.hace?`<div class="act-mi">Hace: <strong>${esc(a.hace)}</strong></div>`:''}
       ${a.revisa?`<div class="act-mi">Revisa: <strong>${esc(a.revisa)}</strong></div>`:''}
       ${a.fecha?`<div class="act-mi">Entrega: <strong>${fmtEntrega(a.fecha,a.hora)}</strong></div>`:''}
-    </div>${cmt}
+    </div>${cmt}${linkRow}
     <div class="act-btns">${btns}</div>
   </div>`;
 }
@@ -652,10 +671,14 @@ function scrollFeed(){setTimeout(()=>{const f=el('feed');if(f)f.scrollTop=f.scro
 // ─── Activity actions ─────────────────────────────
 function advanceAct(id){
   const a=activities.find(x=>x.id===id);if(!a)return;
-  a.status='review';a.comments.push({from:'Sistema',body:'Entregado para revisión',ts:new Date().toISOString()});
+  if(!a.link){showToast('Agrega un entregable o link antes de enviar a revisión','err');return;}
+  a.status='review';
+  a.faltaInfo=false;
+  a.comments.push({from:'Sistema',body:'Entregado para revisión',ts:new Date().toISOString()});
   if(a.revisa==='Fryda')addNotif('🔍',`${a.hace} entregó ${a.tipo} — espera tu revisión`,a.clientId,a.id);
-  persist();refreshCard(id);renderSidebar();updateHdr();showToast('Enviado a revisión ✓');
+  persist();refreshCard(id);renderSidebar();updateHdr();showToast('Enviado a revisión');
 }
+function noLinkWarn(){showToast('Adjunta un entregable o link antes de enviar a revisión','err');}
 function finAct(id){
   const a=activities.find(x=>x.id===id);if(!a)return;
   a.status='fin';a.comments.push({from:'Sistema',body:'Actividad aprobada ✓',ts:new Date().toISOString()});
@@ -766,7 +789,7 @@ function saveActModal(){
     status:'todo',comments:[]
   };
   const link=(el('ac-link').value||'').trim();
-  if(link)act.comments.push({from:'Sistema',body:'Material: '+link,ts:new Date().toISOString()});
+  if(link){act.link=link;act.comments.push({from:'Sistema',body:'Material: '+link,ts:new Date().toISOString()});}
   activities.push(act);
   messages.push({id:uid(),clientId:activeClientId,type:'card',actId:act.id,ts:new Date().toISOString()});
   if(act.hace==='Fryda')addNotif('Asignacion',`Te asignaron: ${act.qty}x ${act.tipo} en ${c?.name}`,activeClientId,act.id);
