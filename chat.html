@@ -34,7 +34,7 @@ html,body{height:100%;overflow:hidden;font-family:'Inter',system-ui,-apple-syste
 .notif-wrap{position:relative;flex-shrink:0}
 .notif-bell{background:none;border:none;color:var(--muted);font-size:16px;cursor:pointer;padding:4px 6px;border-radius:6px;line-height:1}
 .notif-bell:hover{color:#fff}
-.notif-bdg{position:absolute;top:0;right:0;background:var(--urg);color:#fff;border-radius:10px;font-size:9px;font-weight:800;padding:1px 4px;min-width:14px;text-align:center;pointer-events:none;line-height:1.4}
+.notif-bdg{position:absolute;top:-3px;right:-4px;background:var(--urg);color:#fff;border-radius:10px;font-size:9px;font-weight:800;padding:2px 5px;min-width:16px;text-align:center;pointer-events:none;line-height:1.4;border:2px solid var(--sb);box-shadow:0 0 0 1px var(--urg)}
 .notif-panel{position:absolute;top:calc(100% + 6px);right:0;width:290px;background:var(--panel);border:1px solid var(--border);border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.6);z-index:400;overflow:hidden}
 .notif-head{padding:10px 14px 8px;border-bottom:1px solid var(--b2);display:flex;align-items:center;justify-content:space-between}
 .notif-htitle{font-size:12px;font-weight:700;color:#fff}
@@ -77,7 +77,7 @@ html,body{height:100%;overflow:hidden;font-family:'Inter',system-ui,-apple-syste
 .ai-tag.falta{background:var(--warn-bg);color:var(--warn);border:1px solid rgba(255,171,64,.2)}
 .ai-tag.hoy{background:rgba(76,175,125,.1);color:var(--fin);border:1px solid rgba(76,175,125,.2)}
 .ai-tag.venc{background:rgba(255,87,87,.1);color:var(--urg);border:1px solid rgba(255,87,87,.2)}
-.ai-tag.link{background:var(--acc-d);color:var(--accent);border:1px solid rgba(124,92,252,.2)}
+.ai-link-ic{font-size:11px;opacity:.6;margin-left:2px;flex-shrink:0}
 
 /* ── Main center ── */
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden;background:var(--bg);min-width:0}
@@ -128,7 +128,11 @@ html,body{height:100%;overflow:hidden;font-family:'Inter',system-ui,-apple-syste
 .thr-msg.me .thr-body{background:rgba(124,92,252,.22);border-radius:10px 4px 10px 10px;border:1px solid rgba(124,92,252,.25);color:#fff}
 .thr-sys{text-align:center;font-size:10px;color:var(--muted2);padding:2px 0}
 .thr-ts{font-size:9px;color:var(--muted2);margin-top:2px;padding:0 2px}
-.det-compose{padding:10px 16px 12px;background:var(--panel);border-top:1px solid var(--b2);flex-shrink:0}
+.det-compose{padding:8px 16px 12px;background:var(--panel);border-top:1px solid var(--b2);flex-shrink:0}
+.compose-hints{display:flex;gap:2px;margin-bottom:5px}
+.c-hint{background:none;border:none;color:var(--muted2);cursor:pointer;padding:3px 6px;border-radius:5px;font-size:15px;transition:all .15s;line-height:1}
+.c-hint:hover{color:#fff;background:var(--card)}
+.c-hint.active{color:var(--urg);animation:pulse 1s infinite}
 .compose-row{display:flex;align-items:flex-end;gap:7px}
 .compose-ta{flex:1;background:var(--inp);border:1px solid var(--border);border-radius:10px;padding:9px 12px;color:#fff;font-size:13px;resize:none;min-height:40px;max-height:100px;outline:none;font-family:inherit;line-height:1.45;transition:border-color .15s}
 .compose-ta:focus{border-color:var(--accent)}
@@ -572,19 +576,21 @@ function renderSidebar(){
     sorted.forEach(a=>{
       const av=AVC[a.hace]||'#8a84b8';
       const due=fmtDueTag(a.fecha,a.status);
-      const tags=[
-        a.urgente&&a.status!=='fin'?'<span class="ai-tag urg">Urgente</span>':'',
-        a.faltaInfo&&a.status!=='fin'?'<span class="ai-tag falta">Falta info</span>':'',
-        due?`<span class="ai-tag ${due.cls}">${esc(due.label)}</span>`:'',
-        a.link&&a.status!=='fin'?'<span class="ai-tag link">Link</span>':'',
-      ].filter(Boolean).join('');
+      // single most-critical tag only
+      let tag='';
+      if(a.status!=='fin'){
+        if(a.urgente)        tag='<span class="ai-tag urg">🔥 Urgente</span>';
+        else if(a.faltaInfo) tag='<span class="ai-tag falta">Falta info</span>';
+        else if(due)         tag=`<span class="ai-tag ${due.cls}">${esc(due.label)}</span>`;
+      }
+      const linkIc=a.link&&a.status!=='fin'?'<span class="ai-link-ic">🔗</span>':'';
       html+=`<div class="act-item${activeActId===a.id?' active':''}" onclick="openAct('${a.id}')">
         <div class="ai-top">
           <div class="ai-av" style="background:${av}20;color:${av}">${initials(a.hace)}</div>
           <span class="ai-name">${esc(a.qty)}× ${esc(a.tipo)}</span>
-          <span class="ai-st ${a.status||'todo'}">${STL[a.status]||'Por hacer'}</span>
+          <span class="ai-st ${a.status||'todo'}">${STL[a.status]||'Por hacer'}</span>${linkIc}
         </div>
-        ${tags?`<div class="ai-bottom">${tags}</div>`:''}
+        ${tag?`<div class="ai-bottom">${tag}</div>`:''}
       </div>`;
     });
     html+='</div>';
@@ -660,12 +666,16 @@ function renderDetail(){
       ${thread||'<div class="thr-empty">Sin comentarios aun</div>'}
     </div>
     <div class="det-compose">
+      <div class="compose-hints">
+        <button class="c-hint" onclick="insComment('😊')" title="Emoji">😊</button>
+        <button class="c-hint" onclick="insComment('@')" title="Mencionar">@</button>
+        <button class="c-hint" onclick="insComment('✓')" title="Check">✓</button>
+        <button class="c-hint" onclick="insComment('🔥')" title="Urgente">🔥</button>
+        <button class="c-hint" id="cmp-mic" onclick="toggleComposeMic()" title="Dictar">🎙</button>
+      </div>
       <div class="compose-row">
         <textarea id="det-ta" class="compose-ta" placeholder="Escribe un comentario…" rows="1"
           onkeydown="onDetKey(event)" oninput="autoRz(this)"></textarea>
-        <button class="icon-btn" id="cmp-mic" onclick="toggleComposeMic()" title="Dictar">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
-        </button>
         <button class="send-btn" onclick="sendComment()">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
         </button>
@@ -704,6 +714,7 @@ function noLinkWarn(){showToast('Adjunta un entregable antes de enviar a revisio
 // ─── Compose ──────────────────────────────────────
 function autoRz(ta){ta.style.height='auto';ta.style.height=Math.min(ta.scrollHeight,100)+'px';}
 function onDetKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendComment();}}
+function insComment(s){const ta=el('det-ta');if(!ta)return;ta.value+=s;ta.focus();}
 function sendComment(){
   const ta=el('det-ta');if(!ta)return;
   const body=ta.value.trim();if(!body||!activeActId)return;
@@ -820,8 +831,8 @@ function toggleComposeMic(){
   if(compSrActive){compSrInst.stop();return;}
   compSrInst=new SR();compSrInst.lang='es-MX';compSrInst.interimResults=true;compSrInst.continuous=true;
   compSrInst.onresult=e=>{const t=Array.from(e.results).map(r=>r[0].transcript).join('');const ta=el('det-ta');if(ta)ta.value=t;};
-  compSrInst.onerror=compSrInst.onend=()=>{compSrActive=false;const b=el('cmp-mic');if(b)b.classList.remove('rec');};
-  compSrInst.start();compSrActive=true;const b=el('cmp-mic');if(b)b.classList.add('rec');
+  compSrInst.onerror=compSrInst.onend=()=>{compSrActive=false;const b=el('cmp-mic');if(b)b.classList.remove('active');};
+  compSrInst.start();compSrActive=true;const b=el('cmp-mic');if(b)b.classList.add('active');
 }
 
 // ─── Note modal ───────────────────────────────────
