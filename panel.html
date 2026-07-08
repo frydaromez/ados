@@ -3554,7 +3554,7 @@
     Object.values(tots).forEach((v,i)=>{const e2=el(ids[i]);if(e2)e2.textContent=v;});
     const list=el('ap-list');if(!list)return;
     const items=apFilteredItems();
-    if(!items.length){list.innerHTML=`<div class="ap-feed-empty">Sin actividades${apFilter?' en este estado':''}.<br>Usa <strong>+ Nueva</strong> para crear una.</div>`;return;
+    if(!items.length){list.innerHTML=`<div class="ap-feed-empty">Sin actividades${apFilter?' en este estado':''}.<br>Usa <strong>+ Nueva</strong> para crear una.</div>`;return;}
     list.innerHTML=items.map(a=>{
       const isFalta=apIsFalta(a), bar=isFalta?'falta':(a.fin?'publicado':a.estado);
       const pc=people[a.quien]||{c:'#888',n:a.quien||'AN'};
