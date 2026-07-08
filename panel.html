@@ -2538,16 +2538,20 @@
   // ===== PANEL MADRE =====
   let madreFin=false, madreView='tabla', madreCalY=2026, madreCalM=6;
   function madreItems(){
-    const fc=el('f-cuenta').value, fa=el('f-acc').value, ft=el('f-tipo').value, fq=el('f-quien').value, fe=el('f-estado').value;
+    const fcEl=el('f-cuenta'), faEl=el('f-acc'), ftEl=el('f-tipo'), fqEl=el('f-quien'), feEl=el('f-estado');
+    if(!fcEl||!fcEl.value===undefined) return acts.filter(a=>(madreFin||!a.fin)&&a.visible!=='estratega');
+    const fc=fcEl.value||'', fa=faEl?faEl.value||'':'', ft=ftEl?ftEl.value||'':'', fq=fqEl?fqEl.value||'':'', fe=feEl?feEl.value||'':'';
     return acts.filter(a=>(madreFin||!a.fin) && a.visible!=='estratega'
       && (!fc||a.cuenta===fc) && (!fa||a.acc===fa) && (!ft||a.tipo===ft) && (!fq||a.quien===fq) && (!fe||a.estado===fe));
   }
   function renderMadre(){
+    const rowsEl=el('madre-rows'); if(!rowsEl||rowsEl.tagName==='SPAN') return;
     if(madreView==='board'){renderMadreBoard();return;}
-    if(madreView==='gantt'){renderGantt2(madreItems(), el('madre-gantt'), true);return;}
+    const ganttEl=el('madre-gantt');
+    if(madreView==='gantt'){if(ganttEl&&ganttEl.tagName!=='SPAN')renderGantt2(madreItems(), ganttEl, true);return;}
     if(madreView==='cal'){renderMadreCal();return;}
     const rows=madreItems();
-    el('madre-rows').innerHTML = rows.length? rows.map(a=>`<tr class="st-${a.estado}">
+    rowsEl.innerHTML = rows.length? rows.map(a=>`<tr class="st-${a.estado}">
       <td><span class="clilink" onclick="openAcc('${a.acc}','${a.cuenta}')">${accName(a.acc)}</span></td>
       <td>${tipoTag(a.tipo)}</td><td>${esc(a.que)}</td>
       <td>${who(a.quien)}</td><td class="col-fecha">${fechaCell(a.entrega,isOverdue(a))}</td><td class="col-fecha">${fechaCell(a.due,false)}</td><td>${detCell(a)}</td><td>${pill(a.estado)}</td></tr>`).join('')
@@ -3510,6 +3514,8 @@
     document.querySelector('.topbar').classList.toggle('compact', inAcc);
     el('brandmark').style.display = inAcc ? '' : 'none';
     el('content').classList.toggle('home-bg', view==='inicio');
+    el('content').classList.toggle('act-view', view==='actividades');
+    if(view==='actividades'){renderActFeed();}
     el('content').classList.toggle('tight-top', inAcc);
     el('toolbar').style.display = inAcc ? 'none' : '';
     el('accActions').style.display = inAcc ? '' : 'none';
@@ -3629,9 +3635,263 @@
   }
   function toast(msg){const t=el('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),2200);}
 
+  // ===== ACTIVITY ASSIGNER =====
+  let actFeedFilter='', actOpenId=null;
+  function actIsFalta(a){return !!(a.falta||(['proc','review'].includes(a.estado)&&!a.fin&&!((a.det||'').trim())&&!(a.links&&a.links.length)&&!(a.finalLinks&&a.finalLinks.length)));}
+  function actAllItems(){return acts.filter(a=>a.visible!=='estratega');}
+  function actFeedItems(){
+    const q=(el('act-feed-find')||{}).value||'';
+    let items=actAllItems();
+    if(actFeedFilter==='fin') items=items.filter(a=>a.fin);
+    else if(actFeedFilter==='falta') items=items.filter(a=>!a.fin&&actIsFalta(a));
+    else if(actFeedFilter) items=items.filter(a=>!a.fin&&(a.estado===actFeedFilter||(['review','cambios','publicar'].includes(a.estado)&&actFeedFilter==='review')));
+    else items=items.filter(a=>!a.fin);
+    if(q){const ql=q.toLowerCase();items=items.filter(a=>(a.que||'').toLowerCase().includes(ql)||accName(a.acc).toLowerCase().includes(ql)||(a.id||'').toLowerCase().includes(ql));}
+    return [...items].sort((a,b)=>{
+      if(actIsFalta(a)&&!actIsFalta(b))return -1; if(!actIsFalta(a)&&actIsFalta(b))return 1;
+      const p={proc:0,review:1,cambios:1,publicar:1,todo:2,publicado:3};
+      return (p[a.estado]??2)-(p[b.estado]??2);
+    });
+  }
+  function actSetFilter(state){
+    actFeedFilter=state;
+    document.querySelectorAll('#act-feed-tabs .aft').forEach(b=>b.classList.toggle('active',b.dataset.state===state));
+    renderActFeed();
+  }
+  function renderActFeed(){
+    const all=actAllItems(), active=all.filter(a=>!a.fin);
+    const todoC=active.filter(a=>a.estado==='todo').length;
+    const procC=active.filter(a=>a.estado==='proc').length;
+    const revC=active.filter(a=>['review','cambios','publicar'].includes(a.estado)).length;
+    const faltaC=active.filter(a=>actIsFalta(a)).length;
+    const finC=all.filter(a=>a.fin).length;
+    const sc=el('act-cnt-all');if(sc)sc.textContent=active.length;
+    const st=el('act-cnt-todo');if(st)st.textContent=todoC;
+    const sp=el('act-cnt-proc');if(sp)sp.textContent=procC;
+    const sr=el('act-cnt-rev');if(sr)sr.textContent=revC;
+    const sf=el('act-cnt-falta');if(sf)sf.textContent=faltaC;
+    const sfi=el('act-cnt-fin');if(sfi)sfi.textContent=finC;
+    const rqt=el('rqs-todo');if(rqt)rqt.textContent=todoC;
+    const rqp=el('rqs-proc');if(rqp)rqp.textContent=procC;
+    const rqr=el('rqs-rev');if(rqr)rqr.textContent=revC;
+    const rqf=el('rqs-falta');if(rqf)rqf.textContent=faltaC;
+    renderActSidebar();
+    renderNotifBadge();
+    const list=el('act-feed-list');if(!list)return;
+    const items=actFeedItems();
+    if(!items.length){list.innerHTML=`<div class="ac-empty">Sin actividades${actFeedFilter?' en este estado':''}.<br>Registra una con <strong>+ Nueva actividad</strong>.</div>`;return;}
+    list.innerHTML=items.map(a=>{
+      const estado=a.estado||'todo', isFalta=actIsFalta(a);
+      const barClass=isFalta?'falta':(a.fin?'publicado':estado);
+      const pc=people[a.quien]||{c:'#888',n:a.quien||'AN'};
+      const inits=(pc.n||'AN').split(' ').map(w=>w[0]||'').join('').toUpperCase().slice(0,2)||'AN';
+      const platCls=platClass(a.plat||'');
+      const dueTxt=a.due||a.entrega||'';
+      const ov=isOverdue(a);
+      return `<div class="act-card${a.id===actOpenId?' selected':''}" onclick="openActDetail('${a.id}')">
+        <div class="act-card-bar ${barClass}"></div>
+        <div class="ac-body">
+          <div class="ac-client">${esc(accName(a.acc))}</div>
+          <div class="ac-name">${a.cant>1?a.cant+' × ':''}${esc(a.que)}</div>
+          <div class="ac-meta">
+            <span class="ac-id">${esc(String(a.id||''))}</span>
+            ${a.plat&&platCls?`<span class="ac-plat ${platCls}">${esc(a.plat)}</span>`:''}
+            ${isFalta?'<span class="ac-falta-tag">Falta info</span>':''}
+          </div>
+          <div class="ac-footer">
+            <span class="ac-who-av" style="background:${pc.c}" title="${esc(pc.n)}">${inits}</span>
+            ${dueTxt?`<span class="ac-due${ov?' venc':''}">${esc(dueTxt)}</span>`:''}
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+  function openActDetail(id){
+    actOpenId=id;
+    const empty=el('act-detail-empty'), panel=el('act-detail-panel');
+    if(!empty||!panel)return;
+    const a=acts.find(x=>x.id===id);if(!a)return;
+    empty.classList.add('hidden'); panel.classList.remove('hidden');
+    renderActDetailPanel(a);
+    // Update selected state in feed
+    document.querySelectorAll('.act-card').forEach(c=>c.classList.toggle('selected',c.onclick&&c.getAttribute('onclick')&&c.getAttribute('onclick').includes("'"+id+"'")));
+  }
+  function renderActDetailPanel(a){
+    const panel=el('act-detail-panel');if(!panel||!a)return;
+    const id=a.id, estado=a.estado||'todo', isFalta=actIsFalta(a);
+    const pc=people[a.quien]||{c:'#888',n:a.quien||'Sin asignar'};
+    const inits=(pc.n||'AN').split(' ').map(w=>w[0]||'').join('').toUpperCase().slice(0,2)||'AN';
+    const platCls=platClass(a.plat||'');
+    const stateMap={todo:'todo',proc:'proc',review:'review',cambios:'review',publicar:'done',publicado:'done'};
+    const curBucket=stateMap[estado]||'todo';
+    const allLinks=[...(a.links||[]),...(a.finalLinks||[])];
+    const linksHTML=allLinks.map((lk,i)=>{const url=lk.url||String(lk);const nm=lk.name||url;const isU=/^https?:\/\//i.test(url);return `<a class="adp-link-row" href="${isU?esc(url):'#'}" target="_blank" rel="noopener"><div class="adp-link-ico">↗</div><span class="adp-link-name">${esc(nm)}</span><span class="adp-link-ext">Abrir</span></a>`;}).join('');
+    const allMsgs=[];
+    (a.hist||[]).forEach(h=>{allMsgs.push({type:'sys',txt:`Estado: "${EST[h.e]?EST[h.e][0]:h.e}" — ${h.f||''}`,date:h.f||''});});
+    (a.comentarios||[]).forEach(c=>{const p2=people[c.por]||{n:c.por||'AN',c:'#888'};allMsgs.push({type:'msg',p:p2,txt:c.txt,fecha:c.fecha,tag:'entrega'});});
+    (a.revComentarios||[]).forEach(c=>{const p2=people[c.por]||{n:c.por||'AN',c:'#888'};allMsgs.push({type:'msg',p:p2,txt:c.txt,fecha:c.fecha,tag:'revision'});});
+    allMsgs.sort((x,y)=>(x.fecha||x.date||'')<(y.fecha||y.date||'')?-1:1);
+    const threadHTML=allMsgs.length?allMsgs.map(m=>{
+      if(m.type==='sys')return `<div class="adp-sys-msg">${esc(m.txt)}</div>`;
+      const mi=(m.p.n||'AN').split(' ').map(w=>w[0]||'').join('').toUpperCase().slice(0,2)||'AN';
+      return `<div class="adp-msg"><div class="adp-msg-av" style="background:${m.p.c}">${mi}</div><div class="adp-msg-body"><div class="adp-msg-head"><span class="adp-msg-who">${esc(m.p.n)}</span><span class="adp-msg-when">${esc(m.fecha||'')}</span><span class="adp-msg-tag ${m.tag}">${m.tag==='entrega'?'Entrega':'Revisión'}</span></div><div class="adp-msg-txt">${esc(m.txt)}</div></div></div>`;
+    }).join(''):`<div class="adp-thread-empty">Cuéntalo como lo dirías por WhatsApp.<br>Sin mensajes todavía.</div>`;
+    panel.innerHTML=`<div class="adp-header">
+        <div class="adp-id-name"><span class="adp-id">#${esc(String(id))}</span><h2 class="adp-name">${a.cant>1?a.cant+' × ':''}${esc(a.que)}</h2></div>
+        <div class="adp-meta-row">
+          <span class="adp-pill cli">${esc(accName(a.acc))}</span>
+          <span class="adp-pill qui"><span class="ac-who-av" style="background:${pc.c};width:14px;height:14px;border-radius:4px;font-size:7px">${inits}</span>${esc(pc.n)}</span>
+          ${a.plat?`<span class="adp-pill ${platCls}" style="font-size:10.5px">${esc(a.plat)}</span>`:''}
+          ${a.due||a.entrega?`<span class="adp-pill due${isOverdue(a)?' venc':''}">${esc(a.due||a.entrega)}</span>`:''}
+        </div>
+        <div class="adp-states">
+          <button class="adp-st-btn s-todo${curBucket==='todo'?' active':''}" onclick="adpChangeState('${id}','todo')">Por hacer</button>
+          <button class="adp-st-btn s-proc${curBucket==='proc'?' active':''}" onclick="adpChangeState('${id}','proc')">En proceso</button>
+          <button class="adp-st-btn s-review${curBucket==='review'?' active':''}" onclick="adpChangeState('${id}','review')">Por revisar</button>
+          <button class="adp-st-btn s-done${curBucket==='done'?' active':''}" onclick="adpChangeState('${id}','done')">Finalizado</button>
+        </div>
+      </div>
+      ${isFalta?`<div class="adp-falta-alert"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>Falta información para trabajar esta pieza</div>`:''}
+      <div class="adp-body">
+        <div class="adp-ctx">
+          <div class="adp-ctx-grid">
+            <div class="adp-ctx-field"><div class="adp-ctx-label">Tipo</div><div class="adp-ctx-val">${esc(tipoLabel(a.tipo))}${a.formato?' · '+esc(a.formato):''}</div></div>
+            <div class="adp-ctx-field"><div class="adp-ctx-label">Entrega interna</div><div class="adp-ctx-val">${esc(a.entrega||'—')}</div></div>
+            <div class="adp-ctx-field"><div class="adp-ctx-label">A cliente</div><div class="adp-ctx-val">${esc(a.due||'—')}</div></div>
+            <div class="adp-ctx-field"><div class="adp-ctx-label">Responsable</div><div class="adp-ctx-val">${esc(pc.n)}</div></div>
+          </div>
+          <textarea class="adp-ctx-det" id="adp-det-${id}" placeholder="Sin contexto todavía. Escribe las indicaciones para trabajar…" onblur="adpSaveDet('${id}')">${esc(a.det||'')}</textarea>
+        </div>
+        <div class="adp-links">
+          <div class="adp-section-title">Links y archivos</div>
+          ${linksHTML}
+          <div class="adp-add-link-row">
+            <input class="adp-add-link-inp" id="adp-link-inp-${id}" placeholder="Pega un link de Drive, Loom, Figma…" onkeydown="if(event.key==='Enter')adpAddLink('${id}')">
+            <button class="adp-add-link-sbtn" onclick="adpAddLink('${id}')">Agregar</button>
+          </div>
+        </div>
+        <div class="adp-thread" id="adp-thread-${id}">${threadHTML}</div>
+      </div>
+      <div class="adp-compose">
+        <div class="adp-compose-box">
+          <textarea class="adp-compose-ta" id="adp-cmt-${id}" placeholder="Cuéntalo como lo dirías por WhatsApp…" rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();adpAddComment('${id}')}" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea>
+          <button class="adp-send-btn" onclick="adpAddComment('${id}')" title="Enviar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2 11 13M22 2 15 22l-4-9-9-4 20-7z"/></svg></button>
+        </div>
+        <div class="adp-compose-hint">Enter para enviar · Shift+Enter nueva línea</div>
+      </div>`;
+  }
+  function adpSaveDet(id){const a=acts.find(x=>x.id===id);const ta=el('adp-det-'+id);if(!a||!ta)return;a.det=ta.value;persist();}
+  function adpChangeState(id,bucket){
+    const a=acts.find(x=>x.id===id);if(!a)return;
+    const map={todo:'todo',proc:'proc',review:'review',done:'publicado'};
+    const ns=map[bucket]||'todo';
+    if(bucket==='review'&&!((a.links&&a.links.length)||(a.finalLinks&&a.finalLinks.length))){toast('Para enviar a revisión, adjunta el entregable primero');return;}
+    if(a.estado!==ns)registrarEstado(a,ns);
+    a.estado=ns;
+    if(bucket==='done')a.fin=true; else a.fin=false;
+    persist();renderActDetailPanel(a);renderActFeed();renderCounters();
+  }
+  function adpAddLink(id){
+    const a=acts.find(x=>x.id===id);const inp=el('adp-link-inp-'+id);if(!a||!inp)return;
+    const url=inp.value.trim();if(!url){toast('Pega un link primero');return;}
+    (a.links=a.links||[]).push({name:url,url,type:'link'});inp.value='';
+    persist();renderActDetailPanel(a);
+  }
+  function adpAddComment(id){
+    const a=acts.find(x=>x.id===id);const ta=el('adp-cmt-'+id);if(!a||!ta)return;
+    const txt=ta.value.trim();if(!txt)return;
+    (a.comentarios=a.comentarios||[]).push({por:'AN',txt,fecha:hoyStr()});
+    ta.value='';ta.style.height='auto';
+    persist();renderActDetailPanel(a);
+    const thread=el('adp-thread-'+id);if(thread)setTimeout(()=>thread.scrollTop=thread.scrollHeight,50);
+    toast('Comentario añadido');
+  }
+  function renderActSidebar(){
+    const all=actAllItems().filter(a=>!a.fin);
+    const todayD=new Date();
+    const todayItems=all.filter(a=>{const dt=itemDate(a);return dt&&dt.y===todayD.getFullYear()&&dt.m===todayD.getMonth()&&dt.d===todayD.getDate();});
+    const hoyEl=el('act-hoy-list');
+    if(hoyEl)hoyEl.innerHTML=todayItems.length?todayItems.map(a=>`<div class="act-hoy-item" onclick="openActDetail('${a.id}')"><div class="ahi-bar ${a.estado}"></div><div><div class="ahi-name">${esc(a.que)}</div><div class="ahi-cli">${esc(accName(a.acc))}</div></div></div>`).join(''):'<div class="ahi-empty">Sin vencimientos hoy</div>';
+    const teamEl=el('act-team-list');
+    if(teamEl)teamEl.innerHTML=Object.keys(people).map(k=>{
+      const p=people[k],mine=all.filter(a=>a.quien===k);
+      const tc=mine.filter(a=>a.estado==='todo').length,pc2=mine.filter(a=>a.estado==='proc').length,rc=mine.filter(a=>['review','cambios'].includes(a.estado)).length;
+      return `<div class="act-team-item" onclick="actFilterPerson('${k}')"><div class="ati-av" style="background:${p.c}">${k}</div><div class="ati-name">${esc(p.n)}</div><div class="ati-badges">${tc?`<span class="ati-badge todo">${tc}</span>`:''}${pc2?`<span class="ati-badge proc">${pc2}</span>`:''}${rc?`<span class="ati-badge review">${rc}</span>`:''}</div></div>`;
+    }).join('');
+  }
+  function actFilterPerson(code){
+    const inp=el('act-feed-find');if(inp){inp.value=people[code]?people[code].n:code;}
+    renderActFeed();
+  }
+  function getNotifications(){
+    const notifs=[], active=actAllItems().filter(a=>!a.fin);
+    active.filter(a=>a.quien==='AN'&&a.estado==='todo').forEach(a=>notifs.push({type:'assigned',label:'Asignada a ti',txt:a.que,sub:accName(a.acc),id:a.id}));
+    active.filter(a=>['review','cambios'].includes(a.estado)).forEach(a=>notifs.push({type:'review',label:'Por revisar',txt:a.que,sub:accName(a.acc),id:a.id}));
+    active.filter(a=>isOverdue(a)).forEach(a=>notifs.push({type:'overdue',label:'Era para hoy',txt:a.que,sub:a.due||a.entrega||'',id:a.id}));
+    active.filter(a=>actIsFalta(a)).forEach(a=>notifs.push({type:'falta',label:'Falta información',txt:a.que,sub:accName(a.acc),id:a.id}));
+    return notifs;
+  }
+  function renderNotifBadge(){const nb=el('notif-badge');if(!nb)return;const n=getNotifications().length;nb.textContent=n;nb.classList.toggle('has',n>0);}
+  function toggleNotifPanel(){
+    const panel=el('notif-panel');if(!panel)return;
+    panel.classList.toggle('hidden');
+    if(!panel.classList.contains('hidden')){
+      const list=el('np-list');if(!list)return;
+      const notifs=getNotifications();
+      if(!notifs.length){list.innerHTML='<div class="np-empty">Todo al corriente. Buen trabajo.</div>';return;}
+      list.innerHTML=notifs.slice(0,12).map(n=>`<div class="np-item" onclick="openActDetail('${n.id}');toggleNotifPanel()"><div class="np-item-label ${n.type}">${esc(n.label)}</div><div class="np-item-txt">${esc(n.txt)}</div><div class="np-item-sub">${esc(n.sub||'')}</div></div>`).join('');
+    }
+  }
+  // ===== VOICE MODAL =====
+  let vmPhase='idle', vmParsedData=null;
+  const VM_SAMPLES=[
+    {que:'Artes parrilla julio',cant:1,plat:'Instagram',tipo:'parrilla',det:'Parrilla completa del mes de julio para el cliente'},
+    {que:'Reel evento apertura',cant:1,plat:'Instagram',tipo:'extra',det:'Video del evento de apertura, música y ambiente'},
+    {que:'Copies campaña verano',cant:3,plat:'Facebook',tipo:'parrilla',det:'Copies para los tres posts de la semana 1'},
+    {que:'Historia promoción especial',cant:2,plat:'Instagram',tipo:'extra',det:'Historia animada para la promoción del fin de semana'},
+  ];
+  function openDictarModal(){vmPhase='idle';vmParsedData=null;openModal('ov-voice');refreshVoiceUI();}
+  function refreshVoiceUI(){
+    const wave=el('vm-wave'), transcript=el('vm-transcript'), parsed=el('vm-parsed-block'), recBtn=el('vm-rec-btn'), actRow=el('vm-act-row');
+    if(!wave)return;
+    if(vmPhase==='idle'){
+      wave.classList.remove('recording');if(transcript)transcript.classList.remove('show');if(parsed)parsed.classList.remove('show');
+      if(recBtn){recBtn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg> Empezar a dictar';recBtn.classList.remove('recording');}
+      if(actRow)actRow.innerHTML='<button class="vm-btn-rec" id="vm-rec-btn" onclick="vmToggleRecord()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg> Empezar a dictar</button>';
+    }else if(vmPhase==='recording'){
+      wave.classList.add('recording');if(transcript)transcript.classList.add('show');if(parsed)parsed.classList.remove('show');
+      if(actRow)actRow.innerHTML='<button class="vm-btn-rec recording" onclick="vmToggleRecord()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="6" width="12" height="12" rx="2"/></svg> Terminé, ya lo dije</button>';
+    }else if(vmPhase==='parsed'){
+      wave.classList.remove('recording');if(transcript)transcript.classList.remove('show');
+      if(parsed&&vmParsedData){
+        parsed.classList.add('show');
+        const rows=el('vm-parsed-rows');
+        if(rows)rows.innerHTML=`<div class="vm-parsed-row"><div class="vm-parsed-key">Qué:</div><div class="vm-parsed-val">${esc(vmParsedData.que)}</div></div>`+(vmParsedData.cant>1?`<div class="vm-parsed-row"><div class="vm-parsed-key">Cantidad:</div><div class="vm-parsed-val">${vmParsedData.cant}</div></div>`:'')+`<div class="vm-parsed-row"><div class="vm-parsed-key">Plataforma:</div><div class="vm-parsed-val">${esc(vmParsedData.plat)}</div></div><div class="vm-parsed-row"><div class="vm-parsed-key">Tipo:</div><div class="vm-parsed-val">${esc(tipoLabel(vmParsedData.tipo))}</div></div><div class="vm-parsed-row"><div class="vm-parsed-key">Contexto:</div><div class="vm-parsed-val">${esc(vmParsedData.det)}</div></div>`;
+      }
+      if(actRow)actRow.innerHTML='<button class="mbtn cancel" onclick="vmPhase=\'idle\';refreshVoiceUI()">Dictar de nuevo</button><button class="mbtn save" onclick="confirmVoiceParsed()">Sí, registrar</button>';
+    }
+  }
+  function vmToggleRecord(){
+    if(vmPhase==='idle'||vmPhase==='parsed'){vmPhase='recording';refreshVoiceUI();setTimeout(()=>{if(vmPhase==='recording')vmParseVoice();},3600);}
+    else if(vmPhase==='recording'){vmParseVoice();}
+  }
+  function vmParseVoice(){
+    vmPhase='parsed';
+    const idx=Math.floor(acts.length%VM_SAMPLES.length);
+    vmParsedData={...VM_SAMPLES[idx],acc:(clients[0]&&clients[0].id)||''};
+    refreshVoiceUI();
+  }
+  function confirmVoiceParsed(){
+    if(!vmParsedData)return;
+    const id=uid();
+    const cli=clients.find(c=>c.id===vmParsedData.acc)||clients[0];
+    const a={id,reg:new Date().toISOString().slice(0,10),regPor:'AN',cuenta:'cliente',tipo:vmParsedData.tipo||'extra',acc:vmParsedData.acc||(clients[0]&&clients[0].id)||'',que:vmParsedData.que||'Sin nombre',cant:vmParsedData.cant||1,quien:'AN',estado:'todo',det:vmParsedData.det||'',plat:vmParsedData.plat||'',links:[],finalLinks:[],comentarios:[],revComentarios:[],visible:'equipo'};
+    acts.push(a);persist();closeModal('ov-voice');renderAll();renderActFeed();openActDetail(id);toast('Actividad registrada por voz');
+  }
+
   // ===== Render maestro =====
   function renderAll(){
-    renderCounters(); renderCards(); renderMadre(); renderProspectos(); renderEquipo(); renderRevision(); renderKanban(); renderGantt(); renderFinalizados(); renderEstrategia();
+    renderCounters(); renderCards(); renderMadre(); renderActFeed(); renderProspectos(); renderEquipo(); renderRevision(); renderKanban(); renderGantt(); renderFinalizados(); renderEstrategia();
     if(curClient && !el('view-cliente').classList.contains('hidden')) openAcc(curClient.id,'cliente');
   }
 
@@ -3650,12 +3910,12 @@
   el('est-plat').addEventListener('change',()=>{estPlat=el('est-plat').value;renderEstrategia();});
   el('est-seg').addEventListener('click',e=>{const b=e.target.closest('.seg-opt');if(b){estView=b.dataset.ev;renderEstrategia();}});
   el('est-file').addEventListener('change',e=>{const f=e.target.files[0];if(f)estUpload(f);e.target.value='';});
-  ['f-cuenta','f-acc','f-tipo','f-quien','f-estado'].forEach(id=>el(id).addEventListener('change',renderMadre));
-  el('f-fin').addEventListener('click',function(){madreFin=!madreFin;this.classList.toggle('active',madreFin);this.textContent=madreFin?'Ocultar finalizadas':'Incluir finalizadas';renderMadre();});
-  el('madre-seg').addEventListener('click',e=>{const b=e.target.closest('.seg-opt');if(b)setMadreView(b.dataset.mv);});
+  ['f-cuenta','f-acc','f-tipo','f-quien','f-estado'].forEach(id=>{const e=el(id);if(e&&e.tagName==='SELECT')e.addEventListener('change',renderMadre);});
+  {const fin=el('f-fin');if(fin&&fin.tagName==='BUTTON')fin.addEventListener('click',function(){madreFin=!madreFin;this.classList.toggle('active',madreFin);this.textContent=madreFin?'Ocultar finalizadas':'Incluir finalizadas';renderMadre();});}
+  {const mseg=el('madre-seg');if(mseg&&mseg.tagName==='DIV')mseg.addEventListener('click',e=>{const b=e.target.closest('.seg-opt');if(b)setMadreView(b.dataset.mv);});}
   el('eq-quien').addEventListener('change',renderEquipo);
-  el('madre-prev').addEventListener('click',()=>{madreCalM--;if(madreCalM<0){madreCalM=11;madreCalY--;}renderMadreCal();});
-  el('madre-next').addEventListener('click',()=>{madreCalM++;if(madreCalM>11){madreCalM=0;madreCalY++;}renderMadreCal();});
+  {const mp=el('madre-prev');if(mp&&mp.tagName==='BUTTON')mp.addEventListener('click',()=>{madreCalM--;if(madreCalM<0){madreCalM=11;madreCalY--;}renderMadreCal();});}
+  {const mn=el('madre-next');if(mn&&mn.tagName==='BUTTON')mn.addEventListener('click',()=>{madreCalM++;if(madreCalM>11){madreCalM=0;madreCalY++;}renderMadreCal();});}
   el('cli-filters').addEventListener('click',e=>{const b=e.target.closest('.fbtn');if(!b)return;document.querySelectorAll('#cli-filters .fbtn').forEach(x=>x.classList.remove('active'));b.classList.add('active');cliFilter=b.dataset.cf;renderCliEntregables();});
   el('ptabs').addEventListener('click',e=>{const t=e.target.closest('.tab');if(t)setPtab(t.dataset.pt);});
   el('p-cli').addEventListener('change',renderKanban);
@@ -3668,6 +3928,8 @@
   el('menuBtn').addEventListener('click',toggleSide);
   el('sideOverlay').addEventListener('click',closeSide);
   el('client-search').addEventListener('input',e=>{cardSearch=e.target.value.trim().toLowerCase();renderCards();});
+  {const aff=el('act-feed-find');if(aff)aff.addEventListener('input',renderActFeed);}
+  el('act-feed-tabs').addEventListener('click',e=>{const b=e.target.closest('.aft');if(b)actSetFilter(b.dataset.state||'');});
   el('pros-search').addEventListener('input',renderProspectos);
   el('pros-quien').addEventListener('change',renderProspectos);
   el('pros-periodo').addEventListener('change',renderProspectos);
