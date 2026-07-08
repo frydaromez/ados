@@ -152,123 +152,66 @@ html,body{height:100%;overflow:hidden;font-family:'Inter',system-ui,-apple-syste
 .compose-send{background:var(--accent);border:none;color:#fff;width:38px;height:38px;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
 .compose-send:hover{background:var(--acc-h);transform:scale(1.05)}
 
-/* ══════════════════════════════════
-   WIZARD — registro paso a paso
-   ══════════════════════════════════ */
-.wizard{flex:1;display:flex;flex-direction:column;overflow:hidden;background:var(--bg)}
+/* ══════════════════════════════
+   Modal registro de actividad
+   ══════════════════════════════ */
+.act-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(3px);z-index:200;display:none;align-items:flex-start;justify-content:center;padding:32px 16px;overflow-y:auto}
+.act-overlay.open{display:flex}
+.act-modal{position:relative;background:var(--panel);border:1px solid var(--border);border-radius:18px;width:100%;max-width:640px;padding:28px 30px 24px;box-shadow:0 32px 80px rgba(0,0,0,.7);margin:auto}
+.act-modal h3{margin:0 0 3px;font-size:18px;font-weight:800;color:#fff;letter-spacing:-.2px}
+.act-modal .act-msub{color:var(--muted);font-size:12px;margin:0 0 22px}
+.act-mclose{position:absolute;top:16px;right:18px;border:none;background:none;font-size:22px;line-height:1;color:var(--muted2);cursor:pointer;transition:color .15s;font-family:inherit}
+.act-mclose:hover{color:#fff}
 
-.wz-topbar{padding:14px 24px 0;flex-shrink:0}
-.wz-prog-wrap{height:3px;background:var(--border);border-radius:2px;margin-bottom:12px}
-.wz-prog{height:3px;background:var(--accent);border-radius:2px;transition:width .35s cubic-bezier(.4,0,.2,1)}
-.wz-toprow{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
-.wz-step-lbl{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.8px;text-transform:uppercase}
-.wz-cancel{background:none;border:none;color:var(--muted2);font-size:12px;cursor:pointer;font-family:inherit;transition:color .15s}
-.wz-cancel:hover{color:#fff}
+/* field groups */
+.ac-row{display:grid;gap:12px 18px;margin-bottom:14px;align-items:start}
+.ac-r1{grid-template-columns:1fr 80px auto}
+.ac-r2{grid-template-columns:1fr 1fr}
+.ac-r3{grid-template-columns:1fr 1fr}
+.ac-f{display:flex;flex-direction:column;gap:5px}
+.ac-lbl{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;display:flex;align-items:center;gap:6px}
+.ac-step{display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;border-radius:50%;background:var(--acc-d);color:var(--accent);font-size:10px;font-weight:800;flex-shrink:0}
+.ac-inp{width:100%;background:var(--inp);border:1px solid var(--border);border-radius:9px;padding:9px 12px;color:#fff;font-size:13px;font-family:inherit;outline:none;transition:border-color .15s;color-scheme:dark}
+.ac-inp:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--acc-d)}
+.ac-inp::placeholder{color:var(--muted2)}
+.ac-ta{width:100%;background:var(--inp);border:1px solid var(--border);border-radius:9px;padding:9px 12px;color:#fff;font-size:13px;font-family:inherit;outline:none;resize:vertical;min-height:72px;line-height:1.5;transition:border-color .15s;color-scheme:dark}
+.ac-ta:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--acc-d)}
+.ac-ta::placeholder{color:var(--muted2)}
 
-.wz-scroll{flex:1;overflow-y:auto;padding:24px 24px 16px}
-.wz-scroll::-webkit-scrollbar{width:3px}
-.wz-scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
-.wz-inner{max-width:720px;margin:0 auto}
+/* segment toggles */
+.ac-seg{display:inline-flex;background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:3px;gap:3px}
+.ac-seg-opt{border:none;background:none;padding:6px 14px;border-radius:6px;font-family:inherit;font-weight:600;font-size:12px;color:var(--muted);cursor:pointer;transition:all .15s;white-space:nowrap}
+.ac-seg-opt.active{background:var(--accent);color:#fff;box-shadow:0 2px 8px rgba(124,92,252,.4)}
 
-/* question typography */
-.wz-q{font-size:28px;font-weight:800;color:#fff;line-height:1.15;margin-bottom:6px;letter-spacing:-.3px}
-.wz-q2{font-size:18px;font-weight:700;color:#fff;line-height:1.2;margin-bottom:4px;margin-top:28px}
-.wz-hint{font-size:14px;color:var(--muted);margin-bottom:24px;line-height:1.5}
-.wz-hint2{font-size:13px;color:var(--muted);margin-bottom:14px;margin-top:-6px}
+/* mic button */
+.ac-mic{border:none;background:none;cursor:pointer;color:var(--muted2);padding:0;width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;border-radius:6px;transition:.15s;flex-shrink:0}
+.ac-mic svg{width:14px;height:14px;stroke:currentColor}
+.ac-mic:hover{color:var(--accent);background:var(--acc-d)}
+.ac-mic.rec{color:#fff;background:var(--urg);animation:pulse 1s infinite}
 
-/* category filter tabs */
-.wz-cats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
-.wz-cat{background:var(--card);border:1px solid var(--border);color:var(--muted);font-size:12px;font-weight:600;padding:5px 13px;border-radius:20px;cursor:pointer;transition:all .15s;font-family:inherit}
-.wz-cat:hover{color:#fff}
-.wz-cat.sel{background:var(--acc-d);border-color:var(--accent);color:#fff}
+/* urgente row */
+.ac-urg-row{display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px 12px;background:var(--inp);border:1px solid var(--border);border-radius:9px;transition:all .15s;user-select:none;margin-bottom:14px}
+.ac-urg-row.on{border-color:rgba(255,87,87,.4);background:rgba(255,87,87,.06)}
+.ac-urg-lbl{flex:1;font-size:13px;font-weight:600;color:var(--muted)}
+.ac-urg-row.on .ac-urg-lbl{color:#fff}
+.ac-urg-sub{font-size:11px;color:var(--muted2);margin-top:1px}
+.ac-sw{width:36px;height:20px;border-radius:10px;background:var(--border);position:relative;flex-shrink:0;transition:background .2s}
+.ac-sw::after{content:'';position:absolute;width:14px;height:14px;background:#fff;border-radius:50%;top:3px;left:3px;transition:transform .2s}
+.ac-urg-row.on .ac-sw{background:var(--urg)}
+.ac-urg-row.on .ac-sw::after{transform:translateX(16px)}
 
-/* tipo icon grid */
-.wz-tipo-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-.wz-tipo-btn{display:flex;flex-direction:column;align-items:center;gap:7px;padding:16px 10px;background:var(--card);border:2px solid transparent;border-radius:14px;cursor:pointer;transition:all .15s;font-family:inherit}
-.wz-tipo-btn:hover{border-color:var(--border);background:var(--card2)}
-.wz-tipo-btn.sel{border-color:var(--accent);background:var(--acc-d)}
-.wz-tipo-ic{font-size:26px;line-height:1}
-.wz-tipo-lbl{font-size:11px;color:var(--muted);font-weight:600;text-align:center;line-height:1.35}
-.wz-tipo-btn.sel .wz-tipo-lbl{color:#fff}
-.wz-selected-tipo{margin-top:16px;padding:13px 18px;background:var(--acc-d);border:1px solid var(--accent);border-radius:10px;font-size:15px;font-weight:700;color:#fff;display:flex;align-items:center;gap:8px}
-.wz-selected-tipo .check{color:#a78bfa;font-size:18px}
+/* link adjunto */
+.ac-attach{display:flex;gap:8px;align-items:center;margin-bottom:14px}
+.ac-link-inp{flex:1;background:var(--inp);border:1px dashed var(--border);border-radius:9px;padding:8px 12px;color:#fff;font-size:12px;font-family:inherit;outline:none;transition:border-color .15s;color-scheme:dark}
+.ac-link-inp:focus{border-color:var(--accent);border-style:solid}
+.ac-link-inp::placeholder{color:var(--muted2)}
 
-/* qty counter */
-.wz-qty-center{display:flex;flex-direction:column;align-items:center;gap:20px;padding:28px 0}
-.wz-qty-row{display:flex;align-items:center;gap:18px}
-.wz-qbtn{width:52px;height:52px;border-radius:14px;background:var(--card);border:1px solid var(--border);color:#fff;font-size:24px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;font-family:inherit;line-height:1}
-.wz-qbtn:hover{background:var(--card2);border-color:var(--accent)}
-.wz-qnum{font-size:64px;font-weight:800;color:#fff;min-width:90px;text-align:center;line-height:1}
-.wz-qsub{font-size:15px;color:var(--muted);text-align:center;line-height:1.4}
-
-/* text inputs + voice */
-.wz-inp-wrap{position:relative;margin-bottom:8px}
-.wz-inp{width:100%;background:var(--inp);border:1px solid var(--border);border-radius:10px;padding:13px 48px 13px 16px;color:#fff;font-size:15px;outline:none;font-family:inherit;transition:border-color .15s;color-scheme:dark}
-.wz-inp:focus{border-color:var(--accent)}
-.wz-inp::placeholder{color:var(--muted2)}
-.wz-ta{width:100%;background:var(--inp);border:1px solid var(--border);border-radius:10px;padding:13px 16px;color:#fff;font-size:14px;outline:none;font-family:inherit;line-height:1.5;min-height:100px;resize:vertical;transition:border-color .15s;color-scheme:dark}
-.wz-ta:focus{border-color:var(--accent)}
-.wz-ta::placeholder{color:var(--muted2)}
-.wz-mic-inline{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted2);font-size:18px;cursor:pointer;padding:4px;border-radius:6px;line-height:1;transition:all .15s}
-.wz-mic-inline:hover{color:#fff}
-.wz-mic-inline.active{color:var(--urg);animation:pulse 1s infinite}
-
-/* big voice button */
-.wz-voice-area{display:flex;flex-direction:column;align-items:center;gap:10px;margin:20px 0 10px}
-.wz-big-mic{width:70px;height:70px;border-radius:50%;background:var(--card);border:2px solid var(--border);color:var(--muted);font-size:30px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;position:relative;flex-shrink:0}
-.wz-big-mic::before{content:'';position:absolute;inset:-6px;border-radius:50%;border:2px solid var(--accent);opacity:0;transition:opacity .2s}
-.wz-big-mic:hover{border-color:var(--accent);color:#fff;background:var(--acc-d)}
-.wz-big-mic.active{background:rgba(255,87,87,.12);border-color:var(--urg);color:var(--urg)}
-.wz-big-mic.active::before{opacity:.4;animation:pulse 1.2s infinite}
-.wz-voice-lbl{font-size:12px;color:var(--muted2);text-align:center}
-.wz-voice-lbl.on{color:var(--urg);font-weight:600}
-
-/* team picker */
-.wz-team-grid{display:flex;gap:10px;flex-wrap:wrap}
-.wz-team-btn{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;padding:12px 14px;border-radius:14px;transition:all .15s;border:2px solid transparent;background:var(--card);min-width:74px;font-family:inherit}
-.wz-team-btn:hover{background:var(--card2);border-color:var(--border)}
-.wz-team-btn.sel{background:var(--acc-d);border-color:var(--accent)}
-.wz-team-av{width:50px;height:50px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#fff}
-.wz-team-nm{font-size:11px;color:var(--muted);font-weight:600}
-.wz-team-btn.sel .wz-team-nm{color:#fff}
-.wz-team-sm .wz-team-av{width:38px;height:38px;font-size:13px;border-radius:10px}
-.wz-team-sm .wz-team-nm{font-size:10px}
-
-/* date shortcuts */
-.wz-date-scs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
-.wz-dsc{background:var(--card);border:1px solid var(--border);color:var(--muted);font-size:12px;font-weight:600;padding:7px 14px;border-radius:8px;cursor:pointer;transition:all .15s;font-family:inherit}
-.wz-dsc:hover{color:#fff}
-.wz-dsc.sel{background:var(--acc-d);border-color:var(--accent);color:#fff}
-.wz-date-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.wz-flbl{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin-bottom:5px}
-.wz-inp-d{width:100%;background:var(--inp);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:#fff;font-size:14px;outline:none;font-family:inherit;transition:border-color .15s;color-scheme:dark}
-.wz-inp-d:focus{border-color:var(--accent)}
-
-/* summary card */
-.wz-summary{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:18px}
-.wz-sum-row{display:flex;gap:14px;padding:12px 16px;border-bottom:1px solid var(--b2);align-items:flex-start}
-.wz-sum-row:last-child{border-bottom:none}
-.wz-sum-lbl{font-size:10px;font-weight:700;color:var(--muted2);text-transform:uppercase;letter-spacing:.6px;min-width:78px;flex-shrink:0;padding-top:2px}
-.wz-sum-val{font-size:13px;color:#fff;flex:1;line-height:1.45;word-break:break-word}
-
-/* urgente toggle in wizard */
-.wz-urg{display:flex;align-items:center;gap:14px;cursor:pointer;padding:14px 16px;background:var(--inp);border:1px solid var(--border);border-radius:12px;transition:all .15s;user-select:none}
-.wz-urg.on{background:rgba(255,87,87,.08);border-color:rgba(255,87,87,.35)}
-.wz-urg-ic{font-size:22px;flex-shrink:0}
-.wz-urg-inf{flex:1}
-.wz-urg-t{font-size:14px;font-weight:700;color:#fff}
-.wz-urg-d{font-size:12px;color:var(--muted2);margin-top:2px}
-.wz-urg-sw{width:40px;height:22px;border-radius:11px;background:var(--border);position:relative;flex-shrink:0;transition:background .2s}
-.wz-urg-sw::after{content:'';position:absolute;width:16px;height:16px;background:#fff;border-radius:50%;top:3px;left:3px;transition:transform .2s}
-.wz-urg.on .wz-urg-sw{background:var(--urg)}
-.wz-urg.on .wz-urg-sw::after{transform:translateX(18px)}
-
-/* nav bar */
-.wz-nav{padding:14px 24px 18px;background:var(--panel);border-top:1px solid var(--b2);display:flex;align-items:center;gap:12px;flex-shrink:0}
-.wz-back{background:none;border:1px solid var(--border);color:var(--muted);border-radius:10px;padding:11px 20px;font-size:13px;cursor:pointer;font-family:inherit;transition:all .15s}
-.wz-back:hover{color:#fff}
-.wz-next{background:var(--accent);border:none;color:#fff;border-radius:10px;padding:12px 28px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;letter-spacing:.3px;flex:1;max-width:320px;transition:opacity .15s}
-.wz-next:hover{opacity:.85}
+/* actions */
+.ac-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:6px}
+.ac-btn-cancel{background:none;border:1px solid var(--border);color:var(--muted);border-radius:9px;padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}
+.ac-btn-cancel:hover{color:#fff}
+.ac-btn-save{background:var(--accent);border:none;color:#fff;border-radius:9px;padding:9px 20px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:opacity .15s;box-shadow:0 6px 16px rgba(124,92,252,.4)}
+.ac-btn-save:hover{opacity:.88}
 
 /* ── Note modal ── */
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(3px);z-index:200;display:flex;align-items:center;justify-content:center;padding:16px}
@@ -339,7 +282,7 @@ html,body{height:100%;overflow:hidden;font-family:'Inter',system-ui,-apple-syste
               <div class="notif-list" id="notif-list"></div>
             </div>
           </div>
-          <button class="btn-reg" onclick="openWizard()">+ Registrar actividad</button>
+          <button class="btn-reg" onclick="openActModal()">+ Registrar actividad</button>
         </div>
       </div>
 
@@ -364,24 +307,98 @@ html,body{height:100%;overflow:hidden;font-family:'Inter',system-ui,-apple-syste
         </div>
       </div>
 
-      <!-- Wizard (replaces feed+compose when registering) -->
-      <div class="wizard hidden" id="wizard">
-        <div class="wz-topbar">
-          <div class="wz-prog-wrap"><div class="wz-prog" id="wz-prog" style="width:14%"></div></div>
-          <div class="wz-toprow">
-            <span class="wz-step-lbl" id="wz-step-lbl">PASO 1 DE 7</span>
-            <button class="wz-cancel" onclick="closeWizard()">✕ Cancelar</button>
-          </div>
-        </div>
-        <div class="wz-scroll" id="wz-scroll">
-          <div class="wz-inner" id="wz-content"></div>
-        </div>
-        <div class="wz-nav">
-          <button class="wz-back" id="wz-back" onclick="wBack()">← Atrás</button>
-          <button class="wz-next" id="wz-next" onclick="wNext()">Continuar →</button>
+
+    </div>
+  </div>
+</div>
+
+<!-- Modal registrar actividad -->
+<div class="act-overlay" id="act-overlay">
+  <div class="act-modal">
+    <button class="act-mclose" onclick="closeActModal()">x</button>
+    <h3>+ Registrar actividad</h3>
+    <p class="act-msub">Si se pidio, se registra. Guarda con Ctrl + Enter.</p>
+
+    <!-- Fila 1: que + cantidad + tipo -->
+    <div class="ac-row ac-r1">
+      <div class="ac-f">
+        <label class="ac-lbl">
+          <span class="ac-step">1</span> Que se necesita
+          <button class="ac-mic" id="acmic-que" type="button" onclick="acStartSR('ac-que')" title="Dictar">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+          </button>
+        </label>
+        <input id="ac-que" class="ac-inp" placeholder="Ej. Artes parrilla julio" autocomplete="off">
+      </div>
+      <div class="ac-f">
+        <label class="ac-lbl"><span class="ac-step">2</span> Cantidad</label>
+        <input id="ac-cant" class="ac-inp" type="number" value="1" min="1">
+      </div>
+      <div class="ac-f">
+        <label class="ac-lbl"><span class="ac-step">3</span> Tipo</label>
+        <div class="ac-seg" id="ac-seg-tipo">
+          <button type="button" class="ac-seg-opt active" data-v="parrilla">Parrilla</button>
+          <button type="button" class="ac-seg-opt" data-v="extra">Extra</button>
         </div>
       </div>
+    </div>
 
+    <!-- Fila 2: quien hace + quien revisa -->
+    <div class="ac-row ac-r2">
+      <div class="ac-f">
+        <label class="ac-lbl"><span class="ac-step">4</span> Quien lo hace</label>
+        <select id="ac-hace" class="ac-inp">
+          <option value="">Asignar persona...</option>
+        </select>
+      </div>
+      <div class="ac-f">
+        <label class="ac-lbl"><span class="ac-step">5</span> Quien lo revisa</label>
+        <select id="ac-revisa" class="ac-inp">
+          <option value="">Asignar persona...</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Fila 3: fecha + hora -->
+    <div class="ac-row ac-r3">
+      <div class="ac-f">
+        <label class="ac-lbl"><span class="ac-step">6</span> Para cuando</label>
+        <input id="ac-fecha" class="ac-inp" type="date">
+      </div>
+      <div class="ac-f">
+        <label class="ac-lbl">Hora limite</label>
+        <input id="ac-hora" class="ac-inp" type="time" value="17:00">
+      </div>
+    </div>
+
+    <!-- Fila 4: contexto + mic -->
+    <div class="ac-f" style="margin-bottom:14px">
+      <label class="ac-lbl">
+        <span class="ac-step">7</span> Informacion para trabajar
+        <button class="ac-mic" id="acmic-ctx" type="button" onclick="acStartSR('ac-ctx')" title="Dictar">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+        </button>
+      </label>
+      <textarea id="ac-ctx" class="ac-ta" placeholder="Contexto, instrucciones, referencias..."></textarea>
+    </div>
+
+    <!-- Link adjunto -->
+    <div class="ac-attach">
+      <input id="ac-link" class="ac-link-inp" type="url" placeholder="Pega un link de Drive, Loom o carpeta">
+    </div>
+
+    <!-- Urgente -->
+    <div class="ac-urg-row" id="ac-urg-row" onclick="acToggleUrg()">
+      <div style="flex:1">
+        <div class="ac-urg-lbl">Urgente</div>
+        <div class="ac-urg-sub">Todo el equipo recibe una notificacion especial</div>
+      </div>
+      <div class="ac-sw"></div>
+    </div>
+
+    <div class="ac-actions">
+      <button class="ac-btn-cancel" onclick="closeActModal()">Cancelar</button>
+      <button class="ac-btn-save" onclick="saveActModal()">Registrar actividad</button>
     </div>
   </div>
 </div>
@@ -472,8 +489,6 @@ const TEAM=[
 ];
 const AVC={Charly:'#5b8af5',Dess:'#a56bff',Fryda:'#7c5cfc',Gardenia:'#ff8aab',Lili:'#ffab40'};
 const STL={todo:'POR HACER',proc:'EN PROCESO',review:'POR REVISAR',falta:'FALTA INFO',fin:'FINALIZADA'};
-const W_MAX=6; // steps 0–6
-
 // ─── Seed ─────────────────────────────────────────
 const SEED_CLIENTS=[
   {id:'auren',name:'Auren',sector:'Industria Privada',color:'#5b8af5'},
@@ -680,287 +695,85 @@ function stopSR(){if(srInst&&srActive)srInst.stop();}
 function updateMicUI(){
   // compose mic
   const cm=el('compose-mic');if(cm){const on=srActive&&srTarget==='compose';cm.textContent=on?'⏹':'🎙';cm.classList.toggle('active',on);}
-  // wizard inline mics (by ID convention mic-<targetId>)
-  ['wz-obj','wz-ctx','wz-res'].forEach(tid=>{
-    const btn=el('mic-'+tid);if(!btn)return;const on=srActive&&srTarget===tid;btn.textContent=on?'⏹':'🎙';btn.classList.toggle('active',on);
-  });
-  // big mic
-  const bm=el('wz-big-mic');
-  if(bm){const on=srActive&&srTarget==='wz-ctx';bm.classList.toggle('active',on);bm.textContent=on?'⏹':'🎙';}
-  const vl=el('wz-voice-lbl');
-  if(vl){const on=srActive&&(srTarget==='wz-obj'||srTarget==='wz-ctx'||srTarget==='wz-res');vl.textContent=on?'Escuchando… habla ahora':'Toca para dictar';vl.classList.toggle('on',on);}
 }
 
-// ══════════════════════════════════
-//  WIZARD
-// ══════════════════════════════════
-let wStep=0;
-let wData={tipo:'',qty:1,objetivo:'',ctx:'',fecha:'',hora:'17:00',hace:'',revisa:'',resultado:'',quien_dudas:'',material:'',urgente:false};
+// ══════════════════════════════
+//  Modal registro de actividad
+// ══════════════════════════════
+let acUrgente=false;
+let acSrActive=false,acSrTarget=null,acSrInst=null;
 
-function openWizard(){
+function openActModal(){
   if(!activeClientId)return;
-  wStep=0;
-  wData={tipo:'',qty:1,objetivo:'',ctx:'',fecha:hoy(),hora:'17:00',hace:'',revisa:'',resultado:'',quien_dudas:'',material:'',urgente:false};
-  el('feed').style.display='none';
-  el('compose-bar').style.display='none';
-  el('wizard').classList.remove('hidden');
-  wRender();
+  acUrgente=false;
+  el('ac-urg-row').classList.remove('on');
+  el('ac-que').value='';
+  el('ac-cant').value='1';
+  el('ac-ctx').value='';
+  el('ac-link').value='';
+  el('ac-fecha').value=hoy();
+  el('ac-hora').value='17:00';
+  document.querySelectorAll('#ac-seg-tipo .ac-seg-opt').forEach(b=>b.classList.toggle('active',b.dataset.v==='parrilla'));
+  const makeOpts=sel=>{
+    sel.innerHTML='<option value="">Asignar persona...</option>';
+    TEAM.forEach(t=>{const o=document.createElement('option');o.value=t.name;o.textContent=t.name;sel.appendChild(o);});
+  };
+  makeOpts(el('ac-hace'));makeOpts(el('ac-revisa'));
+  el('act-overlay').classList.add('open');
+  setTimeout(()=>el('ac-que').focus(),60);
 }
-function closeWizard(){
-  stopSR();
-  el('wizard').classList.add('hidden');
-  el('feed').style.display='';
-  el('compose-bar').style.display='';
+function closeActModal(){
+  acStopSR();
+  el('act-overlay').classList.remove('open');
 }
-function wRender(){
-  const pct=Math.round(((wStep+1)/(W_MAX+1))*100);
-  el('wz-prog').style.width=pct+'%';
-  el('wz-step-lbl').textContent=`PASO ${wStep+1} DE ${W_MAX+1}`;
-  el('wz-back').style.visibility=wStep===0?'hidden':'visible';
-  el('wz-next').textContent=wStep===W_MAX?'REGISTRAR EN EL CANAL →':'Continuar →';
-  el('wz-scroll').scrollTop=0;
-  const builds=[ws0,ws1,ws2,ws3,ws4,ws5,ws6];
-  builds[wStep]();
+function acToggleUrg(){
+  acUrgente=!acUrgente;
+  el('ac-urg-row').classList.toggle('on',acUrgente);
 }
-function wSave(){
-  if(wStep===2){if(el('wz-obj'))wData.objetivo=el('wz-obj').value.trim();if(el('wz-ctx'))wData.ctx=el('wz-ctx').value.trim();}
-  if(wStep===3){if(el('wz-fecha'))wData.fecha=el('wz-fecha').value;if(el('wz-hora'))wData.hora=el('wz-hora').value;}
-  if(wStep===5){if(el('wz-res'))wData.resultado=el('wz-res').value.trim();if(el('wz-mat'))wData.material=el('wz-mat').value.trim();}
+function acStartSR(targetId){
+  if(!SR){showToast('Dictado no disponible en este navegador','err');return;}
+  if(acSrActive&&acSrTarget===targetId){acStopSR();return;}
+  if(acSrActive)acSrInst.stop();
+  acSrTarget=targetId;
+  acSrInst=new SR();acSrInst.lang='es-MX';acSrInst.interimResults=true;acSrInst.continuous=true;
+  acSrInst.onresult=e=>{const t=Array.from(e.results).map(r=>r[0].transcript).join('');const ta=el(targetId);if(ta)ta.value=t;};
+  acSrInst.onerror=acSrInst.onend=()=>{acSrActive=false;acUpdateMic();};
+  acSrInst.start();acSrActive=true;acUpdateMic();
 }
-function wValidate(){
-  if(wStep===0&&!wData.tipo){showToast('Elige el tipo de actividad','err');return false;}
-  if(wStep===3&&!wData.fecha){showToast('Selecciona una fecha','err');return false;}
-  return true;
+function acStopSR(){if(acSrInst&&acSrActive)acSrInst.stop();}
+function acUpdateMic(){
+  ['que','ctx'].forEach(k=>{
+    const btn=el('acmic-'+k);if(!btn)return;
+    const on=acSrActive&&acSrTarget==='ac-'+k;
+    btn.classList.toggle('rec',on);
+    btn.title=on?'Detener':'Dictar';
+  });
 }
-function wNext(){wSave();if(!wValidate())return;if(wStep===W_MAX){submitWizard();return;}wStep++;wRender();}
-function wBack(){wSave();if(wStep>0){wStep--;wRender();}}
-
-// ── Step builders ─────────────────────────────────
-
-function teamChips(who,sm){
-  return TEAM.map(tm=>{
-    const sel=wData[who]===tm.name?' sel':'';
-    return`<button class="wz-team-btn${sel}${sm?' wz-team-sm':''}" data-who="${who}" data-name="${esc(tm.name)}" onclick="wSelTeam(this)">
-      <div class="wz-team-av" style="background:${tm.bg}20;color:${tm.bg}">${tm.init}</div>
-      <span class="wz-team-nm">${esc(tm.name)}</span>
-    </button>`;
-  }).join('');
-}
-function dateScs(){
-  const now=new Date();
-  return[0,1,2,3,4,5].map(i=>{
-    const d=new Date(now);d.setDate(now.getDate()+i);
-    const ds=d.toISOString().slice(0,10);
-    const lbl=i===0?'Hoy':i===1?'Mañana':d.toLocaleDateString('es-MX',{weekday:'short',day:'numeric'});
-    return`<button class="wz-dsc${wData.fecha===ds?' sel':''}" onclick="wSetDate('${ds}',this)">${esc(lbl)}</button>`;
-  }).join('');
-}
-
-// Step 0: ¿Qué tipo?
-function ws0(){
-  let chips='';
-  for(const[cat,tipos]of Object.entries(TIPOS)){
-    tipos.forEach(t=>{
-      const ic=TIPO_IC[t]||'📋',sel=wData.tipo===t?' sel':'';
-      chips+=`<button class="wz-tipo-btn${sel}" data-cat="${esc(cat)}" data-val="${esc(t)}" onclick="wSelTipo(this)">
-        <span class="wz-tipo-ic">${ic}</span>
-        <span class="wz-tipo-lbl">${esc(t)}</span>
-      </button>`;
-    });
-  }
-  const catBtns=['Todas',...Object.keys(TIPOS)].map((c,i)=>`<button class="wz-cat${i===0?' sel':''}" onclick="wFilterCat('${esc(c)}',this)">${esc(c)}</button>`).join('');
-  el('wz-content').innerHTML=`
-    <div class="wz-q">¿Qué tipo de actividad<br>necesitas registrar?</div>
-    <div class="wz-hint">Toca para seleccionar · Solo se muestra una vez en el canal</div>
-    <div class="wz-cats">${catBtns}</div>
-    <div class="wz-tipo-grid" id="wz-tipo-grid">${chips}</div>
-    ${wData.tipo?`<div class="wz-selected-tipo"><span class="check">✓</span>${TIPO_IC[wData.tipo]||'📋'} ${esc(wData.tipo)} seleccionado</div>`:''}`;
-}
-
-// Step 1: Cantidad
-function ws1(){
-  el('wz-content').innerHTML=`
-    <div class="wz-q">¿Cuántas piezas?</div>
-    <div class="wz-hint">${TIPO_IC[wData.tipo]||'📋'} ${esc(wData.tipo)}</div>
-    <div class="wz-qty-center">
-      <div class="wz-qty-row">
-        <button class="wz-qbtn" onclick="wChgQty(-5)">−5</button>
-        <button class="wz-qbtn" onclick="wChgQty(-1)">−</button>
-        <span class="wz-qnum" id="wz-qnum">${wData.qty}</span>
-        <button class="wz-qbtn" onclick="wChgQty(1)">+</button>
-        <button class="wz-qbtn" onclick="wChgQty(5)">+5</button>
-      </div>
-      <div class="wz-qsub" id="wz-qsub">${wData.qty}× ${esc(wData.tipo)}</div>
-    </div>`;
-}
-
-// Step 2: Objetivo + contexto + voz
-function ws2(){
-  el('wz-content').innerHTML=`
-    <div class="wz-q">¿Cuál es el objetivo?</div>
-    <div class="wz-hint">Una línea que resume qué busca lograr esta actividad</div>
-    <div class="wz-inp-wrap">
-      <input id="wz-obj" class="wz-inp" placeholder="Ej: Promover el lanzamiento del producto X…" autocomplete="off">
-      <button class="wz-mic-inline" id="mic-wz-obj" onclick="startSR('wz-obj')" title="Dictar">🎙</button>
-    </div>
-
-    <div class="wz-q2">¿Qué necesita exactamente?</div>
-    <div class="wz-hint2">Detalles, referencias, restricciones — escribe o habla</div>
-    <textarea id="wz-ctx" class="wz-ta" placeholder="Describe lo que necesitas, contexto del cliente, material de referencia…"></textarea>
-    <div class="wz-voice-area">
-      <button class="wz-big-mic" id="wz-big-mic" onclick="startSR('wz-ctx')" title="Dictar contexto">🎙</button>
-      <span class="wz-voice-lbl" id="wz-voice-lbl">Toca para dictar</span>
-    </div>`;
-  el('wz-obj').value=wData.objetivo;
-  el('wz-ctx').value=wData.ctx;
-  updateMicUI();
-}
-
-// Step 3: ¿Para cuándo?
-function ws3(){
-  el('wz-content').innerHTML=`
-    <div class="wz-q">¿Para cuándo?</div>
-    <div class="wz-hint">Elige un acceso rápido o una fecha exacta</div>
-    <div class="wz-date-scs">${dateScs()}</div>
-    <div class="wz-date-row">
-      <div>
-        <div class="wz-flbl">Fecha</div>
-        <input id="wz-fecha" type="date" class="wz-inp-d" value="${wData.fecha}">
-      </div>
-      <div>
-        <div class="wz-flbl">Hora límite</div>
-        <input id="wz-hora" type="time" class="wz-inp-d" value="${wData.hora||'17:00'}">
-      </div>
-    </div>`;
-  el('wz-fecha').addEventListener('change',e=>{wData.fecha=e.target.value;document.querySelectorAll('.wz-dsc').forEach(b=>b.classList.remove('sel'));});
-}
-
-// Step 4: Quién hace / revisa
-function ws4(){
-  el('wz-content').innerHTML=`
-    <div class="wz-q">¿Quién lo hace?</div>
-    <div class="wz-hint">Responsable de crear la actividad</div>
-    <div class="wz-team-grid">${teamChips('hace',false)}</div>
-
-    <div class="wz-q2">¿Quién lo revisa?</div>
-    <div class="wz-hint2">Responsable de aprobar y dar feedback</div>
-    <div class="wz-team-grid">${teamChips('revisa',false)}</div>`;
-}
-
-// Step 5: Resultado + dudas + material
-function ws5(){
-  el('wz-content').innerHTML=`
-    <div class="wz-q">¿Qué resultado se espera?</div>
-    <div class="wz-hint">¿Cómo sabremos que está lista? Formato, resolución, criterio de entrega</div>
-    <div class="wz-inp-wrap">
-      <input id="wz-res" class="wz-inp" placeholder="Ej: PNG aprobado 1080×1080, subido a Drive…" autocomplete="off">
-      <button class="wz-mic-inline" id="mic-wz-res" onclick="startSR('wz-res')" title="Dictar">🎙</button>
-    </div>
-
-    <div class="wz-q2">¿Quién puede resolver dudas?</div>
-    <div class="wz-hint2">Opcional — a quién preguntar si hay bloqueos</div>
-    <div class="wz-team-grid">${teamChips('quien_dudas',true)}</div>
-
-    <div class="wz-q2">Material de apoyo</div>
-    <div class="wz-hint2">Opcional — brief, Google Drive, referencia</div>
-    <input id="wz-mat" class="wz-inp" type="url" placeholder="https://drive.google.com/…" style="margin-top:0">`;
-  el('wz-res').value=wData.resultado;
-  el('wz-mat').value=wData.material;
-  updateMicUI();
-}
-
-// Step 6: Confirmación
-function ws6(){
-  const c=clients.find(x=>x.id===activeClientId);
-  const rows=[
-    ['Qué',`${wData.qty}× ${wData.tipo}`],
-    ['Cliente',c?.name||'—'],
-    ...(wData.objetivo?[['Objetivo',wData.objetivo]]:[]),
-    ...(wData.ctx?[['Contexto',wData.ctx]]:[]),
-    ['Entrega',fmtEntrega(wData.fecha,wData.hora)],
-    ...(wData.hace?[['Hace',wData.hace]]:[]),
-    ...(wData.revisa?[['Revisa',wData.revisa]]:[]),
-    ...(wData.resultado?[['Resultado',wData.resultado]]:[]),
-    ...(wData.quien_dudas?[['Dudas',wData.quien_dudas]]:[]),
-    ...(wData.material?[['Material',wData.material]]:[]),
-  ];
-  el('wz-content').innerHTML=`
-    <div class="wz-q">Listo para registrar</div>
-    <div class="wz-hint">Aparecerá en el canal de ${esc(c?.name||'')} como una tarjeta de actividad</div>
-    <div class="wz-summary">${rows.map(([k,v])=>`
-      <div class="wz-sum-row">
-        <span class="wz-sum-lbl">${esc(k)}</span>
-        <span class="wz-sum-val">${esc(v)}</span>
-      </div>`).join('')}</div>
-    <div class="wz-urg${wData.urgente?' on':''}" id="wz-urg-toggle" onclick="wToggleUrg()">
-      <span class="wz-urg-ic">🔥</span>
-      <div class="wz-urg-inf">
-        <div class="wz-urg-t">Urgente</div>
-        <div class="wz-urg-d">Todo el equipo recibirá una notificación especial</div>
-      </div>
-      <div class="wz-urg-sw"></div>
-    </div>`;
-}
-
-// ── Wizard interactions ───────────────────────────
-function wSelTipo(btn){
-  document.querySelectorAll('.wz-tipo-btn').forEach(b=>b.classList.remove('sel'));
-  btn.classList.add('sel');wData.tipo=btn.dataset.val;
-  // update selected display
-  let sd=document.querySelector('.wz-selected-tipo');
-  if(!sd){sd=document.createElement('div');sd.className='wz-selected-tipo';el('wz-content').appendChild(sd);}
-  sd.innerHTML=`<span class="check">✓</span>${TIPO_IC[wData.tipo]||'📋'} ${esc(wData.tipo)} seleccionado`;
-}
-function wFilterCat(cat,btn){
-  document.querySelectorAll('.wz-cat').forEach(b=>b.classList.remove('sel'));
-  btn.classList.add('sel');
-  document.querySelectorAll('.wz-tipo-btn').forEach(b=>{b.style.display=(cat==='Todas'||b.dataset.cat===cat)?'':'none';});
-}
-function wChgQty(d){
-  wData.qty=Math.max(1,Math.min(99,wData.qty+d));
-  const n=el('wz-qnum'),s=el('wz-qsub');
-  if(n)n.textContent=wData.qty;if(s)s.textContent=`${wData.qty}× ${wData.tipo}`;
-}
-function wSelTeam(btn){
-  const who=btn.dataset.who,name=btn.dataset.name;
-  wData[who]=wData[who]===name?'':name;
-  document.querySelectorAll(`.wz-team-btn[data-who="${who}"]`).forEach(b=>b.classList.toggle('sel',b.dataset.name===wData[who]));
-}
-function wSetDate(ds,btn){
-  wData.fecha=ds;const fi=el('wz-fecha');if(fi)fi.value=ds;
-  document.querySelectorAll('.wz-dsc').forEach(b=>b.classList.remove('sel'));btn.classList.add('sel');
-}
-function wToggleUrg(){
-  wData.urgente=!wData.urgente;
-  const t=el('wz-urg-toggle');if(t)t.classList.toggle('on',wData.urgente);
-}
-
-// ── Submit ────────────────────────────────────────
-function submitWizard(){
+function saveActModal(){
+  const que=(el('ac-que').value||'').trim();
+  if(!que){showToast('Escribe que se necesita','err');return;}
   const c=clients.find(x=>x.id===activeClientId);
   const act={
     id:uid(),clientId:activeClientId,
-    qty:wData.qty,tipo:wData.tipo,ctx:wData.ctx,
-    hace:wData.hace,revisa:wData.revisa,
-    fecha:wData.fecha,hora:wData.hora,urgente:wData.urgente,
+    qty:parseInt(el('ac-cant').value)||1,
+    tipo:que,
+    ctx:(el('ac-ctx').value||'').trim(),
+    hace:el('ac-hace').value||'',
+    revisa:el('ac-revisa').value||'',
+    fecha:el('ac-fecha').value,
+    hora:el('ac-hora').value||'17:00',
+    urgente:acUrgente,
     status:'todo',comments:[]
   };
-  // store extra metadata in comments as first entry
-  if(wData.objetivo||wData.resultado||wData.quien_dudas||wData.material){
-    let extra='';
-    if(wData.objetivo)extra+=`Objetivo: ${wData.objetivo}\n`;
-    if(wData.resultado)extra+=`Resultado esperado: ${wData.resultado}\n`;
-    if(wData.quien_dudas)extra+=`Dudas con: ${wData.quien_dudas}\n`;
-    if(wData.material)extra+=`Material: ${wData.material}`;
-    if(extra.trim())act.comments.push({from:'Sistema',body:extra.trim(),ts:new Date().toISOString()});
-  }
+  const link=(el('ac-link').value||'').trim();
+  if(link)act.comments.push({from:'Sistema',body:'Material: '+link,ts:new Date().toISOString()});
   activities.push(act);
   messages.push({id:uid(),clientId:activeClientId,type:'card',actId:act.id,ts:new Date().toISOString()});
-  if(wData.hace==='Fryda')addNotif('📋',`Te asignaron: ${wData.qty}× ${wData.tipo} en ${c?.name}`,activeClientId,act.id);
-  if(wData.revisa==='Fryda'&&wData.revisa!==wData.hace)addNotif('🔍',`Debes revisar: ${wData.tipo} en ${c?.name}`,activeClientId,act.id);
-  if(wData.urgente)addNotif('🔥',`🔥 URGENTE: ${wData.qty}× ${wData.tipo} registrado en ${c?.name}`,activeClientId,act.id);
-  persist();closeWizard();renderFeed();scrollFeed();renderSidebar();updateHdr();stopSR();
-  showToast('Actividad registrada en el canal ✓');
+  if(act.hace==='Fryda')addNotif('Asignacion',`Te asignaron: ${act.qty}x ${act.tipo} en ${c?.name}`,activeClientId,act.id);
+  if(act.revisa==='Fryda'&&act.revisa!==act.hace)addNotif('Revision',`Debes revisar: ${act.tipo} en ${c?.name}`,activeClientId,act.id);
+  if(acUrgente)addNotif('Urgente',`URGENTE: ${act.qty}x ${act.tipo} registrado en ${c?.name}`,activeClientId,act.id);
+  persist();closeActModal();renderFeed();scrollFeed();renderSidebar();updateHdr();
+  showToast('Actividad registrada en el canal');
 }
 
 // ─── Note modal ───────────────────────────────────
@@ -975,8 +788,20 @@ function submitNote(){
 
 // ─── Event listeners ──────────────────────────────
 el('note-modal').addEventListener('click',e=>{if(e.target===el('note-modal'))closeNote();});
+el('act-overlay').addEventListener('click',e=>{if(e.target===el('act-overlay'))closeActModal();});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)&&el('act-overlay').classList.contains('open')){e.preventDefault();saveActModal();}
+});
 document.addEventListener('click',e=>{if(!el('notif-wrap').contains(e.target))el('notif-panel').classList.add('hidden');});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeNote();el('notif-panel').classList.add('hidden');}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeNote();closeActModal();el('notif-panel').classList.add('hidden');}});
+
+// seg-opt wiring (act modal tipo toggle)
+document.querySelectorAll('#ac-seg-tipo .ac-seg-opt').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('#ac-seg-tipo .ac-seg-opt').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
 
 // ─── Init ─────────────────────────────────────────
 updateNotifBadge();
